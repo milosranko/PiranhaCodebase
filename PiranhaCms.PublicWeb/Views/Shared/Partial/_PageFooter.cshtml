@@ -1,0 +1,29 @@
+﻿@model PiranhaCMS.PublicWeb.Models.ViewModels.IPageViewModel<PiranhaCMS.PublicWeb.Models.Pages.Base.IPage>
+
+<footer>
+    <div class="container">
+        @if (Model.Footer != null && 
+             (Model.Footer.FooterColumn1 != null || Model.Footer.FooterColumn2 != null))
+        {
+            <div class="row">
+                @if (Model.Footer.FooterColumn1 != null)
+                {
+                    <div class="col-6">
+                        @Html.Raw(Model.Footer.FooterColumn1)
+                    </div>
+                }
+                @if (Model.Footer.FooterColumn2 != null)
+                {
+                    <div class="col-6">
+                        @Html.Raw(Model.Footer.FooterColumn2)
+                    </div>
+                }
+            </div>
+        }
+        <div class="row">
+            <div class="col-sm">
+                Copyright &copy; @DateTime.Now.Year @Model.Header.SiteName
+            </div>
+        </div>
+    </div>
+</footer>

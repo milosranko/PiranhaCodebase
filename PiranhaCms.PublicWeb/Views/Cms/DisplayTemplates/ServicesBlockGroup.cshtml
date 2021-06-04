@@ -1,0 +1,14 @@
+﻿@model PiranhaCMS.PublicWeb.Models.Blocks.ServicesBlockGroup
+
+<div class="row">
+    <h2>@Model.Title.Value</h2>
+    <h2>@Model.Heading.Value</h2>
+    
+    @if (Model.Items != null && Model.Items.Count > 0)
+    {
+        foreach (var item in Model.Items)
+        {
+            <partial name="TeaserBlock.cshtml" model="@item" />
+        }
+    }
+</div>

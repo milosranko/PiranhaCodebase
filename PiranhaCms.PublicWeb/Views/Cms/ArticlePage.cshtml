@@ -1,0 +1,37 @@
+@model PiranhaCMS.PublicWeb.Models.ViewModels.ArticlePageViewModel
+@{
+    ViewBag.Title = Model.CurrentPage.Title;
+}
+
+@if(Model.SubMenu != null && Model.SubMenu.Any())
+{
+    <div class="container">
+        @foreach (var item in Model.SubMenu)
+        {
+            <span>
+                <a href="@item.Link">@item.Name</a>
+            </span>
+        }
+    </div>
+}
+
+<div class="container">
+    <h1>@Model.CurrentPage.Title</h1>
+
+    @if (Model.CurrentPage.PageRegion?.Heading != null)
+    {
+        <h2>@Model.CurrentPage.PageRegion.Heading</h2>
+    }
+
+    @if (Model.CurrentPage.PageRegion?.LeadText != null)
+    {
+        <p>@Model.CurrentPage.PageRegion.LeadText</p>
+    }
+
+    @if (Model.CurrentPage.PageRegion?.MainContent != null)
+    {
+        @Html.Raw(Model.CurrentPage.PageRegion.MainContent)
+    }
+
+    @Html.DisplayFor(m => m.CurrentPage.Blocks)
+</div>

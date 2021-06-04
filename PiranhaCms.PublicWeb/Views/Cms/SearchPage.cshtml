@@ -1,0 +1,7 @@
+@model PiranhaCMS.PublicWeb.Models.ViewModels.SearchPageViewModel
+
+<div class="container">
+    <h1>@Model.CurrentPage.Title</h1>
+
+    <partial name="Partial/_SearchResult" model="@Model.SearchResult" />
+</div>

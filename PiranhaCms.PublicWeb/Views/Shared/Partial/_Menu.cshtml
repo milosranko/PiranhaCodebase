@@ -1,0 +1,37 @@
+@model PiranhaCMS.PublicWeb.Models.ViewModels.IPageViewModel<PiranhaCMS.PublicWeb.Models.Pages.Base.IPage>
+
+<nav class="navbar navbar-toggleable-sm d-sm-block d-md-none float-left">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon">&#9776;</span>
+    </button>
+    <a class="navbar-brand" href="#"></a>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            @foreach (var item in WebApp.Site.Sitemap)
+            {
+                if (item.Id != Model.StartPageId && !item.IsHidden)
+                {
+                    <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink">
+                        @item.MenuTitle
+                    </a>
+                }
+            }
+        </div>
+    </div>
+</nav>
+
+<nav class="navbar d-none d-md-block float-left">
+    <ul class="nav">
+        @foreach (var item in WebApp.Site.Sitemap)
+        {
+            if (item.Id != Model.StartPageId && !item.IsHidden)
+            {
+                <li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">
+                    <a class="nav-link" href="@item.Permalink">
+                        @item.MenuTitle
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+</nav>

@@ -1,0 +1,59 @@
+@using PiranhaCMS.PublicWeb.Helpers
+@model PiranhaCMS.Search.Models.SearchResult
+
+@{
+    var searchPage = PageHelpers.GetSiteSettings().SearchPageReference?.Page?.Permalink;
+}
+
+@using (Html.BeginForm(FormMethod.Get, new { action = searchPage }))
+{
+    <fieldset>
+        @Html.TextBox("q", Model.SearchText)
+        <button type="submit">Search</button>
+    </fieldset>
+}
+
+@if (Model != null)
+{
+<p>
+    @if (Model.HasHits)
+    {
+        <div>
+            Total results: @Model.TotalHits
+            <br />
+            Total pages: @Math.Ceiling(decimal.Divide(Model.TotalHits, Model.Pagination.PageSize))
+            <br />
+            Current page: @(Model.Pagination.PageIndex+1)
+        </div>
+        <ul>
+            @foreach (var hit in Model.Hits)
+            {
+                <li>
+                    <a href="@hit.Url">@hit.Title</a>
+                    <div>
+                        @Html.Raw(hit.HighlightedText)
+                    </div>
+                </li>
+            }
+        </ul>
+        <ul>
+            @if (Model.Pagination.PageIndex > 0)
+            {
+                <li>
+                    <a href="@searchPage?q=@Model.SearchText@(Model.Pagination.PageIndex-1 == 0 ? "" : $"&page={Model.Pagination.PageIndex-1}")">Previous</a>
+                </li>
+            }
+            @if (Model.Pagination.PageIndex + 1 < Math.Ceiling(decimal.Divide(Model.TotalHits, Model.Pagination.PageSize)))
+            {
+                <li>
+                    <a href="@searchPage?q=@Model.SearchText&page=@(Model.Pagination.PageIndex+1)">Next</a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <i>No results found!</i>
+    }
+</p>
+}

@@ -1,0 +1,18 @@
+@using PiranhaCMS.PublicWeb.Helpers
+@model PiranhaCMS.PublicWeb.Models.Blocks.SearchBlock
+@{
+    var searchPage = PageHelpers.GetSiteSettings().SearchPageReference?.Page?.Permalink;
+}
+
+<div class="row">
+    <h3>@Model.Heading.Value</h3>
+    <p>@Model.LeadText.Value</p>
+
+    @using (Html.BeginForm(FormMethod.Get, new { action = searchPage }))
+    {
+        <fieldset>
+            <input type="text" id="q" name="q" />
+            <button type="submit">Search</button>
+        </fieldset>
+    }
+</div>

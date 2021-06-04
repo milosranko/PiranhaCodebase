@@ -1,0 +1,29 @@
+﻿@model PiranhaCMS.PublicWeb.Models.ViewModels.IPageViewModel<PiranhaCMS.PublicWeb.Models.Pages.Base.IPage>
+
+<header role="banner">
+    <div class="menu">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    <partial name="_Menu.cshtml" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="title">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    <a href="/">
+                        <img src="@Url.Content(Model.Header.SiteLogoImageUrl)">
+                    </a>
+                    <h1>
+                        <a href="/">
+                            @Model.Header.SiteName
+                        </a>
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
