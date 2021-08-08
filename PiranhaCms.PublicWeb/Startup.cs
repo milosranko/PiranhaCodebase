@@ -38,10 +38,10 @@ namespace PiranhaCMS.PublicWeb
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Piranha CMS
+
             // Service setup
             services.AddPiranha(options =>
             {
@@ -77,6 +77,8 @@ namespace PiranhaCMS.PublicWeb
                 options.DefaultAnalyzer = DefaultAnalyzer.English;
             });
 
+            #endregion
+
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(typeof(PageContextActionFilter));
@@ -87,7 +89,6 @@ namespace PiranhaCMS.PublicWeb
             //})
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
             IWebHostEnvironment env,
@@ -95,6 +96,8 @@ namespace PiranhaCMS.PublicWeb
             ILogger<Startup> logger)
         {
             ServiceActivator.Configure(app.ApplicationServices);
+
+            #region HTTP 500 and 404 handlers
 
             //HTTP 500 handler
             if (env.IsDevelopment())
@@ -118,8 +121,12 @@ namespace PiranhaCMS.PublicWeb
                 }
             });
 
+            #endregion
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
+
+            #region Piranha init
 
             // Initialize Piranha
             App.Init(api);
@@ -166,6 +173,8 @@ namespace PiranhaCMS.PublicWeb
                 options.UseTinyMCE();
                 options.UseIdentity();
             });
+
+            #endregion
         }
     }
 }
