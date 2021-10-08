@@ -14,7 +14,7 @@
     <PackageReference Include="Lucene.Net.Store.Azure" Version="4.8.0-beta011" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="Piranha" Version="9.1.1" />
+    <PackageReference Include="Piranha" Version="9.2.0" />
   </ItemGroup>
 
   <ItemGroup>
