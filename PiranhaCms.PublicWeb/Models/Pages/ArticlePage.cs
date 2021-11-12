@@ -17,8 +17,8 @@ namespace PiranhaCMS.PublicWeb.Models.Pages
     {
         [Region(
             Title = "Main content", 
-            Display = RegionDisplayMode.Content)]
-        [RegionDescription("Main content properties")]
+            Display = RegionDisplayMode.Content,
+            Description = "Main content properties")]
         public ArticlePageRegion PageRegion { get; set; }
     }
 }

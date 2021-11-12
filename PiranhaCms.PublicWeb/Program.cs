@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
 using System.IO;
@@ -24,15 +25,17 @@ namespace PiranhaCMS.PublicWeb
             //    .ReadFrom.Configuration(Configuration)
             //    .CreateLogger();
 
-            BuildWebHost(args).Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseConfiguration(Configuration)
-                .UseStartup<Startup>()
-                .UseSerilog()
-                .ConfigureLogging(logging => logging.AddSerilog(new LoggerConfiguration().CreateLogger(), true))
-                .Build();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(x =>
+                {
+                    x.UseConfiguration(Configuration);
+                    x.UseStartup<Startup>();
+                    x.UseSerilog();
+                    x.ConfigureLogging(logging => logging.AddSerilog(new LoggerConfiguration().CreateLogger(), true));
+                });
     }
 }

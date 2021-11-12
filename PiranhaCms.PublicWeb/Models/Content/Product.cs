@@ -16,23 +16,20 @@ namespace PiranhaCMS.PublicWeb.Models.Content
 
         [Region(
             Title = "Product properties",
-            Display = RegionDisplayMode.Content)]
-        [RegionDescription("Main product properties")]
+            Display = RegionDisplayMode.Content,
+            Description = "Main product properties")]
         public ProductRegion ProductProperties { get; set; }
     }
 
     public class ProductRegion
     {
-        [Field(Title = "Name", Placeholder = "Name")]
-        [FieldDescription("Product name")]
+        [Field(Title = "Name", Placeholder = "Name", Description = "Product name")]
         public StringField Name { get; set; }
 
-        [Field(Title = "Description", Placeholder = "Description")]
-        [FieldDescription("Product description")]
+        [Field(Title = "Description", Placeholder = "Description", Description = "Product description")]
         public HtmlField Description { get; set; }
 
-        [Field(Title = "Price", Placeholder = "Price")]
-        [FieldDescription("Product price")]
+        [Field(Title = "Price", Placeholder = "Price", Description = "Product price")]
         public NumberField Price { get; set; }
     }
 }

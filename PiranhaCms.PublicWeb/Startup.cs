@@ -46,9 +46,10 @@ namespace PiranhaCMS.PublicWeb
             services.AddPiranha(options =>
             {
                 options.AddRazorRuntimeCompilation = true;
+                options.UseCms();
+                options.UseManager();
                 options.UseFileStorage();
                 options.UseImageSharp();
-                options.UseManager();
                 options.UseTinyMCE();
                 options.UseMemoryCache();
                 options.UseEF<SQLiteDb>(db =>

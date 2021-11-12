@@ -15,13 +15,11 @@ namespace PiranhaCMS.PublicWeb.Models.Blocks
     [BlockItemType(Type = typeof(TeaserBlock))]
     public class ServicesBlockGroup : BlockGroupBase, ISearchable
     {
-        [Field(Title = "Title")]
-        [FieldDescription("This is block main heading")]
+        [Field(Title = "Title", Description = "This is block main heading")]
         [Required(ErrorMessage = "Title: required!")]
         public StringField Title { get; set; }
 
-        [Field(Title = "Heading")]
-        [FieldDescription("This is block sub heading")]
+        [Field(Title = "Heading", Description = "This is block sub heading")]
         [Required(ErrorMessage = "Heading: required!")]
         public StringField Heading { get; set; }
 

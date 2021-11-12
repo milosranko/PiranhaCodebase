@@ -12,13 +12,11 @@ namespace PiranhaCMS.PublicWeb.Models.Blocks
         Category = Global.TeasersCategory)]
     public class SearchBlock : BlockBase
     {
-        [Field(Title = "Heading", Placeholder = "Enter heading text", Options = FieldOption.HalfWidth)]
-        [FieldDescription("This is block heading")]
+        [Field(Title = "Heading", Placeholder = "Enter heading text", Options = FieldOption.HalfWidth, Description = "This is block heading")]
         [Required(ErrorMessage = "Heading: required!")]
         public StringField Heading { get; set; }
         
-        [Field(Title = "Lead text", Placeholder = "Enter lead text", Options = FieldOption.HalfWidth)]
-        [FieldDescription("This is block lead text")]
+        [Field(Title = "Lead text", Placeholder = "Enter lead text", Options = FieldOption.HalfWidth, Description = "This is block lead text")]
         [StringLength(50, ErrorMessage = "Lead text: maximum length is 50 characters!")]
         public TextField LeadText { get; set; }
     }

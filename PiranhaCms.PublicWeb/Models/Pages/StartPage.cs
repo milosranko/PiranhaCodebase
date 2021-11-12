@@ -17,26 +17,24 @@ namespace PiranhaCMS.PublicWeb.Models.Pages
     {
         [Region(
             Title = "Header", 
-            Display = RegionDisplayMode.Content)]
-        [RegionDescription("Page header properties")]
+            Display = RegionDisplayMode.Content,
+            Description = "Page header properties")]
         public PageHeaderRegion Header { get; set; }
 
         [Region(
             Title = "Top links", 
-            Display = RegionDisplayMode.Content)]
-        [RegionDescription("Top links")]
+            Display = RegionDisplayMode.Content,
+            Description = "Top links")]
         public IList<LinkButton> TopLinks { get; set; }
 
         public class PageHeaderRegion
         {
-            [Field(Title = "Heading", Placeholder = "Heading")]
-            [FieldDescription("This is page heading")]
+            [Field(Title = "Heading", Placeholder = "Heading", Description = "This is page heading")]
             [Required(ErrorMessage = "Heading: required!")]
             [StringLength(15, ErrorMessage = "Heading: maximum allowed characters is 15!")]
             public StringField Heading { get; set; }
 
-            [Field(Title = "Top image")]
-            [FieldDescription("This top image selector")]
+            [Field(Title = "Top image", Description = "This top image selector")]
             [Required(ErrorMessage = "Top image: required!")]
             public ImageField TopImage { get; set; }
         }
