@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.Storage.Auth;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using PiranhaCMS.Search.Models.Enums;
 
 namespace PiranhaCMS.Search.Startup
@@ -9,7 +8,7 @@ namespace PiranhaCMS.Search.Startup
         public readonly IServiceCollection Services;
         public IndexDirectory StorageType { get; set; }
         public string IndexDirectory { get; set; }
-        public StorageCredentials AzureStorageCredentials{ get; set; }
+        public string AzureStorageCredentials{ get; set; }
         public DefaultAnalyzer DefaultAnalyzer { get; set; }
 
         public PiranhaSearchServiceBuilder(IServiceCollection services) => this.Services = services;

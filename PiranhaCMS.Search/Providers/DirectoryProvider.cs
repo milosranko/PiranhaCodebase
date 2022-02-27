@@ -1,7 +1,5 @@
 ﻿using Lucene.Net.Store;
 using Lucene.Net.Store.Azure;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Auth;
 using PiranhaCMS.Search.Models.Enums;
 using PiranhaCMS.Search.Startup;
 using System.IO;
@@ -25,10 +23,7 @@ namespace PiranhaCMS.Search.Providers
                 case IndexDirectory.Memory:
                     return new RAMDirectory();
                 case IndexDirectory.Azure:
-                    var storageCredentials = new StorageCredentials(serviceBuilder.AzureStorageCredentials.AccountName, serviceBuilder.AzureStorageCredentials.KeyName);
-                    var storageAccount = new CloudStorageAccount(storageCredentials, true);
-
-                    return new AzureDirectory(storageAccount, "");
+                    return new AzureDirectory(serviceBuilder.AzureStorageCredentials, "");
                 default:
                     return new RAMDirectory();
             }
@@ -48,10 +43,7 @@ namespace PiranhaCMS.Search.Providers
                 case IndexDirectory.Memory:
                     return new RAMDirectory();
                 case IndexDirectory.Azure:
-                    var storageCredentials = new StorageCredentials(serviceBuilder.AzureStorageCredentials.AccountName, serviceBuilder.AzureStorageCredentials.KeyName);
-                    var storageAccount = new CloudStorageAccount(storageCredentials, true);
-
-                    return new AzureDirectory(storageAccount, "");
+                    return new AzureDirectory(serviceBuilder.AzureStorageCredentials, "");
                 default:
                     return new RAMDirectory();
             }
