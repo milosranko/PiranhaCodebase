@@ -34,8 +34,8 @@ namespace PiranhaCMS.PublicWeb
                 {
                     x.UseConfiguration(Configuration);
                     x.UseStartup<Startup>();
-                    x.UseSerilog();
                     x.ConfigureLogging(logging => logging.AddSerilog(new LoggerConfiguration().CreateLogger(), true));
-                });
+                })
+            .UseSerilog();
     }
 }
