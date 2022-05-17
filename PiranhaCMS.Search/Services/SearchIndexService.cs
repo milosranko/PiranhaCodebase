@@ -34,7 +34,7 @@ namespace PiranhaCMS.Search.Services
             using var serviceScope = ServiceActivator.GetScope();
             var api = (IApi)serviceScope.ServiceProvider.GetService(typeof(IApi));
             var site = api.Sites.GetByIdAsync(page.SiteId).GetAwaiter().GetResult();
-            var dynamicPage = (DynamicPage) page;
+            var dynamicPage = (DynamicPage)page;
             var doc = new Content
             {
                 RouteName = page.Slug,
@@ -44,7 +44,7 @@ namespace PiranhaCMS.Search.Services
                 Text = PageContentHelpers.ExtractPageContent(dynamicPage),
                 Category = page.TypeId,
                 Url = page.Permalink,
-                Culture = site.Culture
+                Culture = site.LanguageId.ToString()
             };
 
             return Task.Run(() =>
