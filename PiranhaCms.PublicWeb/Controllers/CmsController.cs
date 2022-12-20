@@ -19,7 +19,7 @@ namespace PiranhaCMS.PublicWeb.Controllers
             _searchIndexEngine = searchIndexEngine;
         }
 
-        [Route("startpage")]
+        [Route(nameof(StartPage))]
         public async Task<IActionResult> StartPage(Guid id, bool draft = false)
         {
             var currentPage = await _loader.GetPageAsync<StartPage>(id, HttpContext.User, draft);
@@ -28,7 +28,7 @@ namespace PiranhaCMS.PublicWeb.Controllers
             return View(viewModel);
         }
 
-        [Route("articlepage")]
+        [Route(nameof(ArticlePage))]
         public async Task<IActionResult> ArticlePage(Guid id, bool draft = false)
         {
             var currentPage = await _loader.GetPageAsync<ArticlePage>(id, HttpContext.User, draft);
@@ -37,7 +37,7 @@ namespace PiranhaCMS.PublicWeb.Controllers
             return View(viewModel);
         }
 
-        [Route("searchpage")]
+        [Route(nameof(SearchPage))]
         public async Task<IActionResult> SearchPage(Guid id, bool draft = false)
         {
             var currentPage = await _loader.GetPageAsync<SearchPage>(id, HttpContext.User, draft);
@@ -46,7 +46,7 @@ namespace PiranhaCMS.PublicWeb.Controllers
             return View(viewModel);
         }
 
-        [Route("notfoundpage")]
+        [Route(nameof(NotFoundPage))]
         public async Task<IActionResult> NotFoundPage(Guid id, bool draft = false)
         {
             var currentPage = await _loader.GetPageAsync<NotFoundPage>(id, HttpContext.User, draft);

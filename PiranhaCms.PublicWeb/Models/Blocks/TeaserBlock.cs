@@ -1,29 +1,29 @@
-using PiranhaCMS.PublicWeb.Business.Constants;
-using PiranhaCMS.PublicWeb.Models.Blocks.Base;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
 using Piranha.Models;
+using PiranhaCMS.PublicWeb.Business.Constants;
+using PiranhaCMS.PublicWeb.Models.Blocks.Base;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace PiranhaCMS.PublicWeb.Models.Blocks
 {
     [BlockType(
-        Name = "Teaser block", 
+        Name = "Teaser block",
         Category = Global.TeasersCategory)]
     public class TeaserBlock : BlockBase, ISearchable
     {
         [Field(Title = "Heading", Placeholder = "Enter heading text", Description = "This is block heading")]
         [Required(ErrorMessage = "Heading: required!")]
         public StringField Heading { get; set; }
-        
+
         [Field(Title = "Lead text", Placeholder = "Enter lead text", Description = "This is block lead text")]
-        [StringLength(50, ErrorMessage = "Lead text: maximum length is 50 characters!")]
+        [StringLength(500, ErrorMessage = "Lead text: maximum length is 500 characters!")]
         public TextField LeadText { get; set; }
-        
+
         [Field(Title = "Image", Placeholder = "Please select image", Options = FieldOption.HalfWidth, Description = "This is block image")]
         public ImageField Image { get; set; }
-        
+
         [Field(Title = "Image position", Options = FieldOption.HalfWidth, Description = "Please select image positioning")]
         public SelectField<ImagePositionEnum> ImagePosition { get; set; }
 
