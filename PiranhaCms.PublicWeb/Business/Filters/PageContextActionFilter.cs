@@ -18,7 +18,7 @@ namespace PiranhaCMS.PublicWeb.Business.Filters
         {
             _applicationService = applicationService;
         }
-        
+
         public void OnResultExecuting(ResultExecutingContext context)
         {
             if (context.RouteData.Values["area"]?.ToString() == ManagerAreaName) return;
@@ -32,11 +32,12 @@ namespace PiranhaCMS.PublicWeb.Business.Filters
                 .GetStartpageAsync()
                 .GetAwaiter()
                 .GetResult();
+            var siteGlobal = _applicationService.Api.Sites.GetDefaultAsync().GetAwaiter().GetResult();
             var site = _applicationService.Site
                 .GetContentAsync<PublicSite>()
                 .GetAwaiter()
                 .GetResult();
-            
+
             model.Footer = new FooterViewModel
             {
                 FooterColumn1 = site.SiteFooter?.FooterColumn1?.Value,
@@ -47,11 +48,11 @@ namespace PiranhaCMS.PublicWeb.Business.Filters
             model.Header = new HeaderViewModel
             {
                 SiteName = site.SiteHeader.SiteName,
-                SiteLogoImageUrl = site.SiteHeader.LogoImage?.Media?.PublicUrl
+                SiteLogoImageUrl = siteGlobal.Logo?.Media?.PublicUrl //site.SiteHeader.LogoImage?.Media?.PublicUrl
             };
 
-            model.PageTitle = model.CurrentPage is StartPage ? 
-                site.SiteHeader.SiteName.Value : 
+            model.PageTitle = model.CurrentPage is StartPage ?
+                site.SiteHeader.SiteName.Value :
                 $"{(model.CurrentPage as PageBase)?.Title} | {site.SiteHeader.SiteName.Value}";
 
             model.StartPageId = startPage.Id;
@@ -63,7 +64,7 @@ namespace PiranhaCMS.PublicWeb.Business.Filters
             //.GetResult()
             //.Title;
         }
-        
+
         public void OnResultExecuted(ResultExecutedContext context)
         { }
     }
