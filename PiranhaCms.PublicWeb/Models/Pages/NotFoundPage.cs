@@ -7,13 +7,13 @@ using PiranhaCMS.Validators.Attributes;
 
 namespace PiranhaCMS.PublicWeb.Models.Pages
 {
-    [PageType(Title = "404 Not Found page", UseBlocks = false)]
-    [ContentTypeRoute(Title = "Default", Route = "/notfoundpage")]
+    [PageType(Title = "404 Not Found Page", UseBlocks = false)]
+    [ContentTypeRoute(Title = "Default", Route = $"/{nameof(NotFoundPage)}")]
     [AllowedPageTypes(Availability.None)]
     public class NotFoundPage : Page<NotFoundPage>, IPage
     {
         [Region(
-            Title = "Main content",
+            Title = "Main Content",
             Display = RegionDisplayMode.Content,
             Description = "Main content properties")]
         public ArticlePageRegion PageRegion { get; set; }

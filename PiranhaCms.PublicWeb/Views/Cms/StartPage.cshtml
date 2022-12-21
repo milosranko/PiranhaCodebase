@@ -3,13 +3,4 @@
     ViewBag.Title = Model.CurrentPage.Title;
 }
 
-<div class="container">
-    @foreach (var item in Model.CurrentPage.TopLinks)
-    {
-        <partial name="Partial/_LinkButton" model="@item" />
-    }
-    <h1>@Model.CurrentPage.Header.Heading</h1>
-    <img src="@Url.Content(Model.CurrentPage.Header.TopImage)" />
-
-    @Html.DisplayFor(m => m.CurrentPage.Blocks)
-</div>
+@Html.DisplayFor(m => m.CurrentPage.Blocks)

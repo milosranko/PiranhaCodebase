@@ -5,13 +5,22 @@ namespace PiranhaCMS.PublicWeb.Models.Regions
 {
     public class ArticlePageRegion
     {
-        [Field(Title = "Heading", Placeholder = "Heading", Description = "This is page heading")]
+        [Field(
+            Title = "Heading",
+            Placeholder = "Heading",
+            Description = "This is page heading")]
         public StringField Heading { get; set; }
 
-        [Field(Title = "Lead text", Placeholder = "Lead text", Description = "This is page lead text")]
+        [Field(
+            Title = "Lead Text",
+            Placeholder = "Lead text",
+            Description = "This is page lead text")]
         public TextField LeadText { get; set; }
 
-        [Field(Title = "Main body", Placeholder = "Main body text", Description = "This is page main content")]
+        [Field(
+            Title = "Main Text",
+            Placeholder = "Main content text",
+            Description = "This is page main content")]
         public HtmlField MainContent { get; set; }
     }
 }

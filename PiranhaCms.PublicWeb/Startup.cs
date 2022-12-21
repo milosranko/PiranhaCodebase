@@ -139,6 +139,8 @@ namespace PiranhaCMS.PublicWeb
             //Custom blocks registration
             App.Blocks.Register<ServicesBlockGroup>();
             App.Blocks.Register<TeaserBlock>();
+            App.Blocks.Register<CarouselBlockGroup>();
+            App.Blocks.Register<CarouselItemBlock>();
             App.Blocks.Register<SearchBlock>();
 
             //Configure validator
@@ -169,7 +171,8 @@ namespace PiranhaCMS.PublicWeb
             });
 
             // Middleware setup
-            app.UsePiranha(options => {
+            app.UsePiranha(options =>
+            {
                 options.UseManager();
                 options.UseTinyMCE();
                 options.UseIdentity();

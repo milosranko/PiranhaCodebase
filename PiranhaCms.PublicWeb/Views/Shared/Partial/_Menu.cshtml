@@ -2,7 +2,7 @@
 
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
     <a href="/" class="navbar-brand p-0">
-        <img class="w-25" src="@Url.Content(Model.Header.SiteLogoImageUrl)">
+        <img class="img-responsive" style="max-width: 20%;" src="@Url.Content(Model.Header.SiteLogoImageUrl)" alt="@Model.GlobalSettings.SiteTitle">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
@@ -11,7 +11,7 @@
         <div class="navbar-nav ms-auto py-0 me-n3">
             @foreach (var item in WebApp.Site.Sitemap)
             {
-                if (item.Id != Model.StartPageId && !item.IsHidden)
+                if (item.Id != Model.GlobalSettings.StartPageId && !item.IsHidden)
                 {
                     <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink">
                         @item.MenuTitle

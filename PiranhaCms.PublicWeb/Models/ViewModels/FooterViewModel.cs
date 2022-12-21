@@ -1,9 +1,14 @@
-﻿namespace PiranhaCMS.PublicWeb.Models.ViewModels
+namespace PiranhaCMS.PublicWeb.Models.ViewModels
 {
     public class FooterViewModel
     {
-        public string FooterColumn1 { get; set; }
-        public string FooterColumn2 { get; set; }
-        public string SiteTitle { get; set; }
+        public string Column1Header { get; set; }
+        public string Column1Content { get; set; }
+        public string Column2Header { get; set; }
+        public string Column2Content { get; set; }
+        public string Column3Header { get; set; }
+        public string Column3Content { get; set; }
+        public string Column4Header { get; set; }
+        public string Column4Content { get; set; }
     }
 }

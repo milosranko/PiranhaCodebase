@@ -1,5 +1,4 @@
-﻿using PiranhaCMS.PublicWeb.Models.Pages.Base;
-using System;
+using PiranhaCMS.PublicWeb.Models.Pages.Base;
 
 namespace PiranhaCMS.PublicWeb.Models.ViewModels
 {
@@ -11,10 +10,8 @@ namespace PiranhaCMS.PublicWeb.Models.ViewModels
         }
 
         public T CurrentPage { get; }
-        public Guid StartPageId { get; set; }
-        public string PageTitle { get; set; }
-        public string LanguageCode { get; set; }
         public HeaderViewModel Header { get; set; }
         public FooterViewModel Footer { get; set; }
+        public GlobalSettingsViewModel GlobalSettings { get; set; }
     }
 }

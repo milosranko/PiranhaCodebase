@@ -31,8 +31,8 @@ namespace PiranhaCMS.Search.Startup
         }
 
         public static IApplicationBuilder UsePiranhaSearch(
-            this IApplicationBuilder app, 
-            IApi api, 
+            this IApplicationBuilder app,
+            IApi api,
             ILogger logger,
             Action<PiranhaSearchApplicationBuilder> options)
         {
@@ -46,7 +46,10 @@ namespace PiranhaCMS.Search.Startup
 
             _ = new SearchOptions(applicationBuilder.Include);
 
-            var pagesIndexed = IndexSite(searchIndexEngine, api, applicationBuilder.ForceReindexing).Result;
+            var pagesIndexed = IndexSite(searchIndexEngine, api, applicationBuilder.ForceReindexing)
+                .GetAwaiter()
+                .GetResult();
+
             logger.LogDebug($"Site indexing ended, total pages indexed: {pagesIndexed}.");
 
             return app;
@@ -59,7 +62,7 @@ namespace PiranhaCMS.Search.Startup
         {
             if (!forceReindexing && searchIndexEngine.IndexExists()) return 0;
             if (forceReindexing) searchIndexEngine.DeleteAll();
-            
+
             var defaultSite = await api.Sites.GetDefaultAsync();
             var pages = await api.Pages.GetAllAsync(defaultSite?.Id);
 

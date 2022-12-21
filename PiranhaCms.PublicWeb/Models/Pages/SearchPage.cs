@@ -5,8 +5,8 @@ using PiranhaCMS.Validators.Attributes;
 
 namespace PiranhaCMS.PublicWeb.Models.Pages
 {
-    [PageType(Title = "Search page", UseBlocks = false)]
-    [ContentTypeRoute(Title = "Default", Route = "/searchpage")]
+    [PageType(Title = "Search Page", UseBlocks = false)]
+    [ContentTypeRoute(Title = "Default", Route = $"/{nameof(SearchPage)}")]
     [AllowedPageTypes(Availability.None)]
     public class SearchPage : Page<SearchPage>, IPage
     { }

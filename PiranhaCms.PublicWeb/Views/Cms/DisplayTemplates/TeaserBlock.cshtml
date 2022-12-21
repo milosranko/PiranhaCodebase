@@ -2,21 +2,31 @@
 @using PiranhaCMS.PublicWeb.Models.Pages
 @model PiranhaCMS.PublicWeb.Models.Blocks.TeaserBlock
 
-@*<div class="row">
-    <h3>Current page name: @(Model.CurrentPage is StartPage ? Model.CurrentPage.Title : "TEST")</h3>
-</div>*@
-
-<div class="row">
-    <h3>@Model.Heading.Value</h3>
-    <p>@Model.LeadText.Value</p>
-
-    @if (Model.Image != null && Model.Image.HasValue)
-    {
-        <figure class="image-position-@Model.ImagePosition.EnumValue.ToLower()">
-            <img src="@Model.Image.GetSrc(800)"
-                 srcset="@Model.Image.GetSrcSet(800, 1200, 1920)"
-                 sizes="100vw"
-                 alt="@Model.Image.Media.AltText" />
-        </figure>
-    }
+<div class="container-fluid bg-secondary p-0">
+    <div class="row g-0">
+        <div class="col-lg-6 py-6 px-5">
+            <h1 class="display-5 mb-4">@Model.Heading.Value</h1>
+            @if (Model.LeadText != null)
+            {
+                <h4 class="text-primary mb-4">@Model.LeadText.Value</h4>
+            }
+            @if (Model.MainText != null)
+            {
+                <p class="mb-4">@Html.Raw(Model.MainText)</p>
+            }
+        </div>
+        <div class="col-lg-6" style="min-height: 400px;">
+            <div class="position-relative h-100">
+                @if (Model.Image != null && Model.Image.HasValue)
+                {
+                    <img class="position-absolute w-100 h-100"
+                         style="object-fit: cover;"
+                         src="@Model.Image.GetSrc(800)"
+                         srcset="@Model.Image.GetSrcSet(800, 1200, 1920)"
+                         sizes="100vw"
+                         alt="@Model.Image.Media.AltText" />
+                }
+            </div>
+        </div>
+    </div>
 </div>

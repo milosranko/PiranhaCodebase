@@ -2,8 +2,8 @@
 
 @if (Model.Page != null || Model.ExternalUrl != null)
 {
-    <a href="@(Model.Page != null && Model.Page.HasValue ? Url.Content(Model.Page.Page.Permalink) : Model.ExternalUrl.Value)"
+    <a class="text-body py-2 pe-3 border-end" href="@(Model.Page != null && Model.Page.HasValue ? Url.Content(Model.Page.Page.Permalink) : Model.ExternalUrl.Value)"
        @(Model.OpenInNewWindow ? " target='_blank'" : "")>
-        @(string.IsNullOrEmpty(Model.LinkName) && Model.Page != null && Model.Page.HasValue ? Model.Page.GetTitle() : Model.LinkName.Value)
+        <small>@(string.IsNullOrEmpty(Model.LinkName) && Model.Page != null && Model.Page.HasValue ? Model.Page.GetTitle() : Model.LinkName.Value)</small>
     </a>
 }

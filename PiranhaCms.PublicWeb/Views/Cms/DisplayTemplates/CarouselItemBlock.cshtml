@@ -1,0 +1,28 @@
+@model PiranhaCMS.PublicWeb.Models.Blocks.CarouselItemBlock
+@{
+    var isActive = (bool)ViewData["IsActive"];
+}
+
+<div class="carousel-item @(isActive ? "active" : "")">
+    <img class="w-100"
+         src="@Url.Content(Model.Image?.Media?.PublicUrl)"
+         alt="@(string.IsNullOrEmpty(Model.ImageAltText?.Value) ? Model.Title : Model.ImageAltText.Value)">
+    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+        <div class="p-3" style="max-width: 900px;">
+            <h5 class="text-white text-uppercase">@Model.Title</h5>
+            <h1 class="display-1 text-white mb-md-4">@Model.Heading</h1>
+            @if (!string.IsNullOrEmpty(Model.LeftButtonText?.Value) && Model.LeftButtonPage != null)
+            {
+                <a href="@Model.LeftButtonPage.Page.Permalink" class="btn btn-primary py-md-3 px-md-5 me-3 rounded-pill">
+                    @Model.LeftButtonText.Value
+                </a>
+            }
+            @if (!string.IsNullOrEmpty(Model.RightButtonText?.Value) && Model.RightButtonPage != null)
+            {
+                <a href="@Model.RightButtonPage.Page.Permalink" class="btn btn-secondary py-md-3 px-md-5 rounded-pill">
+                    @Model.RightButtonText.Value
+                </a>
+            }
+        </div>
+    </div>
+</div>
