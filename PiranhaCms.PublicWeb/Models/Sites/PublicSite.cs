@@ -89,22 +89,32 @@ namespace PiranhaCMS.PublicWeb.Models.Sites
     public class GlobalSettings
     {
         [Field(
+            Title = "Logo Image",
+            Description = "Select logo image, SVG supported")]
+        [AllowedImageExtension]
+        public DocumentField LogoImage { get; set; }
+
+        [Field(
             Title = "Contact E-mail Address",
+            Options = FieldOption.HalfWidth,
             Description = "E-mail address")]
         public StringField EmailAddress { get; set; }
 
         [Field(
             Title = "Contact Phone Number",
+            Options = FieldOption.HalfWidth,
             Description = "Phone number")]
         public StringField PhoneNumber { get; set; }
 
         [Field(
             Title = "Search Page Reference",
+            Options = FieldOption.HalfWidth,
             Description = "Reference to search page")]
         public PageField SearchPageReference { get; set; }
 
         [Field(
             Title = "Page Size",
+            Options = FieldOption.HalfWidth,
             Description = "Number of search results per page")]
         public NumberField PageSize { get; set; }
     }

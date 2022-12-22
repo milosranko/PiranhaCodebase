@@ -15,7 +15,7 @@ namespace PiranhaCMS.PublicWeb.Models.Content
         public IList<Taxonomy> Tags { get; set; } = new List<Taxonomy>();
 
         [Region(
-            Title = "Product properties",
+            Title = "Product Properties",
             Display = RegionDisplayMode.Content,
             Description = "Main product properties")]
         public ProductRegion ProductProperties { get; set; }
@@ -23,13 +23,22 @@ namespace PiranhaCMS.PublicWeb.Models.Content
 
     public class ProductRegion
     {
-        [Field(Title = "Name", Placeholder = "Name", Description = "Product name")]
+        [Field(
+            Title = "Name",
+            Placeholder = "Name",
+            Description = "Product name")]
         public StringField Name { get; set; }
 
-        [Field(Title = "Description", Placeholder = "Description", Description = "Product description")]
+        [Field(
+            Title = "Description",
+            Placeholder = "Description",
+            Description = "Product description")]
         public HtmlField Description { get; set; }
 
-        [Field(Title = "Price", Placeholder = "Price", Description = "Product price")]
+        [Field(
+            Title = "Price",
+            Placeholder = "Price",
+            Description = "Product price")]
         public NumberField Price { get; set; }
     }
 }

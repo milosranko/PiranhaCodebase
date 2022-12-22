@@ -118,7 +118,7 @@ namespace PiranhaCMS.PublicWeb
                 if (context.Response.StatusCode == 404)
                 {
                     context.Request.Path = "/404";
-                    await next();
+                    context.Response.Redirect(context.Request.Path, true);
                 }
             });
 

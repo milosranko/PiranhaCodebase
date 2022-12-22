@@ -62,7 +62,9 @@ namespace PiranhaCMS.PublicWeb.Business.Filters
             };
             model.Header = new HeaderViewModel
             {
-                SiteLogoImageUrl = siteGlobal.Logo?.Media?.PublicUrl,
+                SiteLogoImageUrl = site.GlobalSettings?.LogoImage == null
+                    ? siteGlobal.Logo?.Media?.PublicUrl
+                    : site.GlobalSettings.LogoImage.Media?.PublicUrl,
                 TopLinks = site.TopLinks,
                 EmailAddress = site.GlobalSettings?.EmailAddress?.Value,
                 PhoneNumber = site.GlobalSettings?.PhoneNumber?.Value

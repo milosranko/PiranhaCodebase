@@ -1,21 +1,15 @@
 @using PiranhaCMS.Common.Extensions
+@using PiranhaCMS.PublicWeb.Models.Enums;
 @using PiranhaCMS.PublicWeb.Models.Pages
 @model PiranhaCMS.PublicWeb.Models.Blocks.TeaserBlock
+@{
+    var textColumnIndex = Model.ImagePosition.Value == ImagePositionEnum.Left ? 2 : 1;
+    var imageColumnIndex = Model.ImagePosition.Value == ImagePositionEnum.Right ? 2 : 1;
+}
 
 <div class="container-fluid bg-secondary p-0">
     <div class="row g-0">
-        <div class="col-lg-6 py-6 px-5">
-            <h1 class="display-5 mb-4">@Model.Heading.Value</h1>
-            @if (Model.LeadText != null)
-            {
-                <h4 class="text-primary mb-4">@Model.LeadText.Value</h4>
-            }
-            @if (Model.MainText != null)
-            {
-                <p class="mb-4">@Html.Raw(Model.MainText)</p>
-            }
-        </div>
-        <div class="col-lg-6" style="min-height: 400px;">
+        <div class="col-lg-6 order-@imageColumnIndex" style="min-height: 400px;">
             <div class="position-relative h-100">
                 @if (Model.Image != null && Model.Image.HasValue)
                 {
@@ -27,6 +21,17 @@
                          alt="@Model.Image.Media.AltText" />
                 }
             </div>
+        </div>
+        <div class="col-lg-6 order-@textColumnIndex py-6 px-5">
+            <h1 class="display-5 mb-4">@Model.Heading.Value</h1>
+            @if (Model.LeadText != null)
+            {
+                <h4 class="text-primary mb-4">@Model.LeadText.Value</h4>
+            }
+            @if (Model.MainText != null)
+            {
+                <p class="mb-4">@Html.Raw(Model.MainText.Value)</p>
+            }
         </div>
     </div>
 </div>
