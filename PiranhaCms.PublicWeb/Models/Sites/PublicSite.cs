@@ -44,7 +44,7 @@ namespace PiranhaCMS.PublicWeb.Models.Sites
         [Field(
             Title = "Column 1 Header",
             Description = "Column 1 header")]
-        [Required(ErrorMessage = "Column 1 Header: required!")]
+        [StringLength(50, ErrorMessage = "Column 1 Header: maximum length is 50 characters!")]
         public StringField Column1Header { get; set; }
 
         [Field(
@@ -55,7 +55,7 @@ namespace PiranhaCMS.PublicWeb.Models.Sites
         [Field(
             Title = "Column 2 Header",
             Description = "Column 2 header")]
-        [Required(ErrorMessage = "Column 2 Header: required!")]
+        [StringLength(50, ErrorMessage = "Column 2 Header: maximum length is 50 characters!")]
         public StringField Column2Header { get; set; }
 
         [Field(
@@ -66,7 +66,7 @@ namespace PiranhaCMS.PublicWeb.Models.Sites
         [Field(
             Title = "Column 3 Header",
             Description = "Column 3 header")]
-        [Required(ErrorMessage = "Column 3 Header: required!")]
+        [StringLength(50, ErrorMessage = "Column 3 Header: maximum length is 50 characters!")]
         public StringField Column3Header { get; set; }
 
         [Field(
@@ -77,7 +77,7 @@ namespace PiranhaCMS.PublicWeb.Models.Sites
         [Field(
             Title = "Column 4 Header",
             Description = "Column 4 header")]
-        [Required(ErrorMessage = "Column 4 Header: required!")]
+        [StringLength(50, ErrorMessage = "Column 4 Header: maximum length is 50 characters!")]
         public StringField Column4Header { get; set; }
 
         [Field(
