@@ -8,7 +8,7 @@
                 <div class="d-flex flex-column justify-content-start">
                     @if (!string.IsNullOrEmpty(Model.Footer?.Column1Content))
                     {
-                        Html.Raw(Model.Footer.Column1Content);
+                        @Html.Raw(Model.Footer.Column1Content);
                     }
                 </div>
             </div>
@@ -17,7 +17,7 @@
                 <div class="d-flex flex-column justify-content-start">
                     @if (!string.IsNullOrEmpty(Model.Footer?.Column2Content))
                     {
-                        Html.Raw(Model.Footer.Column2Content);
+                        @Html.Raw(Model.Footer.Column2Content);
                     }
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 <div class="d-flex flex-column justify-content-start">
                     @if (!string.IsNullOrEmpty(Model.Footer?.Column3Content))
                     {
-                        Html.Raw(Model.Footer.Column3Content);
+                        @Html.Raw(Model.Footer.Column3Content);
                     }
                 </div>
                 @*<p class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i>Rudi Čajaveca 35v, Belgrade, Republic of Serbia</p>
@@ -38,7 +38,7 @@
                 <div class="d-flex">
                     @if (!string.IsNullOrEmpty(Model.Footer?.Column4Content))
                     {
-                        Html.Raw(Model.Footer.Column4Content);
+                        @Html.Raw(Model.Footer.Column4Content);
                     }
                     @*<a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-twitter fw-normal"></i></a>
                     <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-facebook-f fw-normal"></i></a>
