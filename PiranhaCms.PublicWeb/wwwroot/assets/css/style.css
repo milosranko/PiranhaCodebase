@@ -99,6 +99,10 @@ h6,
     transition: .5s;
 }
 
+.navbar-light a.navbar-brand {
+    max-width: 75%;
+}
+
 .navbar-light a.navbar-brand #logo {
     max-width: 75%;
 }
