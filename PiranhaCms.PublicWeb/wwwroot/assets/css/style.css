@@ -99,8 +99,17 @@ h6,
     transition: .5s;
 }
 
+.navbar-light a.navbar-brand #logo {
+    max-width: 75%;
+}
+
 .sticky-top.navbar-light .navbar-nav .nav-link {
     padding: 20px 15px;
+}
+
+.sticky-top.navbar-light .navbar-brand #logo {
+    max-width: 50% !important;
+    transition: .5s;
 }
 
 .navbar-light .navbar-nav .nav-link:hover,

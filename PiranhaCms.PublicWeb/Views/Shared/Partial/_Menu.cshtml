@@ -1,8 +1,8 @@
 @model PiranhaCMS.PublicWeb.Models.ViewModels.IPageViewModel<PiranhaCMS.PublicWeb.Models.Pages.Base.IPage>
 
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
-    <a href="/" class="navbar-brand p-0">
-        <img class="img-responsive" style="max-width: 75%;" src="@Url.Content(Model.Header.SiteLogoImageUrl)" alt="@Model.GlobalSettings.SiteTitle">
+    <a href="/" class="navbar-brand p-1">
+        <img id="logo" src="@Url.Content(Model.Header.SiteLogoImageUrl)" alt="@Model.GlobalSettings.SiteTitle">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
