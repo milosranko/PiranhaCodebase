@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <UserSecretsId>af5d3192-deda-4450-96e7-4c8679e3fbf8</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="Piranha" Version="10.2.0" />
     <PackageReference Include="Piranha.AspNetCore" Version="10.2.0" />
     <PackageReference Include="Piranha.AspNetCore.Identity.SQLite" Version="10.2.0" />
@@ -46,7 +49,7 @@
     <PackageReference Include="Piranha.ImageSharp" Version="10.2.0" />
     <PackageReference Include="Piranha.Local.FileStorage" Version="10.2.0" />
     <PackageReference Include="Piranha.Manager" Version="10.2.0" />
-    <PackageReference Include="Piranha.Manager.TinyMCE" Version="10.2.0" />
+    <PackageReference Include="Piranha.Manager.TinyMCE" Version="10.2.2" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
   </ItemGroup>
 
