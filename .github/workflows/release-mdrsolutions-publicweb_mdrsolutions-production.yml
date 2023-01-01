@@ -22,6 +22,9 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: true
 
+      - name: Add GitHub packages source
+        run: dotnet nuget add source "https://nuget.pkg.github.com/milosranko/index.json" --name "githubfeed" --username "milosranko" --password "${{ secrets.PACKAGES_ACCESS_KEY }}" --store-password-in-clear-text
+        
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
