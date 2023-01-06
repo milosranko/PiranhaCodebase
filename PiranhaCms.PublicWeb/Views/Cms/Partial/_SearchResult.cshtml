@@ -1,59 +1,52 @@
 @using PiranhaCMS.PublicWeb.Helpers
 @model PiranhaCMS.Search.Models.SearchResult
-
 @{
     var searchPage = PageHelpers.GetSiteSettings().SearchPageReference?.Page?.Permalink;
 }
 
-@using (Html.BeginForm(FormMethod.Get, new { action = searchPage }))
+@if (Model != null && Model.HasHits)
 {
-    <fieldset>
-        @Html.TextBox("q", Model.SearchText)
-        <button type="submit">Search</button>
-    </fieldset>
-}
+    <div>
+        Total results: @Model.TotalHits
+    </div>
 
-@if (Model != null)
-{
-<p>
-    @if (Model.HasHits)
+    @foreach (var hit in Model.Hits)
     {
-        <div>
-            Total results: @Model.TotalHits
-            <br />
-            Total pages: @Math.Ceiling(decimal.Divide(Model.TotalHits, Model.Pagination.PageSize))
-            <br />
-            Current page: @(Model.Pagination.PageIndex+1)
-        </div>
-        <ul>
-            @foreach (var hit in Model.Hits)
-            {
-                <li>
-                    <a href="@hit.Url">@hit.Title</a>
-                    <div>
-                        @Html.Raw(hit.HighlightedText)
+        <div class="col-xl-6 col-lg-12 col-md-6">
+            <div class="bg-secondary d-flex">
+                <div class="d-flex flex-column justify-content-center py-3 px-4">
+                    <div class="d-flex mb-2">
+                        <small class="text-uppercase me-3"><i class="bi bi-bookmarks me-2"></i>@hit.Title</small>
                     </div>
-                </li>
-            }
-        </ul>
-        <ul>
-            @if (Model.Pagination.PageIndex > 0)
-            {
-                <li>
-                    <a href="@searchPage?q=@Model.SearchText@(Model.Pagination.PageIndex-1 == 0 ? "" : $"&page={Model.Pagination.PageIndex-1}")">Previous</a>
-                </li>
-            }
-            @if (Model.Pagination.PageIndex + 1 < Math.Ceiling(decimal.Divide(Model.TotalHits, Model.Pagination.PageSize)))
-            {
-                <li>
-                    <a href="@searchPage?q=@Model.SearchText&page=@(Model.Pagination.PageIndex+1)">Next</a>
-                </li>
-            }
-        </ul>
+                    <a class="h4" href="@hit.Url">@Html.Raw(hit.HighlightedText)</a>
+                </div>
+            </div>
+        </div>
     }
-    else
-    {
-        <i>No results found!</i>
-    }
-</p>
+    <div class="col-12">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-lg m-0">
+                <li class="page-item @(Model.Pagination.PageIndex > 0 ? string.Empty : "disabled")">
+                    <a class="page-link rounded-0" href="@searchPage?q=@Model.SearchText@(Model.Pagination.PageIndex-1 == 0 ? "" : $"&page={Model.Pagination.PageIndex-1}")" aria-label="Previous" title="Previous">
+                        <span aria-hidden="true"><i class="bi bi-arrow-left"></i></span>
+                    </a>
+                </li>
+                @for (int i = 0; i < Model.TotalHits; i++)
+                {
+                    <li class="page-item @(Model.Pagination.PageIndex.Equals(i) ? "active" : string.Empty)">
+                        <a class="page-link" href="@searchPage?q=@Model.SearchText@(Model.Pagination.PageIndex == 0 ? "" : $"&page={i+1}")">@(i + 1)</a>
+                    </li>
+                }
+                <li class="page-item @(Model.Pagination.PageIndex + 1 < Math.Ceiling(decimal.Divide(Model.TotalHits, Model.Pagination.PageSize)) ? string.Empty : "disabled")">
+                    <a class="page-link rounded-0" href="@searchPage?q=@Model.SearchText&page=@(Model.Pagination.PageIndex+1)" aria-label="Next" title="Next">
+                        <span aria-hidden="true"><i class="bi bi-arrow-right"></i></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}
+else
+{
+    <i>No results found! Try some other keyword...</i>
 }

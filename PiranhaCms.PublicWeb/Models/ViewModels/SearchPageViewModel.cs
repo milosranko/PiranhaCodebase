@@ -3,6 +3,7 @@ using PiranhaCMS.PublicWeb.Helpers;
 using PiranhaCMS.PublicWeb.Models.Pages;
 using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Models;
+using static PiranhaCMS.Common.Extensions.StringExtensions;
 
 namespace PiranhaCMS.PublicWeb.Models.ViewModels
 {
@@ -18,14 +19,14 @@ namespace PiranhaCMS.PublicWeb.Models.ViewModels
         {
             SearchResult = SearchResult.Empty();
 
-            var searchText = httpRequest.Query["q"];
+            var searchText = httpRequest.Query["q"].ToString();
 
             if (!string.IsNullOrEmpty(searchText))
             {
                 int.TryParse(httpRequest.Query["page"], out int pageIndex);
                 var searchRequest = new SearchRequest
                 {
-                    Text = searchText,
+                    Text = searchText.SanitizeSearchString(),
                     Pagination = new Pagination(PageHelpers.GetSiteSettings().PageSize?.Value ?? PageSizeFallback, pageIndex)
                 };
 

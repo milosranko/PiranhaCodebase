@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace PiranhaCMS.Common.Extensions
 {
@@ -77,6 +78,25 @@ namespace PiranhaCMS.Common.Extensions
             }
 
             return string.Empty;
+        }
+
+        public static string SanitizeSearchString(this string input)
+        {
+            string result = input?.Trim();
+
+            if (!string.IsNullOrEmpty(result))
+            {
+                // remove newlines and tabs
+                result = Regex.Replace(result, @"\t|\n|\r", "");
+
+                // remove not-supported characters (supported are: numbers, regular letters, hyphens, spaces)
+                result = Regex.Replace(result, "[^0-9a-zA-Z\\s\\/\\._-]+", "");
+
+                // remove double spaces (also trims)
+                result = string.Join(" ", result.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+            }
+
+            return result;
         }
     }
 }

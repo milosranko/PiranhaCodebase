@@ -1,7 +1,24 @@
 @model PiranhaCMS.PublicWeb.Models.ViewModels.SearchPageViewModel
 
-<div class="container">
-    <h1>@Model.CurrentPage.Title</h1>
+<partial name="Partial/_PageHeaderWithBreadcrumb.cshtml" model="Model.CurrentPage.Title" />
 
-    <partial name="Partial/_SearchResult" model="@Model.SearchResult" />
+<div class="container-fluid py-6 px-5">
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <div class="row g-5">
+                @if (Model.CurrentPage.PrimaryImage?.Media != null)
+                {
+                        <img
+                        class="img-fluid w-100 mb-5"
+                        src="@Url.Content(Model.CurrentPage.PrimaryImage.Media.PublicUrl)"
+                        alt="@Model.CurrentPage.PrimaryImage.Media.AltText" />
+                }
+
+                <partial name="Partial/_SearchResult" model="@Model.SearchResult" />
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <partial name="Partial/_SideBar.cshtml" />
+        </div>
+    </div>
 </div>

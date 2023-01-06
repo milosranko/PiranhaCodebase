@@ -14,10 +14,10 @@
         <div class="navbar-nav ms-auto py-0 me-n3">
             @foreach (var item in WebApp.Site.Sitemap)
             {
-                if (item.Id != Model.GlobalSettings.StartPageId && !item.IsHidden)
+                if (!item.IsHidden)
                 {
                     <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink">
-                        @item.MenuTitle
+                        @(item.Id.Equals(Model.GlobalSettings.StartPageId) ? "Home" : item.MenuTitle)
                     </a>
                 }
             }

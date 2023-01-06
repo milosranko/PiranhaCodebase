@@ -1,0 +1,18 @@
+@using PiranhaCMS.PublicWeb.Helpers
+@{
+    var searchPage = PageHelpers.GetSiteSettings().SearchPageReference?.Page?.Permalink;
+    var searchQuery = PageHelpers.GetSearchQuery();
+}
+
+<div class="mb-5">
+@if (searchPage != null)
+{
+    using (Html.BeginForm(FormMethod.Get, new { action = searchPage }))
+    {
+        <div class="input-group">
+            @Html.TextBox("q", searchQuery, new { @class = "form-control p-3", placeholder = "Keyword"})
+            <button class="btn btn-primary px-4" title="Search"><i class="bi bi-search"></i></button>
+        </div>
+    }
+}
+</div>

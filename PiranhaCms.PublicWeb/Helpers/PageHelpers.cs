@@ -47,5 +47,18 @@ namespace PiranhaCMS.PublicWeb.Helpers
                 return null;
             }
         }
+
+        public static string GetSearchQuery()
+        {
+            using var serviceScope = ServiceActivator.GetScope();
+            var httpContext = (IHttpContextAccessor)serviceScope.ServiceProvider.GetService(typeof(IHttpContextAccessor));
+
+            if (!string.IsNullOrEmpty(httpContext?.HttpContext?.Request?.Query["q"]))
+            {
+                return httpContext.HttpContext.Request.Query["q"].ToString();
+            }
+
+            return string.Empty;
+        }
     }
 }
