@@ -11,8 +11,8 @@ using Piranha.AttributeBuilder;
 using Piranha.Data.EF.SQLite;
 using Piranha.Manager.Editor;
 using PiranhaCMS.Common;
+using PiranhaCMS.Common.Extensions;
 using PiranhaCMS.PublicWeb.Business.Filters;
-using PiranhaCMS.PublicWeb.Models.Blocks;
 using PiranhaCMS.PublicWeb.Models.Pages;
 using PiranhaCMS.Search.Models.Enums;
 using PiranhaCMS.Search.Startup;
@@ -137,11 +137,7 @@ namespace PiranhaCMS.PublicWeb
                 App.MediaTypes.Documents.Add(".svg", "image/svg+xml");
 
             //Custom blocks registration
-            App.Blocks.Register<ServicesBlockGroup>();
-            App.Blocks.Register<TeaserBlock>();
-            App.Blocks.Register<CarouselBlockGroup>();
-            App.Blocks.Register<CarouselItemBlock>();
-            App.Blocks.Register<SearchBlock>();
+            App.Blocks.AutoRegisterBlocks();
 
             //Configure validator
             app.UsePiranhaValidators(logger);
