@@ -16,7 +16,7 @@ namespace PiranhaCMS.Search.Models
             };
         }
 
-        public string SearchText { get; set; }
+        public string SearchText { get; init; }
         public int TotalHits { get; set; }
         public IEnumerable<SearchHit> Hits { get; set; }
         public bool HasHits => Hits != null && Hits.Any();

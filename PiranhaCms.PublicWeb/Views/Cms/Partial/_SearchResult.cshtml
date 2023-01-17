@@ -46,7 +46,7 @@
         </nav>
     </div>
 }
-else
+else if (!string.IsNullOrEmpty(Model.SearchText))
 {
     <i>No results found! Try some other keyword...</i>
 }

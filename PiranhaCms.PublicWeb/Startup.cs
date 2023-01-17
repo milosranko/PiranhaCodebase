@@ -19,6 +19,7 @@ using PiranhaCMS.Search.Startup;
 using PiranhaCMS.Validators.Startup;
 using System;
 using System.IO;
+using System.Net;
 
 namespace PiranhaCMS.PublicWeb
 {
@@ -88,6 +89,8 @@ namespace PiranhaCMS.PublicWeb
             //{
             //    options.ViewLocationFormats.Add("/Views/Shared/YourLocation/{0}.cshtml");
             //})
+
+            services.AddResponseCaching();
         }
 
         public void Configure(
@@ -115,8 +118,9 @@ namespace PiranhaCMS.PublicWeb
             app.Use(async (context, next) =>
             {
                 await next();
-                if (context.Response.StatusCode == 404)
+                if (context.Response.StatusCode == (int)HttpStatusCode.NotFound)
                 {
+
                     context.Request.Path = "/404";
                     context.Response.Redirect(context.Request.Path, true);
                 }
@@ -124,8 +128,10 @@ namespace PiranhaCMS.PublicWeb
 
             #endregion
 
+            app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseResponseCaching();
 
             #region Piranha init
 

@@ -6,7 +6,9 @@
             <div class="mb-5">
                 @if (Model.CurrentPage.PrimaryImage?.Media != null)
                 {
-                    <img class="img-fluid w-100 mb-5" src="@Url.Content(Model.CurrentPage.PrimaryImage.Media.PublicUrl)" alt="@Model.CurrentPage.PrimaryImage.Media.AltText">
+                    <img class="img-fluid w-100 mb-5"
+                         src="@Url.Content(Model.CurrentPage.PrimaryImage.Media.PublicUrl)"
+                         alt="@Model.CurrentPage.PrimaryImage.Media.AltText">
                 }
 
                 @if (Model.CurrentPage.PageRegion?.Heading != null)

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace PiranhaCMS.PublicWeb.Controllers
 {
+    [ResponseCache(Duration = 36000, VaryByQueryKeys = new[] { "id" })]
     public class CmsController : Controller
     {
         private readonly IModelLoader _loader;
@@ -37,6 +38,7 @@ namespace PiranhaCMS.PublicWeb.Controllers
             return View(viewModel);
         }
 
+        [ResponseCache(Duration = 36000, VaryByQueryKeys = new[] { "id", "q" })]
         [Route(nameof(SearchPage))]
         public async Task<IActionResult> SearchPage(Guid id, bool draft = false)
         {
