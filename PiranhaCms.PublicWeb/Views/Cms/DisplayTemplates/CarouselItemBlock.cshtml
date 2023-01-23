@@ -8,7 +8,7 @@
     {
     <img class="w-100"
          src="@Url.Content(Model.Image.Media?.PublicUrl)"
-         alt="@(string.IsNullOrEmpty(Model.Image.Media.AltText) ? Model.ImageAltText?.Value : Model.Image.Media.AltText)" />
+         alt="@(string.IsNullOrEmpty(Model.Image.Media?.AltText) ? Model.ImageAltText?.Value : Model.Image.Media.AltText)" />
     }
     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
         <div class="p-3" style="max-width: 900px;">

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -36,20 +36,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\500.html" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
-    <PackageReference Include="Piranha" Version="10.2.0" />
-    <PackageReference Include="Piranha.AspNetCore" Version="10.2.0" />
-    <PackageReference Include="Piranha.AspNetCore.Identity.SQLite" Version="10.2.0" />
-    <PackageReference Include="Piranha.AttributeBuilder" Version="10.2.0" />
-    <PackageReference Include="Piranha.Data.EF.SQLite" Version="10.2.0" />
-    <PackageReference Include="Piranha.ImageSharp" Version="10.2.0" />
-    <PackageReference Include="Piranha.Local.FileStorage" Version="10.2.0" />
-    <PackageReference Include="Piranha.Manager" Version="10.2.0" />
-    <PackageReference Include="Piranha.Manager.TinyMCE" Version="10.2.2" />
+    <PackageReference Include="Piranha" Version="10.3.0" />
+    <PackageReference Include="Piranha.AspNetCore" Version="10.3.0" />
+    <PackageReference Include="Piranha.AspNetCore.Identity.SQLite" Version="10.3.0" />
+    <PackageReference Include="Piranha.AttributeBuilder" Version="10.3.0" />
+    <PackageReference Include="Piranha.Data.EF.SQLite" Version="10.3.0" />
+    <PackageReference Include="Piranha.ImageSharp" Version="10.3.0" />
+    <PackageReference Include="Piranha.Local.FileStorage" Version="10.3.0" />
+    <PackageReference Include="Piranha.Manager" Version="10.3.0" />
+    <PackageReference Include="Piranha.Manager.TinyMCE" Version="10.3.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
   </ItemGroup>
 
@@ -57,10 +53,6 @@
     <ProjectReference Include="..\PiranhaCMS.Extensions\PiranhaCMS.Common.csproj" />
     <ProjectReference Include="..\PiranhaCMS.Search\PiranhaCMS.Search.csproj" />
     <ProjectReference Include="..\PiranhaCMS.Validators\PiranhaCMS.Validators.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
 </Project>
