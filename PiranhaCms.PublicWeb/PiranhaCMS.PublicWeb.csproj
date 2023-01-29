@@ -33,6 +33,8 @@
 
   <ItemGroup>
     <None Remove="piranha.codebase.db" />
+    <None Remove="piranha.codebase.db-shm" />
+    <None Remove="piranha.codebase.db-wal" />
   </ItemGroup>
 
   <ItemGroup>
