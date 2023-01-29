@@ -24,7 +24,7 @@ gulp.task('bundle-css', () => {
 });
 
 gulp.task('bundle-js', () => {
-    return gulp.src(['wwwroot/lib/jquery/jquery-3.6.3.min.js', 'wwwroot/lib/easing/easing.min.js', 'wwwroot/lib/waypoints/waypoints.min.js', 'wwwroot/lib/owlcarousel/owl.carousel.min.js', 'wwwroot/assets/js/main.min.js'])
+    return gulp.src(['wwwroot/lib/jquery/jquery-3.6.3.min.js', 'wwwroot/lib/jquery-validation/dist/jquery.validate.min.js', 'wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js', 'wwwroot/lib/easing/easing.min.js', 'wwwroot/lib/waypoints/waypoints.min.js', 'wwwroot/lib/owlcarousel/owl.carousel.min.js', 'wwwroot/assets/js/main.min.js'])
         .pipe(concat('scripts.bundle.js'))
         .pipe(gulp.dest('wwwroot/assets/js'));
 });
