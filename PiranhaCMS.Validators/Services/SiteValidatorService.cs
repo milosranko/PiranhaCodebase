@@ -10,46 +10,45 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace PiranhaCMS.Validators.Services
+namespace PiranhaCMS.Validators.Services;
+
+public class SiteValidatorService : ISiteValidatorService
 {
-    public class SiteValidatorService : ISiteValidatorService
+    private IEnumerable<Type> siteTypes;
+    private IDictionary<string, IEnumerable<PageValidatorModel>> siteValidatorCollection = new Dictionary<string, IEnumerable<PageValidatorModel>>();
+
+    public void Initialize()
     {
-        private IEnumerable<Type> siteTypes;
-        private IDictionary<string, IEnumerable<PageValidatorModel>> siteValidatorCollection = new Dictionary<string, IEnumerable<PageValidatorModel>>();
+        var types = Assembly.GetEntryAssembly().ExportedTypes;
 
-        public void Initialize()
+        siteTypes = types.Where(x =>
+            x.GetTypeInfo().GetCustomAttributes().Any(y => y is SiteTypeAttribute));
+
+        siteValidatorCollection = ValidatorHelpers.GetPageTypeValidators(siteTypes);
+    }
+
+    public void Validate(SiteContentBase model, ILogger logger)
+    {
+        if (model == null) return;
+
+        try
         {
-            var types = Assembly.GetEntryAssembly().ExportedTypes;
-            
-            siteTypes = types.Where(x =>
-                x.GetTypeInfo().GetCustomAttributes().Any(y => y is SiteTypeAttribute));
+            if (!siteValidatorCollection.Any() ||
+                !siteValidatorCollection.ContainsKey(model.TypeId)) return;
 
-            siteValidatorCollection = ValidatorHelpers.GetPageTypeValidators(siteTypes);
+            foreach (var region in siteValidatorCollection[model.TypeId])
+            {
+                ValidatorHelpers.ValidateRegion(model, model.TypeId, region, siteValidatorCollection);
+            }
         }
-
-        public void Validate(SiteContentBase model, ILogger logger)
+        catch (ValidationException)
         {
-            if (model == null) return;
-
-            try
-            {
-                if (!siteValidatorCollection.Any() ||
-                    !siteValidatorCollection.ContainsKey(model.TypeId)) return;
-
-                foreach (var region in siteValidatorCollection[model.TypeId])
-                {
-                    ValidatorHelpers.ValidateRegion(model, model.TypeId, region, siteValidatorCollection);
-                }
-            }
-            catch (ValidationException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, $"Unhandled exception occured while validating: {e.Message}");
-                throw new ValidationException($"Unhandled exception occured while validating: {e.Message}");
-            }
+            throw;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Unhandled exception occured while validating: {e.Message}");
+            throw new ValidationException($"Unhandled exception occured while validating: {e.Message}");
         }
     }
 }

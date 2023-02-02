@@ -1,7 +1,6 @@
-﻿namespace PiranhaCMS.Search.Models.Constants
+﻿namespace PiranhaCMS.Search.Models.Constants;
+
+internal static class SearchSettings
 {
-    internal static class SearchSettings
-    {
-        public const string IndexLocation = @"C:\Temp\Index";
-    }
+    public const string IndexLocation = @"C:\Temp\Index";
 }

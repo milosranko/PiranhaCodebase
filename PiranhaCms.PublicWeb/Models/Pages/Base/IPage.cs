@@ -1,6 +1,5 @@
-namespace PiranhaCMS.PublicWeb.Models.Pages.Base
+namespace PiranhaCMS.PublicWeb.Models.Pages.Base;
+
+public interface IPage
 {
-    public interface IPage
-    {
-    }
 }

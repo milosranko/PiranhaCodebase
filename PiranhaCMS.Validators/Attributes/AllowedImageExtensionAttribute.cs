@@ -4,22 +4,21 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace PiranhaCMS.Validators.Attributes
+namespace PiranhaCMS.Validators.Attributes;
+
+[AttributeUsage(AttributeTargets.Property)]
+public class AllowedImageExtensionAttribute : ValidationAttribute
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class AllowedImageExtensionAttribute : ValidationAttribute
+    public override bool IsValid(object value)
     {
-        public override bool IsValid(object value)
-        {
-            if (value == null) return true;
+        if (value == null) return true;
 
-            if (value is DocumentField document)
-                return Regex.IsMatch(document.Media.Filename, RegularExpressions.ImageExtensionsRegexString);
+        if (value is DocumentField document)
+            return Regex.IsMatch(document.Media.Filename, RegularExpressions.ImageExtensionsRegexString);
 
-            if (value is ImageField image)
-                return Regex.IsMatch(image.Media.Filename, RegularExpressions.ImageExtensionsRegexString);
+        if (value is ImageField image)
+            return Regex.IsMatch(image.Media.Filename, RegularExpressions.ImageExtensionsRegexString);
 
-            return true;
-        }
+        return true;
     }
 }

@@ -1,9 +1,8 @@
 using Piranha.Models;
 
-namespace PiranhaCMS.PublicWeb.Models.Blocks.Base
+namespace PiranhaCMS.PublicWeb.Models.Blocks.Base;
+
+public interface ICurrentPage
 {
-    public interface ICurrentPage
-    {
-        PageBase CurrentPage { get; }
-    }
+    PageBase CurrentPage { get; }
 }

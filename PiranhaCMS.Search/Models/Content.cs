@@ -1,12 +1,11 @@
-﻿namespace PiranhaCMS.Search.Models
+﻿namespace PiranhaCMS.Search.Models;
+
+public class Content : WebPage
 {
-    public class Content : WebPage
-    {
-        public string ContentId { get; set; }
-        public string RouteName { get; set; }
-        public string ContentType { get; set; }
-        public string Category { get; set; }
-        public string Culture { get; set; }
-        //public IList<string> Tags { get; set; } = new List<string>();
-    }
+    public string ContentId { get; set; }
+    public string RouteName { get; set; }
+    public string ContentType { get; set; }
+    public string Category { get; set; }
+    public string Culture { get; set; }
+    //public IList<string> Tags { get; set; } = new List<string>();
 }

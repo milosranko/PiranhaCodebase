@@ -1,8 +1,7 @@
-namespace PiranhaCMS.PublicWeb.Models.Enums
+namespace PiranhaCMS.PublicWeb.Models.Enums;
+
+public enum ImagePositionEnum
 {
-    public enum ImagePositionEnum
-    {
-        Left,
-        Right
-    }
+    Left,
+    Right
 }

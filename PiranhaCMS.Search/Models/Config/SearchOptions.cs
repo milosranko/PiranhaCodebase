@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace PiranhaCMS.Search.Models.Config
-{
-    internal class SearchOptions
-    {
-        public SearchOptions(Type[] include)
-        {
-            Include = include;
-        }
+namespace PiranhaCMS.Search.Models.Config;
 
-        internal static Type[] Include { get; private set; }
+internal class SearchOptions
+{
+    public SearchOptions(Type[] include)
+    {
+        Include = include;
     }
+
+    internal static Type[] Include { get; private set; }
 }

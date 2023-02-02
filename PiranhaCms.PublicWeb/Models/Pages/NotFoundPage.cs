@@ -5,17 +5,16 @@ using PiranhaCMS.PublicWeb.Models.Pages.Base;
 using PiranhaCMS.PublicWeb.Models.Regions;
 using PiranhaCMS.Validators.Attributes;
 
-namespace PiranhaCMS.PublicWeb.Models.Pages
+namespace PiranhaCMS.PublicWeb.Models.Pages;
+
+[PageType(Title = "404 Not Found Page", UseBlocks = false)]
+[ContentTypeRoute(Title = "Default", Route = $"/{nameof(NotFoundPage)}")]
+[AllowedPageTypes(Availability.None)]
+public class NotFoundPage : Page<NotFoundPage>, IPage
 {
-    [PageType(Title = "404 Not Found Page", UseBlocks = false)]
-    [ContentTypeRoute(Title = "Default", Route = $"/{nameof(NotFoundPage)}")]
-    [AllowedPageTypes(Availability.None)]
-    public class NotFoundPage : Page<NotFoundPage>, IPage
-    {
-        [Region(
-            Title = "Main Content",
-            Display = RegionDisplayMode.Content,
-            Description = "Main content properties")]
-        public ArticlePageRegion PageRegion { get; set; }
-    }
+    [Region(
+        Title = "Main Content",
+        Display = RegionDisplayMode.Content,
+        Description = "Main content properties")]
+    public ArticlePageRegion PageRegion { get; set; }
 }

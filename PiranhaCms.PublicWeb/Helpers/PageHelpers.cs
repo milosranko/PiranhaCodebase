@@ -5,11 +5,29 @@ using PiranhaCMS.Common;
 using PiranhaCMS.PublicWeb.Models.Sites;
 using System;
 
-namespace PiranhaCMS.PublicWeb.Helpers
+namespace PiranhaCMS.PublicWeb.Helpers;
+
+public static class PageHelpers
 {
-    public static class PageHelpers
+    public static GlobalSettings GetSiteSettings()
     {
-        public static GlobalSettings GetSiteSettings()
+        using var serviceScope = ServiceActivator.GetScope();
+        var webApp = (IApplicationService)serviceScope.ServiceProvider.GetService(typeof(IApplicationService));
+        var httpContext = (IHttpContextAccessor)serviceScope.ServiceProvider.GetService(typeof(IHttpContextAccessor));
+
+        webApp.InitAsync(httpContext.HttpContext).GetAwaiter().GetResult();
+
+        var site = webApp.Site
+            .GetContentAsync<PublicSite>()
+            .GetAwaiter()
+            .GetResult();
+
+        return site.GlobalSettings;
+    }
+
+    public static PageBase GetCurrentPage()
+    {
+        try
         {
             using var serviceScope = ServiceActivator.GetScope();
             var webApp = (IApplicationService)serviceScope.ServiceProvider.GetService(typeof(IApplicationService));
@@ -17,48 +35,29 @@ namespace PiranhaCMS.PublicWeb.Helpers
 
             webApp.InitAsync(httpContext.HttpContext).GetAwaiter().GetResult();
 
-            var site = webApp.Site
-                .GetContentAsync<PublicSite>()
-                .GetAwaiter()
-                .GetResult();
+            if (!string.IsNullOrEmpty(httpContext.HttpContext.Request.Query["id"]))
+            {
+                return webApp.Api.Pages.GetByIdAsync<PageBase>(Guid.Parse(httpContext.HttpContext.Request.Query["id"])).GetAwaiter().GetResult();
+            }
 
-            return site.GlobalSettings;
+            return null;
         }
-
-        public static PageBase GetCurrentPage()
+        catch
         {
-            try
-            {
-                using var serviceScope = ServiceActivator.GetScope();
-                var webApp = (IApplicationService)serviceScope.ServiceProvider.GetService(typeof(IApplicationService));
-                var httpContext = (IHttpContextAccessor)serviceScope.ServiceProvider.GetService(typeof(IHttpContextAccessor));
-
-                webApp.InitAsync(httpContext.HttpContext).GetAwaiter().GetResult();
-
-                if (!string.IsNullOrEmpty(httpContext.HttpContext.Request.Query["id"]))
-                {
-                    return webApp.Api.Pages.GetByIdAsync<PageBase>(Guid.Parse(httpContext.HttpContext.Request.Query["id"])).GetAwaiter().GetResult();
-                }
-
-                return null;
-            }
-            catch
-            {
-                return null;
-            }
+            return null;
         }
+    }
 
-        public static string GetSearchQuery()
+    public static string GetSearchQuery()
+    {
+        using var serviceScope = ServiceActivator.GetScope();
+        var httpContext = (IHttpContextAccessor)serviceScope.ServiceProvider.GetService(typeof(IHttpContextAccessor));
+
+        if (!string.IsNullOrEmpty(httpContext?.HttpContext?.Request?.Query["q"]))
         {
-            using var serviceScope = ServiceActivator.GetScope();
-            var httpContext = (IHttpContextAccessor)serviceScope.ServiceProvider.GetService(typeof(IHttpContextAccessor));
-
-            if (!string.IsNullOrEmpty(httpContext?.HttpContext?.Request?.Query["q"]))
-            {
-                return httpContext.HttpContext.Request.Query["q"].ToString();
-            }
-
-            return string.Empty;
+            return httpContext.HttpContext.Request.Query["q"].ToString();
         }
+
+        return string.Empty;
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace PiranhaCMS.Search.Models.Enums
+﻿namespace PiranhaCMS.Search.Models.Enums;
+
+public enum DefaultAnalyzer
 {
-    public enum DefaultAnalyzer
-    {
-        English,
-        Other
-    }
+    English,
+    Other
 }

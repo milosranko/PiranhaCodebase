@@ -1,9 +1,8 @@
-﻿namespace PiranhaCMS.Search.Models.Enums
+﻿namespace PiranhaCMS.Search.Models.Enums;
+
+public enum IndexDirectory
 {
-    public enum IndexDirectory
-    {
-        FileSystem,
-        Memory,
-        Azure
-    }
+    FileSystem,
+    Memory,
+    Azure
 }

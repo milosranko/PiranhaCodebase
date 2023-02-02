@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Piranha.Models;
 
-namespace PiranhaCMS.Validators.Services.Interfaces
+namespace PiranhaCMS.Validators.Services.Interfaces;
+
+public interface IPageValidatorService
 {
-    public interface IPageValidatorService
-    {
-        void Initialize();
-        void Validate(PageBase model, ILogger logger);
-    }
+    void Initialize();
+    void Validate(PageBase model, ILogger logger);
 }
