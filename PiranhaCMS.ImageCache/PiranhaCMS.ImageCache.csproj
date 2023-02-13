@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Include="Piranha.AspNetCore" Version="10.3.0" />
     <PackageReference Include="Piranha.ImageSharp" Version="10.3.0" />
-    <PackageReference Include="SixLabors.ImageSharp.Web" Version="2.0.2" />
   </ItemGroup>
 
 </Project>
