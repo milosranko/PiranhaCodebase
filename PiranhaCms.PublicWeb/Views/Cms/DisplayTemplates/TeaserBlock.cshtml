@@ -11,15 +11,11 @@
     <div class="row g-0">
         <div class="col-lg-6 order-@imageColumnIndex" style="min-height: 400px;">
             <div class="position-relative h-100">
-                @if (Model.Image != null && Model.Image.HasValue)
-                {
-                    <img class="position-absolute w-100 h-100"
-                         style="object-fit: cover;"
-                         src="@Model.Image.GetSrc(800)"
-                         srcset="@Model.Image.GetSrcSet(800, 1200, 1920)"
-                         sizes="100vw"
-                         alt="@Model.Image.Media.AltText" />
-                }
+                <image-cache model="@Model.Image"
+                             css="position-absolute w-100 h-100"
+                             style="object-fit: cover;"
+                             srcset="960x540|1280x720|1920x1080"
+                             sizes="100vw" />
             </div>
         </div>
         <div class="col-lg-6 order-@textColumnIndex py-6 px-5">

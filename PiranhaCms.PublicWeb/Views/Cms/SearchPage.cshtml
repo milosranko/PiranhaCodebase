@@ -6,15 +6,21 @@
     <div class="row g-5">
         <div class="col-lg-8">
             <div class="row g-5">
-                @if (Model.CurrentPage.PrimaryImage?.Media != null)
+                <image-cache model="@Model.CurrentPage.PrimaryImage"
+                             css="img-fluid w-100 mb-5"
+                             srcset="960x540|1280x720|1920x1080"
+                             sizes="100vw" />
+                @*@if (Model.CurrentPage.PrimaryImage?.Media != null)
                 {
                     <img class="img-fluid w-100 mb-5"
                          src="@Url.Content(Model.CurrentPage.PrimaryImage.Media.PublicUrl)"
                          alt="@Model.CurrentPage.PrimaryImage.Media.AltText" />
-                }
+                }*@
                 @if (string.IsNullOrEmpty(Model.SearchResult.SearchText))
                 {
-                    <p>@Model.CurrentPage.Excerpt</p>
+                    <p>
+                        @Model.CurrentPage.Excerpt
+                    </p>
                 }
                 <partial name="Partial/_SearchResult" model="@Model.SearchResult" />
             </div>
