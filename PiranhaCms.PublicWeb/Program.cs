@@ -19,8 +19,6 @@ using PiranhaCMS.Search.Models.Enums;
 using PiranhaCMS.Search.Startup;
 using PiranhaCMS.Validators.Startup;
 using Serilog;
-using Serilog.Events;
-using Serilog.Formatting.Compact;
 using System;
 using System.IO;
 using System.Net;
@@ -30,12 +28,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region Configure logger
 
-builder.Host.UseSerilog((ctx, provider, lc) => lc
-    .MinimumLevel.Information()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-    .MinimumLevel.Override("System", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-    .WriteTo.File(new CompactJsonFormatter(), "Logs\\log-.txt", rollingInterval: RollingInterval.Hour));
+builder.Host.UseSerilog((ctx, provider, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
 builder.Logging.AddSerilog(new LoggerConfiguration().CreateLogger(), true);
 
 #endregion
