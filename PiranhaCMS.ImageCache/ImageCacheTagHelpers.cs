@@ -1,17 +1,41 @@
 ﻿using System.Text;
 
-namespace PiranhaCMS.ImageCache
+namespace PiranhaCMS.ImageCache;
+
+internal static class ImageCacheTagHelpers
 {
-    internal static class ImageCacheTagHelpers
+    public static string GetSrc(this string imageUrl, string srcSet = null)
     {
-        public static string GetSrc(this string imageUrl, string srcSet = null)
+        var result = new StringBuilder();
+
+        if (srcSet == null)
+            return imageUrl;
+
+        var dim = srcSet.Split('x');
+        var width = dim[0];
+        var height = string.Empty;
+
+        if (dim.Length == 2)
         {
-            var result = new StringBuilder();
+            height = "&h=" + dim[1];
+        }
 
-            if (srcSet == null)
-                return imageUrl;
+        return result
+            .AppendFormat($"{imageUrl}?w={width}{height}")
+            .ToString();
+    }
 
-            var dim = srcSet.Split('x');
+    public static string GetSrcSet(this string imageUrl, string srcSet = null)
+    {
+        if (srcSet == null)
+            return imageUrl;
+
+        var breakingPoints = srcSet.Split('|');
+        var result = new StringBuilder();
+
+        foreach (var point in breakingPoints)
+        {
+            var dim = point.Split('x');
             var width = dim[0];
             var height = string.Empty;
 
@@ -20,34 +44,9 @@ namespace PiranhaCMS.ImageCache
                 height = "&h=" + dim[1];
             }
 
-            return result
-                .AppendFormat($"{imageUrl}?w={width}{height}")
-                .ToString();
+            result.AppendFormat($"{imageUrl}?w={width}{height} {width}w, ");
         }
 
-        public static string GetSrcSet(this string imageUrl, string srcSet = null)
-        {
-            if (srcSet == null)
-                return imageUrl;
-
-            var breakingPoints = srcSet.Split('|');
-            var result = new StringBuilder();
-
-            foreach (var point in breakingPoints)
-            {
-                var dim = point.Split('x');
-                var width = dim[0];
-                var height = string.Empty;
-
-                if (dim.Length == 2)
-                {
-                    height = "&h=" + dim[1];
-                }
-
-                result.AppendFormat($"{imageUrl}?w={width}{height} {width}w, ");
-            }
-
-            return result.ToString().TrimEnd(' ', ',');
-        }
+        return result.ToString().TrimEnd(' ', ',');
     }
 }
