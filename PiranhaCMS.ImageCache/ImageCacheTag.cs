@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Piranha.Extend.Fields;
 
 namespace PiranhaCMS.ImageCache;
@@ -20,25 +19,25 @@ public class ImageCacheTag : TagHelper
     public string? Sizes { get; set; }
 
     [HtmlAttributeName("model")]
-    public ModelExpression Model { get; set; }
+    public object Model { get; set; }
 
     [HtmlAttributeName("altfallback")]
     public string? AltFallback { get; set; }
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        if (Model.Metadata == null)
+        if (Model == null)
         {
             output.Content.Clear();
             return;
         }
 
-        if (Model.Metadata.ModelType == typeof(ImageField) && ((ImageField)Model.Model).HasValue)
+        if (Model.GetType() == typeof(ImageField) && ((ImageField)Model).HasValue)
         {
             output.TagName = "img";
             output.TagMode = TagMode.SelfClosing;
 
-            SetImageAttributes((ImageField)Model.Model, output.Attributes);
+            SetImageAttributes((ImageField)Model, output.Attributes);
         }
     }
 

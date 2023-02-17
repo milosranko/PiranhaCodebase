@@ -4,16 +4,10 @@
     <div class="row g-5">
         <div class="col-lg-8">
             <div class="mb-5">
-                <image-cache model="@Model.CurrentPage.PrimaryImage"
+                <image-cache model="Model.CurrentPage.PrimaryImage"
                              css="img-fluid w-100 mb-5"
-                             srcset="960x540|1280x720|1920x1080"
+                             srcset="960x540|1280x720|1600x900"
                              sizes="100vw" />
-                @*@if (Model.CurrentPage.PrimaryImage?.Media != null)
-                {
-                    <img class="img-fluid w-100 mb-5"
-                         src="@Url.Content(Model.CurrentPage.PrimaryImage.Media.PublicUrl)"
-                         alt="@Model.CurrentPage.PrimaryImage.Media.AltText">
-                }*@
 
                 @if (Model.CurrentPage.PageRegion?.Heading != null)
                 {

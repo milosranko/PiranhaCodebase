@@ -35,7 +35,8 @@ public static class StartupExtensions
         var siteValidatorService = app.ApplicationServices.GetService<ISiteValidatorService>();
         var pageValidatorService = app.ApplicationServices.GetService<IPageValidatorService>();
 
-        if (pageValidatorService == null && siteValidatorService == null) throw new Exception("Validator service not initialized!");
+        if (pageValidatorService == null && siteValidatorService == null)
+            throw new Exception("Validator service not initialized!");
 
         if (pageValidatorService != null)
         {
