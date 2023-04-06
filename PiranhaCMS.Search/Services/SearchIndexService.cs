@@ -5,6 +5,7 @@ using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Helpers;
 using PiranhaCMS.Search.Models;
 using PiranhaCMS.Search.Models.Config;
+using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,9 @@ public class SearchIndexService : ISearch
 
     public Task SavePageAsync(PageBase page)
     {
-        if (!SearchOptions.Include.Any(x => x.Name.Equals(page.GetType().Name))) return Task.CompletedTask;
+        if (!SearchOptions.Include.Any(x => x.Name.Equals(page.TypeId, StringComparison.InvariantCultureIgnoreCase)))
+            return Task.CompletedTask;
+
         if (!page.Published.HasValue || page.Permissions.Any() || !(page is DynamicPage))
         {
             return Task.Run(() =>

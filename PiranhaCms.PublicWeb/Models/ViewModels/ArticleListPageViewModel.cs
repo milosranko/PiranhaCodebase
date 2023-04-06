@@ -14,13 +14,15 @@ public class ArticleListPageViewModel : PageViewModel<ArticleListPage>
     {
         Articles = currentPage.GetChildrenPages()
             .AsPage<ArticlePage>()
+            .OrderByDescending(x => x.Published)
             .Select(x => new ArticleListItem
             {
                 ImageUrl = x.PrimaryImage?.Media?.PublicUrl,
                 PublishedDate = x.Published.Value,
                 Title = x.Title,
                 Link = x.Permalink
-            });
+            })
+            .ToList();
     }
 }
 
