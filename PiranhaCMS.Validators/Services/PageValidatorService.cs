@@ -82,7 +82,7 @@ public class PageValidatorService : IPageValidatorService
     {
         if (page.ParentId.HasValue)
         {
-            var parentPage = page.GetParentPage();
+            var parentPage = page.GetParentPage(true);
 
             if (pageTypeAllowedTypesCollection.ContainsKey(parentPage.TypeId))
                 pageTypeAllowedTypesCollection[parentPage.TypeId].Validate(page.TypeId, page.TypeId);

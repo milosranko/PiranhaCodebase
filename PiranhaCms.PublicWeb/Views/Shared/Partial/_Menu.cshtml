@@ -16,9 +16,28 @@
             {
                 if (!item.IsHidden)
                 {
-                    <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink">
-                        @(item.Id.Equals(Model.GlobalSettings.StartPageId) ? "Home" : item.MenuTitle)
-                    </a>
+                    @if (item.Items.Count == 0)
+                    {
+                        <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink">
+                            @(item.Id.Equals(Model.GlobalSettings.StartPageId) ? "Home" : item.MenuTitle)
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle @(item.Id == WebApp.PageId || item.Id == WebApp.CurrentPage.ParentId ? "active" : "")" data-bs-toggle="dropdown" href="@item.Permalink">
+                                @item.MenuTitle
+                            </a>
+                            <div class="dropdown-menu m-0">
+                                @foreach (var subItem in item.Items)
+                                {
+                                    <a href="@subItem.Permalink" class="dropdown-item @(subItem.Id == WebApp.PageId ? "active" : "")">
+                                        @subItem.MenuTitle
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
                 }
             }
         </div>

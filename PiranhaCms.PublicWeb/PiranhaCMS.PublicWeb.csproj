@@ -58,4 +58,8 @@
     <ProjectReference Include="..\PiranhaCMS.Validators\PiranhaCMS.Validators.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\" />
+  </ItemGroup>
+
 </Project>

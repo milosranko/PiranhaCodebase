@@ -1,6 +1,6 @@
 using Piranha.Extend;
 using Piranha.Models;
-using PiranhaCMS.PublicWeb.Helpers;
+using PiranhaCMS.Common.Helpers;
 
 namespace PiranhaCMS.PublicWeb.Models.Blocks.Base;
 

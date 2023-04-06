@@ -14,6 +14,7 @@ namespace PiranhaCMS.PublicWeb.Models.Sites;
 [AllowedPageTypes(new[]
 {
     typeof(StartPage),
+    typeof(ArticleListPage),
     typeof(ArticlePage),
     typeof(SearchPage),
     typeof(NotFoundPage)

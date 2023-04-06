@@ -1,18 +1,25 @@
-@using PiranhaCMS.PublicWeb.Helpers
 @{
-    var searchPage = PageHelpers.GetSiteSettings().SearchPageReference?.Page?.Permalink;
-    var searchQuery = PageHelpers.GetSearchQuery();
+    var searchPage = PiranhaCMS.PublicWeb.Helpers.PageHelpers.GetSiteSettings().SearchPageReference?.Page?.Permalink;
+    var searchQuery = PiranhaCMS.Common.Helpers.PageHelpers.GetSearchQuery();
 }
 
-<div class="mb-5">
 @if (searchPage != null)
 {
-    using (Html.BeginForm(FormMethod.Get, new { action = searchPage }))
+<div class="mb-5">
+    @using (Html.BeginForm(FormMethod.Get, new { action = searchPage }))
     {
-        <div class="input-group">
+        <div class="mb-5 input-group">
             @Html.TextBox("q", searchQuery, new { @class = "form-control p-3", placeholder = "Search keywords"})
             <button class="btn btn-primary px-4" title="Search"><i class="bi bi-search"></i></button>
         </div>
     }
+</div>
 }
+
+<div class="mb-5">
+    <h2 class="mb-4">Want To Know More?</h2>
+    <div class="bg-secondary text-center" style="padding: 30px;">
+        <p>If you are still thinking on having a great web site but not sure how to make it or if you need more information on CMS and related technologies, please contact us.</p>
+        <a href="/contact" class="btn btn-primary rounded-pill py-2 px-4">Contact Us</a>
+    </div>
 </div>

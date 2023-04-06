@@ -9,24 +9,24 @@ namespace PiranhaCMS.Common.Extensions;
 
 public static class PageExtensions
 {
-    public static PageBase GetParentPage(this PageBase page)
+    public static PageBase GetParentPage(this PageBase page, bool draft = false)
     {
         using var serviceScope = ServiceActivator.GetScope();
         var loader = (IModelLoader)serviceScope.ServiceProvider.GetService(typeof(IModelLoader));
         var httpContextAccessor = (IHttpContextAccessor)serviceScope.ServiceProvider.GetService(typeof(IHttpContextAccessor));
 
         return page.ParentId.HasValue ?
-            loader.GetPageAsync<PageBase>(page.ParentId.Value, httpContextAccessor.HttpContext.User, false).GetAwaiter().GetResult() :
+            loader.GetPageAsync<PageBase>(page.ParentId.Value, httpContextAccessor.HttpContext.User, draft).GetAwaiter().GetResult() :
             null;
     }
 
-    public static T Get<T>(this PageBase page) where T : PageBase
+    public static T Get<T>(this PageBase page, bool draft = false) where T : PageBase
     {
         using var serviceScope = ServiceActivator.GetScope();
         var loader = (IModelLoader)serviceScope.ServiceProvider.GetService(typeof(IModelLoader));
         var httpContextAccessor = (IHttpContextAccessor)serviceScope.ServiceProvider.GetService(typeof(IHttpContextAccessor));
 
-        return loader.GetPageAsync<T>(page.Id, httpContextAccessor.HttpContext.User, false).GetAwaiter().GetResult();
+        return loader.GetPageAsync<T>(page.Id, httpContextAccessor.HttpContext.User, draft).GetAwaiter().GetResult();
     }
 
     public static IEnumerable<SitemapItem> GetChildrenPages(this PageBase page)
@@ -51,6 +51,26 @@ public static class PageExtensions
         webApp.InitAsync(httpContextAccessor.HttpContext).GetAwaiter().GetResult();
 
         return webApp.Site.Sitemap.GetPartial(page.ParentId).Where(x => x.Id != page.Id);
+    }
+
+    public static IEnumerable<PageBase> GetDescendants(this PageBase page)
+    {
+        if (page == null)
+            return Enumerable.Empty<PageBase>();
+
+        using var serviceScope = ServiceActivator.GetScope();
+        var loader = (IModelLoader)serviceScope.ServiceProvider.GetService(typeof(IModelLoader));
+        var httpContextAccessor = (IHttpContextAccessor)serviceScope.ServiceProvider.GetService(typeof(IHttpContextAccessor));
+        var descendants = new List<PageBase>();
+        var currentPage = page;
+
+        while (currentPage.ParentId != null)
+        {
+            currentPage = loader.GetPageAsync<PageBase>(currentPage.ParentId.Value, httpContextAccessor.HttpContext.User, false).GetAwaiter().GetResult();
+            descendants.Add(currentPage);
+        }
+
+        return descendants;
     }
 
     public static Site GetCurrentSite(this PageBase page)

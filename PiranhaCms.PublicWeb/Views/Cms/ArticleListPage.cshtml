@@ -1,16 +1,11 @@
-@model PiranhaCMS.PublicWeb.Models.ViewModels.ArticlePageViewModel
+@model PiranhaCMS.PublicWeb.Models.ViewModels.ArticleListPageViewModel
 
 <partial name="Partial/_PageHeaderWithBreadcrumb.cshtml" model="Model.CurrentPage" />
 
 <div class="container-fluid py-6 px-5">
     <div class="row g-5">
         <div class="col-lg-8">
-            <div class="mb-5">
-                <image-cache model="Model.CurrentPage.PrimaryImage"
-                             css="img-fluid w-100 mb-5"
-                             srcset="960x540|1280x720|1600x900"
-                             sizes="100vw" />
-
+            <div class="row g-5">
                 @if (Model.CurrentPage.PageRegion?.Heading != null)
                 {
                     <h1 class="mb-4">
@@ -25,10 +20,7 @@
                     </h2>
                 }
 
-                @if (Model.CurrentPage.PageRegion?.MainContent != null)
-                {
-                    @Html.Raw(Model.CurrentPage.PageRegion.MainContent)
-                }
+                <partial name="Partial/_ArticleListItems.cshtml" model="Model.Articles" />
             </div>
         </div>
         <div class="col-lg-4">
@@ -36,17 +28,3 @@
         </div>
     </div>
 </div>
-
-@if(Model.SubMenu != null && Model.SubMenu.Any())
-{
-    <div class="container">
-        @foreach (var item in Model.SubMenu)
-        {
-            <span>
-                <a href="@item.Link">@item.Name</a>
-            </span>
-        }
-    </div>
-}
-
-@Html.DisplayFor(m => m.CurrentPage.Blocks)

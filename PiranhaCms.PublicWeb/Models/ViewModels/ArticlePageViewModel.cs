@@ -20,7 +20,7 @@ public class ArticlePageViewModel : PageViewModel<ArticlePage>
     }
 }
 
-public class SubMenuItem
+public struct SubMenuItem
 {
     public string Name { get; set; }
     public string Link { get; set; }

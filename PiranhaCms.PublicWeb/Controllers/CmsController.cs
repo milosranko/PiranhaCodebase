@@ -38,6 +38,15 @@ public class CmsController : Controller
         return View(viewModel);
     }
 
+    [Route(nameof(ArticleListPage))]
+    public async Task<IActionResult> ArticleListPage(Guid id, bool draft = false)
+    {
+        var currentPage = await _loader.GetPageAsync<ArticleListPage>(id, HttpContext.User, draft);
+        var viewModel = new ArticleListPageViewModel(currentPage);
+
+        return View(viewModel);
+    }
+
     [ResponseCache(Duration = 36000, VaryByQueryKeys = new[] { "id", "q" })]
     [Route(nameof(SearchPage))]
     public async Task<IActionResult> SearchPage(Guid id, bool draft = false)

@@ -1,12 +1,21 @@
-@model string
+@using PiranhaCMS.Common.Extensions
+@model Piranha.Models.PageBase
+@{
+    var breadcrumbs = Model.GetDescendants();
+}
 
 <div class="container-fluid bg-dark p-5">
     <div class="row">
         <div class="col-12 text-center">
-            <h1 class="display-4 text-white">@Model</h1>
+            <h1 class="display-4 text-white">@Model.Title</h1>
             <a href="/">Home</a>
+            @foreach (var item in breadcrumbs)
+            {
+                <i class="far fa-square text-primary px-2"></i>
+                <a href="@item.Permalink">@item.Title</a>
+            }
             <i class="far fa-square text-primary px-2"></i>
-            <a href="#">@Model</a>
+            <span class="text-white">@Model.Title</span>
         </div>
     </div>
 </div>
