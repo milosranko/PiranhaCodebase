@@ -9,7 +9,7 @@
 
 <div class="container-fluid bg-secondary p-0">
     <div class="row g-0">
-        <div class="col-lg-6 order-@imageColumnIndex" style="min-height: 400px;">
+        <div class="col-lg-6 order-@imageColumnIndex teaser-image" style="min-height: 400px;">
             <div class="position-relative h-100">
                 <image-cache model="Model.Image"
                              css="position-absolute w-100 h-100"
@@ -18,8 +18,11 @@
                              sizes="100vw" />
             </div>
         </div>
-        <div class="col-lg-6 order-@textColumnIndex py-6 px-5">
-            <h1 class="display-5 mb-4">@Model.Heading.Value</h1>
+        <div class="col-lg-6 order-@textColumnIndex py-6 px-5 teaser-text">
+            @if (Model.Heading != null)
+            {
+                <h1 class="display-5 mb-4">@Model.Heading.Value</h1>
+            }
             @if (Model.LeadText != null)
             {
                 <h4 class="text-primary mb-4">@Model.LeadText.Value</h4>
