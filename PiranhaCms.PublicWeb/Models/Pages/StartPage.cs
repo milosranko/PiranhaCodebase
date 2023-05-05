@@ -5,7 +5,7 @@ using PiranhaCMS.Validators.Attributes;
 
 namespace PiranhaCMS.PublicWeb.Models.Pages;
 
-[PageType(Title = "Start Page", UseBlocks = true)]
+[PageType(Title = "Start Page", UseBlocks = true, UsePrimaryImage = false, UseExcerpt = false)]
 [ContentTypeRoute(Title = "Default", Route = $"/{nameof(StartPage)}")]
 [AllowedPageTypes(Availability.None)]
 public class StartPage : Page<StartPage>, IPage
