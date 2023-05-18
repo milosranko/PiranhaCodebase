@@ -1,5 +1,4 @@
 ﻿using Piranha.Extend;
-using Piranha.Extend.Fields;
 using Piranha.Models;
 using System;
 using System.Collections.Generic;
@@ -86,12 +85,9 @@ internal static class PageContentHelpers
     {
         if (field == null) throw new ArgumentNullException(nameof(field));
 
-        return field switch
-        {
-            StringField stringField => stringField.GetIndexedContent(),
-            TextField textField => textField.GetIndexedContent(),
-            HtmlField htmlField => htmlField.GetIndexedContent(),
-            _ => string.Empty
-        };
+        if (field is ISearchable searchableField)
+            return searchableField.GetIndexedContent();
+
+        return string.Empty;
     }
 }

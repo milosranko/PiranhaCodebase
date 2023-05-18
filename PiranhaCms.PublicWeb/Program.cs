@@ -162,7 +162,7 @@ EditorConfig.FromFile("tinymce-config.json");
 //Init Piranha Search
 app.UsePiranhaSearch(api, app.Logger, options =>
 {
-    options.ForceReindexing = true;
+    options.ForceReindexing = app.Configuration.GetRequiredSection("PiranhaSearch").GetValue<bool>("ForceReindexing");
     options.UseTextHighlighter = true;
     options.UseFacets = false;
     options.Include = new[]
