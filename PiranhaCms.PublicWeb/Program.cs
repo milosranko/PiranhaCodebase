@@ -141,7 +141,7 @@ if (!App.MediaTypes.Documents.ContainsExtension(".svg"))
     App.MediaTypes.Documents.Add(".svg", "image/svg+xml");
 
 //Custom blocks registration
-App.Blocks.AutoRegisterBlocks();
+App.Blocks.AutoRegisterBlocks(typeof(StartPage).Assembly);
 
 //Configure validator
 app.UsePiranhaValidators(typeof(StartPage).Assembly, app.Logger);

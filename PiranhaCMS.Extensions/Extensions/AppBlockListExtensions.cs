@@ -7,10 +7,10 @@ namespace PiranhaCMS.Common.Extensions;
 
 public static class AppBlockListExtensions
 {
-    public static void AutoRegisterBlocks(this AppBlockList appBlockList)
+    public static void AutoRegisterBlocks(this AppBlockList appBlockList, Assembly blockTypes)
     {
         var method = typeof(AppBlockList).GetMethod(nameof(AppBlockList.Register));
-        var types = Assembly.GetCallingAssembly().GetTypes()
+        var types = blockTypes.GetTypes()
             .Where(x => x.GetCustomAttribute<BlockTypeAttribute>() != null || x.GetCustomAttribute<BlockGroupTypeAttribute>() != null)
             .ToArray();
         MethodInfo generic;
