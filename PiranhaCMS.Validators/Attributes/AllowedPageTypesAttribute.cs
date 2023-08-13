@@ -23,6 +23,9 @@ public class AllowedPageTypesAttribute : ValidationAttribute
 
     public override bool IsValid(object value)
     {
+        if (value is not string)
+            return true;
+
         return Availability switch
         {
             Availability.All => true,

@@ -5,6 +5,7 @@ using Piranha;
 using PiranhaCMS.Validators.Services;
 using PiranhaCMS.Validators.Services.Interfaces;
 using System;
+using System.Reflection;
 
 namespace PiranhaCMS.Validators.Startup;
 
@@ -30,6 +31,7 @@ public static class StartupExtensions
 
     public static IApplicationBuilder UsePiranhaValidators(
         this IApplicationBuilder app,
+        Assembly modelsAssembly,
         ILogger logger)
     {
         var siteValidatorService = app.ApplicationServices.GetService<ISiteValidatorService>();
@@ -40,13 +42,13 @@ public static class StartupExtensions
 
         if (pageValidatorService != null)
         {
-            pageValidatorService.Initialize();
+            pageValidatorService.Initialize(modelsAssembly);
             App.Hooks.Pages.RegisterOnBeforeSave(x => pageValidatorService.Validate(x, logger));
         }
 
         if (siteValidatorService != null)
         {
-            siteValidatorService.Initialize();
+            siteValidatorService.Initialize(modelsAssembly);
             App.Hooks.SiteContent.RegisterOnBeforeSave(x => siteValidatorService.Validate(x, logger));
         }
 

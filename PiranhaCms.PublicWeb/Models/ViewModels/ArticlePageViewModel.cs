@@ -1,5 +1,5 @@
 using PiranhaCMS.Common.Extensions;
-using PiranhaCMS.PublicWeb.Models.Pages;
+using PiranhaCMS.ContentTypes.Pages;
 using System.Collections.Generic;
 using System.Linq;
 

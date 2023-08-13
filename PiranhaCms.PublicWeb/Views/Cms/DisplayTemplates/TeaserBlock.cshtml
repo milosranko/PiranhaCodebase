@@ -1,7 +1,7 @@
 @using PiranhaCMS.Common.Extensions
-@using PiranhaCMS.PublicWeb.Models.Enums;
-@using PiranhaCMS.PublicWeb.Models.Pages
-@model PiranhaCMS.PublicWeb.Models.Blocks.TeaserBlock
+@using PiranhaCMS.ContentTypes.Enums;
+@using PiranhaCMS.ContentTypes.Pages
+@model PiranhaCMS.ContentTypes.Blocks.TeaserBlock
 @{
     var textColumnIndex = Model.ImagePosition.Value == ImagePositionEnum.Left ? 2 : 1;
     var imageColumnIndex = Model.ImagePosition.Value == ImagePositionEnum.Right ? 2 : 1;

@@ -66,26 +66,31 @@ public static class ValidatorHelpers
         PageValidatorModel region,
         IDictionary<string, IEnumerable<PageValidatorModel>> validatorCollection)
     {
-        var dynamicContent = content as IDynamicContent;
-
-        if ((dynamicContent.Regions as IDictionary<string, object>)[region.RegionName] is RegionList<ExpandoObject> regionList)
+        if (content is IDynamicContent dynamicContent)
         {
-            foreach (var fields in regionList)
+            if ((dynamicContent.Regions as IDictionary<string, object>)[region.RegionName] is RegionList<ExpandoObject> regionList)
             {
-                foreach (var field in fields.Where(x => x.Value is IField && x.Key.Equals(region.FieldName)))
+                foreach (var fields in regionList)
                 {
-                    var va = GetValidationAttributes(validatorCollection, typeId, region.RegionName, region.FieldName);
-                    SetValidationContext(field.Value as IField, va);
+                    foreach (var field in fields.Where(x => x.Value is IField && x.Key.Equals(region.FieldName)))
+                    {
+                        var va = GetValidationAttributes(validatorCollection, typeId, region.RegionName, region.FieldName);
+                        SetValidationContext(field.Value as IField, va);
+                    }
                 }
+            }
+            else
+            {
+                if (!(((dynamicContent.Regions as IDictionary<string, object>)[region.RegionName] as
+                    IDictionary<string, object>)[region.FieldName] is IField field)) return;
+
+                var va = GetValidationAttributes(validatorCollection, typeId, region.RegionName, region.FieldName);
+                SetValidationContext(field, va);
             }
         }
         else
         {
-            if (!(((dynamicContent.Regions as IDictionary<string, object>)[region.RegionName] as
-                IDictionary<string, object>)[region.FieldName] is IField field)) return;
-
-            var va = GetValidationAttributes(validatorCollection, typeId, region.RegionName, region.FieldName);
-            SetValidationContext(field, va);
+            //TODO Check if object content has properties decorated with region attribute, validate those properties so unit tests check validation rules
         }
     }
 

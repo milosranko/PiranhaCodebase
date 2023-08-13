@@ -5,5 +5,9 @@
     "gulp-concat": "^2.6.1",
     "gulp-minify": "^3.1.0",
     "gulp-rename": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.43.0",
+    "eslint-plugin-vue": "^9.15.0"
   }
 }

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
-using PiranhaCMS.PublicWeb.Helpers;
-using PiranhaCMS.PublicWeb.Models.Pages;
+using PiranhaCMS.ContentTypes.Helpers;
+using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Models;
 using static PiranhaCMS.Common.Extensions.StringExtensions;

@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Piranha.AspNetCore.Services;
 using Piranha.Models;
-using PiranhaCMS.PublicWeb.Models.Pages;
-using PiranhaCMS.PublicWeb.Models.Pages.Base;
-using PiranhaCMS.PublicWeb.Models.Sites;
+using PiranhaCMS.ContentTypes.Pages;
+using PiranhaCMS.ContentTypes.Pages.Base;
+using PiranhaCMS.ContentTypes.Sites;
 using PiranhaCMS.PublicWeb.Models.ViewModels;
 
 namespace PiranhaCMS.PublicWeb.Business.Filters;

@@ -12,9 +12,9 @@ using Piranha.Data.EF.SQLite;
 using Piranha.Manager.Editor;
 using PiranhaCMS.Common;
 using PiranhaCMS.Common.Extensions;
+using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.ImageCache;
 using PiranhaCMS.PublicWeb.Business.Filters;
-using PiranhaCMS.PublicWeb.Models.Pages;
 using PiranhaCMS.Search.Models.Enums;
 using PiranhaCMS.Search.Startup;
 using PiranhaCMS.Validators.Startup;
@@ -22,7 +22,6 @@ using Serilog;
 using System;
 using System.IO;
 using System.Net;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -145,14 +144,14 @@ if (!App.MediaTypes.Documents.ContainsExtension(".svg"))
 App.Blocks.AutoRegisterBlocks();
 
 //Configure validator
-app.UsePiranhaValidators(app.Logger);
+app.UsePiranhaValidators(typeof(StartPage).Assembly, app.Logger);
 
 //Configure cache level
 App.CacheLevel = CacheLevel.Basic;
 
 //Build content types
 new ContentTypeBuilder(api)
-    .AddAssembly(Assembly.GetEntryAssembly())
+    .AddAssembly(typeof(StartPage).Assembly)
     .Build()
     .DeleteOrphans();
 

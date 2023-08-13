@@ -1,4 +1,4 @@
-using PiranhaCMS.PublicWeb.Models.Pages;
+using PiranhaCMS.ContentTypes.Pages;
 
 namespace PiranhaCMS.PublicWeb.Models.ViewModels;
 

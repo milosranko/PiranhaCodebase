@@ -1,5 +1,6 @@
+@using PiranhaCMS.ContentTypes.Helpers;
 @{
-    var searchPage = PiranhaCMS.PublicWeb.Helpers.PageHelpers.GetSiteSettings().SearchPageReference?.Page?.Permalink;
+    var searchPage = PageHelpers.GetSiteSettings().SearchPageReference?.Page?.Permalink;
     var searchQuery = PiranhaCMS.Common.Helpers.PageHelpers.GetSearchQuery();
 }
 

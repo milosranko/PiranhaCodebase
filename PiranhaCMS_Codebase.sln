@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiranhaCMS.Common", "Piranh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiranhaCMS.Validators", "PiranhaCMS.Validators\PiranhaCMS.Validators.csproj", "{531E8141-06BF-473A-BF4D-2D022DC26371}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiranhaCMS.ImageCache", "PiranhaCMS.ImageCache\PiranhaCMS.ImageCache.csproj", "{12537FF0-02BC-49F8-93DE-043F017E037C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiranhaCMS.ImageCache", "PiranhaCMS.ImageCache\PiranhaCMS.ImageCache.csproj", "{12537FF0-02BC-49F8-93DE-043F017E037C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiranhaCMS.ContentTypes", "PiranhaCMS.ContentTypes\PiranhaCMS.ContentTypes.csproj", "{3A532B05-010D-4886-A3FE-76D1E1CDCA60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiranhaCMS.Tests", "PiranhaCMS.Tests\PiranhaCMS.Tests.csproj", "{A53CFA40-48A3-4FB3-B617-49445D98D52D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{12537FF0-02BC-49F8-93DE-043F017E037C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12537FF0-02BC-49F8-93DE-043F017E037C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12537FF0-02BC-49F8-93DE-043F017E037C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A532B05-010D-4886-A3FE-76D1E1CDCA60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A532B05-010D-4886-A3FE-76D1E1CDCA60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A532B05-010D-4886-A3FE-76D1E1CDCA60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A532B05-010D-4886-A3FE-76D1E1CDCA60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A53CFA40-48A3-4FB3-B617-49445D98D52D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A53CFA40-48A3-4FB3-B617-49445D98D52D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A53CFA40-48A3-4FB3-B617-49445D98D52D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A53CFA40-48A3-4FB3-B617-49445D98D52D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

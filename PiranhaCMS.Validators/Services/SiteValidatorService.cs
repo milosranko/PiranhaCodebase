@@ -17,9 +17,9 @@ public class SiteValidatorService : ISiteValidatorService
     private IEnumerable<Type> siteTypes;
     private IDictionary<string, IEnumerable<PageValidatorModel>> siteValidatorCollection = new Dictionary<string, IEnumerable<PageValidatorModel>>();
 
-    public void Initialize()
+    public void Initialize(Assembly modelsAssembly)
     {
-        var types = Assembly.GetEntryAssembly().ExportedTypes;
+        var types = modelsAssembly.ExportedTypes;
 
         siteTypes = types.Where(x =>
             x.GetTypeInfo().GetCustomAttributes().Any(y => y is SiteTypeAttribute));

@@ -21,9 +21,9 @@ public class PageValidatorService : IPageValidatorService
     private IDictionary<string, AllowedPageTypesAttribute> pageTypeAllowedTypesCollection = new Dictionary<string, AllowedPageTypesAttribute>();
     private IDictionary<string, IEnumerable<PageValidatorModel>> pageValidatorCollection = new Dictionary<string, IEnumerable<PageValidatorModel>>();
 
-    public void Initialize()
+    public void Initialize(Assembly modelsAssembly)
     {
-        var types = Assembly.GetEntryAssembly().ExportedTypes;
+        var types = modelsAssembly.ExportedTypes;
         var blockTypes = types.Where(x =>
             x.GetTypeInfo().GetCustomAttributes().Any(y => y is BlockTypeAttribute));
         var pageTypes = types.Where(x =>
@@ -38,7 +38,7 @@ public class PageValidatorService : IPageValidatorService
 
     public void Validate(PageBase model, ILogger logger)
     {
-        if (!(model is DynamicPage dynamicPage)) return;
+        if (model is not DynamicPage dynamicPage) return;
 
         try
         {

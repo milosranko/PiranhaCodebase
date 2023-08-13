@@ -9,26 +9,8 @@
   <ItemGroup>
     <Compile Remove="Index\**" />
     <Compile Remove="Logs\**" />
-    <Compile Remove="Views\Setup\**" />
-    <Content Remove="Index\**" />
-    <Content Remove="Logs\**" />
-    <Content Remove="Views\Setup\**" />
     <EmbeddedResource Remove="Index\**" />
     <EmbeddedResource Remove="Logs\**" />
-    <EmbeddedResource Remove="Views\Setup\**" />
-    <None Remove="Index\**" />
-    <None Remove="Logs\**" />
-    <None Remove="Views\Setup\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Controllers\SetupController.cs" />
-    <Compile Remove="Models\Pages\Base\PublicPageBase.cs" />
-    <Compile Remove="Models\Regions\SiteInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Views\Cms\Page.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,10 +34,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PiranhaCMS.Extensions\PiranhaCMS.Common.csproj" />
+    <ProjectReference Include="..\PiranhaCMS.ContentTypes\PiranhaCMS.ContentTypes.csproj" />
     <ProjectReference Include="..\PiranhaCMS.ImageCache\PiranhaCMS.ImageCache.csproj" />
     <ProjectReference Include="..\PiranhaCMS.Search\PiranhaCMS.Search.csproj" />
-    <ProjectReference Include="..\PiranhaCMS.Validators\PiranhaCMS.Validators.csproj" />
   </ItemGroup>
 
 </Project>
