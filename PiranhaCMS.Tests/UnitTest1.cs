@@ -31,7 +31,6 @@ public class PiranhaTests
                 config
                 .AddConfiguration(context.Configuration)
                 .AddEnvironmentVariables()
-                .AddJsonFile("appsettings.json", false, true)
                 .AddJsonFile("appsettings.unittest.json", true, true)
                 .Build();
             })
