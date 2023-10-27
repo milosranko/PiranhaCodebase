@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Piranha" Version="10.3.0" />
-    <PackageReference Include="Piranha.AspNetCore" Version="10.3.0" />
+    <PackageReference Include="Piranha" Version="10.4.0" />
+    <PackageReference Include="Piranha.AspNetCore" Version="10.4.0" />
   </ItemGroup>
 
 </Project>
