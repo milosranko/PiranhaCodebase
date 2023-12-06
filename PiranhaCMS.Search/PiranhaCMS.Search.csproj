@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Authors>Milos Rankovic</Authors>
   </PropertyGroup>
 
@@ -12,7 +12,7 @@
     <PackageReference Include="Lucene.Net.Highlighter" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Store.Azure" Version="4.8.0-beta015" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Piranha" Version="10.4.0" />
   </ItemGroup>
 
