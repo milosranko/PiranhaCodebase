@@ -7,90 +7,89 @@ using PiranhaCMS.Search.Helpers;
 using PiranhaCMS.Search.Models;
 using PiranhaCMS.Search.Models.Config;
 using PiranhaCMS.Search.Services;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PiranhaCMS.Search.Startup;
 
 public static class StartupExtensions
 {
-    public static IServiceCollection AddPiranhaSearch(
-        this IServiceCollection services,
-        Action<PiranhaSearchServiceBuilder> options)
-    {
-        var serviceBuilder = new PiranhaSearchServiceBuilder(services);
-        options?.Invoke(serviceBuilder);
+	public static IServiceCollection AddPiranhaSearch(
+		this IServiceCollection services,
+		Action<PiranhaSearchServiceBuilder> options)
+	{
+		var serviceBuilder = new PiranhaSearchServiceBuilder(services);
+		options?.Invoke(serviceBuilder);
 
-        App.Modules.Register<Module>();
+		App.Modules.Register<Module>();
 
-        serviceBuilder.Services.AddSingleton<ISearchIndexEngine>(new SearchIndexEngine(serviceBuilder));
-        serviceBuilder.Services.AddSingleton<ISearch, SearchIndexService>();
+		serviceBuilder.Services.AddSingleton<ISearchIndexEngine>(new SearchIndexEngine(serviceBuilder));
+		serviceBuilder.Services.AddSingleton<ISearch, SearchIndexService>();
 
-        return serviceBuilder.Services;
-    }
+		return serviceBuilder.Services;
+	}
 
-    public static IApplicationBuilder UsePiranhaSearch(
-        this IApplicationBuilder app,
-        IApi api,
-        ILogger logger,
-        Action<PiranhaSearchApplicationBuilder> options)
-    {
-        var applicationBuilder = new PiranhaSearchApplicationBuilder(app);
-        options?.Invoke(applicationBuilder);
+	public static IApplicationBuilder UsePiranhaSearch(
+		this IApplicationBuilder app,
+		IApi api,
+		ILogger logger,
+		Action<PiranhaSearchApplicationBuilder> options)
+	{
+		var applicationBuilder = new PiranhaSearchApplicationBuilder(app);
+		options?.Invoke(applicationBuilder);
 
-        var searchIndexEngine = app.ApplicationServices.GetService<ISearchIndexEngine>();
-        if (searchIndexEngine == null) throw new Exception("Search engine not initialized!");
+		var searchIndexEngine = app.ApplicationServices.GetService<ISearchIndexEngine>();
 
-        logger.LogDebug("Site indexing started...");
+		if (searchIndexEngine == null)
+			throw new Exception("Search engine not initialized!");
 
-        _ = new SearchOptions(applicationBuilder.Include);
+		logger.LogDebug("Site indexing started...");
 
-        var pagesIndexed = IndexSite(searchIndexEngine, api, applicationBuilder.ForceReindexing)
-            .GetAwaiter()
-            .GetResult();
+		_ = new SearchOptions(applicationBuilder.Include);
 
-        logger.LogDebug($"Site indexing ended, total pages indexed: {pagesIndexed}.");
+		var pagesIndexed = IndexSite(searchIndexEngine, api, applicationBuilder.ForceReindexing)
+			.GetAwaiter()
+			.GetResult();
 
-        return app;
-    }
+		logger.LogDebug($"Site indexing ended, total pages indexed: {pagesIndexed}.");
 
-    private static async Task<int> IndexSite(
-        ISearchIndexEngine searchIndexEngine,
-        IApi api,
-        bool forceReindexing)
-    {
-        if (!forceReindexing && searchIndexEngine.IndexExists()) return 0;
-        if (forceReindexing) searchIndexEngine.DeleteAll();
+		return app;
+	}
 
-        var defaultSite = await api.Sites.GetDefaultAsync();
-        var pages = await api.Pages.GetAllAsync(defaultSite?.Id);
+	private static async Task<int> IndexSite(
+		ISearchIndexEngine searchIndexEngine,
+		IApi api,
+		bool forceReindexing)
+	{
+		if (!forceReindexing && searchIndexEngine.IndexExists()) return 0;
+		if (forceReindexing) searchIndexEngine.DeleteAll();
 
-        if (pages == null) return 0;
+		var defaultSite = await api.Sites.GetDefaultAsync();
+		var pages = await api.Pages.GetAllAsync(defaultSite?.Id);
 
-        var counter = 0;
-        foreach (var page in pages)
-        {
-            if (!SearchOptions.Include.Any(x => x.Name.Equals(page.TypeId))) continue;
-            if (!page.IsPublished || page.Permissions.Any()) continue;
+		if (pages == null) return 0;
 
-            var body = PageContentHelpers.ExtractPageContent(page);
-            var content = new Content
-            {
-                ContentId = page.Id.ToString(),
-                Title = page.Title,
-                RouteName = page.Slug,
-                ContentType = page.TypeId,
-                Url = page.Permalink,
-                Text = body,
-                Category = page.TypeId
-            };
+		var counter = 0;
+		foreach (var page in pages)
+		{
+			if (!SearchOptions.Include.Any(x => x.Name.Equals(page.TypeId))) continue;
+			if (!page.IsPublished || page.Permissions.Any()) continue;
 
-            searchIndexEngine.AddToIndexWithoutCommit(content);
-            counter++;
-        }
+			var body = PageContentHelpers.ExtractPageContent(page);
+			var content = new Content
+			{
+				ContentId = page.Id.ToString(),
+				Title = page.Title,
+				RouteName = page.Slug,
+				ContentType = page.TypeId,
+				Url = page.Permalink,
+				Text = body,
+				Category = page.TypeId
+			};
 
-        searchIndexEngine.Commit();
-        return counter;
-    }
+			searchIndexEngine.AddToIndexWithoutCommit(content);
+			counter++;
+		}
+
+		searchIndexEngine.Commit();
+		return counter;
+	}
 }

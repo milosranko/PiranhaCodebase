@@ -1,12 +1,11 @@
 using PiranhaCMS.ContentTypes.Regions;
-using System.Collections.Generic;
 
 namespace PiranhaCMS.PublicWeb.Models.ViewModels;
 
-public class HeaderViewModel
+public record HeaderViewModel
 {
-    public string SiteLogoImageUrl { get; set; }
-    public IList<LinkButton> TopLinks { get; set; }
-    public string EmailAddress { get; set; }
-    public string PhoneNumber { get; set; }
+	public string? SiteLogoImageUrl { get; set; }
+	public IList<LinkButton>? TopLinks { get; set; }
+	public string? EmailAddress { get; set; }
+	public string? PhoneNumber { get; set; }
 }

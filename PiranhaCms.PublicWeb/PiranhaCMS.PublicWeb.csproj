@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <UserSecretsId>af5d3192-deda-4450-96e7-4c8679e3fbf8</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +39,10 @@
     <ProjectReference Include="..\PiranhaCMS.ContentTypes\PiranhaCMS.ContentTypes.csproj" />
     <ProjectReference Include="..\PiranhaCMS.ImageCache\PiranhaCMS.ImageCache.csproj" />
     <ProjectReference Include="..\PiranhaCMS.Search\PiranhaCMS.Search.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logs\" />
   </ItemGroup>
 
 </Project>
