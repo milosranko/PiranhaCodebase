@@ -11,8 +11,6 @@ public static class EnumerableExtensions
 			yield break;
 
 		foreach (var item in source.Select(x => PageHelpers.GetPageById<T>(x.Id)))
-		{
 			yield return item;
-		}
 	}
 }

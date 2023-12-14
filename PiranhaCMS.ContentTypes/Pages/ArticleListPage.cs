@@ -9,15 +9,15 @@ namespace PiranhaCMS.ContentTypes.Pages;
 
 [PageType(Title = "Article List Page", UseBlocks = false)]
 [ContentTypeRoute(Title = "Default", Route = $"/{nameof(ArticleListPage)}")]
-[AllowedPageTypes(new[]
-{
-    typeof(ArticlePage)
-})]
+[AllowedPageTypes(
+[
+	typeof(ArticlePage)
+])]
 public class ArticleListPage : Page<ArticleListPage>, IPage
 {
-    [Region(
-        Title = "Main Content",
-        Display = RegionDisplayMode.Content,
-        Description = "Main content properties")]
-    public ArticleListPageRegion PageRegion { get; set; }
+	[Region(
+		Title = "Main Content",
+		Display = RegionDisplayMode.Content,
+		Description = "Main content properties")]
+	public ArticleListPageRegion PageRegion { get; set; }
 }

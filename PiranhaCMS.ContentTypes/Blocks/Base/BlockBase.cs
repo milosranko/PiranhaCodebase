@@ -6,5 +6,5 @@ namespace PiranhaCMS.ContentTypes.Blocks.Base;
 
 public abstract class BlockBase : Block, ICurrentPage
 {
-    public PageBase CurrentPage => PageHelpers.GetCurrentPage();
+	public PageBase? CurrentPage => PageHelpers.GetCurrentPage();
 }
