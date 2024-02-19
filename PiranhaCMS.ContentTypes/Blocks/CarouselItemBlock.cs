@@ -35,9 +35,16 @@ public class CarouselItemBlock : BlockBase
 	public ImageField Image { get; set; }
 
 	[Field(
+		Title = "Background Video",
+		Placeholder = "Please select video",
+		Options = FieldOption.HalfWidth,
+		Description = "This is video field")]
+	public VideoField Video { get; set; }
+
+	[Field(
 		Title = "Image Alternate Text",
 		Placeholder = "Enter Image alternate text",
-		Options = FieldOption.HalfWidth,
+		//Options = FieldOption.HalfWidth,
 		Description = "This is image alternate text field")]
 	[StringLength(50, ErrorMessage = "Image Alternate Text: maximum length is 50 characters!")]
 	public StringField ImageAltText { get; set; }

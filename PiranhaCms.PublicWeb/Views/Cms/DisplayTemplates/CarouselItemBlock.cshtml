@@ -5,10 +5,20 @@
 }
 
 <div class="carousel-item @(isActive ? "active" : "")">
+    @if (Model.Image.Media != null && Model.Video.Media == null)
+    {
     <image-cache model="Model.Image"
                  css="w-100"
                  srcset="960x540|1280x720|1920x1080"
                  sizes="100vw" />
+    }
+    @if(Model.Video.Media != null)
+    {
+    <video autoplay loop muted playsinline class="w-100">
+        <source src="@Model.Video.Media.PublicUrl.Remove(0, 1)" type="video/mp4" />
+        Your browser does not support the video tag.
+    </video>
+    }
     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
         <div class="p-3" style="max-width: 900px;">
             <h5 class="text-white text-uppercase">@Model.Title</h5>
