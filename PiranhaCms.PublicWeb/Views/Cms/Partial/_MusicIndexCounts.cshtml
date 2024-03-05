@@ -1,0 +1,66 @@
+@using PiranhaCMS.ContentTypes.Helpers;
+@using PiranhaCMS.PublicWeb.Helpers;
+@model PiranhaCMS.Search.Models.MusicIndexCounts
+
+@if (Model != null && Model.TotalFiles.HasValue && Model.TotalFiles.Value > 0)
+{
+    <div class="mb-2">
+        Total files: @Model.TotalFiles.Value
+    </div>
+    <div class="row">
+        <h5>Total by extension</h5>
+        <div class="col-6">
+            <ul class="list-group">
+                @foreach (var hit in Model.TotalFilesByExtension)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @Html.Raw(hit.Key)
+                        <span class="badge bg-primary rounded-pill">@hit.Value</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <h5>Latest additions</h5>
+        <div class="col">
+            <ul class="list-group">
+            @foreach (var hit in Model.LatestAdditions)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="?artist=@Html.UrlEncoder.Encode(hit.Item1)">@Html.Raw(hit.Item1)</a>
+                    <span class="badge bg-secondary rounded-pill">
+                        <a href="?release=@Html.UrlEncoder.Encode(hit.Item2)">@Html.Raw(hit.Item2)</a>
+                    </span>
+                </li>
+            }
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h5>Genres</h5>
+            <ul class="list-group">
+                @foreach (var hit in Model.GenreCount)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @Html.Raw(hit.Key)
+                        <span class="badge bg-primary rounded-pill">@hit.Value</span>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="col">
+            <h5>Release years</h5>
+            <ul class="list-group">
+                @foreach (var hit in Model.ReleaseYears)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @Html.Raw(hit.Key)
+                        <span class="badge bg-primary rounded-pill">@hit.Value</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}

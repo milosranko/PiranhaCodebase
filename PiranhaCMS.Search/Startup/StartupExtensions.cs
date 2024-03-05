@@ -12,84 +12,107 @@ namespace PiranhaCMS.Search.Startup;
 
 public static class StartupExtensions
 {
-	public static IServiceCollection AddPiranhaSearch(
-		this IServiceCollection services,
-		Action<PiranhaSearchServiceBuilder> options)
-	{
-		var serviceBuilder = new PiranhaSearchServiceBuilder(services);
-		options?.Invoke(serviceBuilder);
+    public static IServiceCollection AddPiranhaSearch(
+        this IServiceCollection services,
+        Action<PiranhaSearchServiceBuilder> options)
+    {
+        var serviceBuilder = new PiranhaSearchServiceBuilder(services);
+        options?.Invoke(serviceBuilder);
 
-		App.Modules.Register<Module>();
+        App.Modules.Register<Module>();
 
-		serviceBuilder.Services.AddSingleton<ISearchIndexEngine>(new SearchIndexEngine(serviceBuilder));
-		serviceBuilder.Services.AddSingleton<ISearch, SearchIndexService>();
+        serviceBuilder.Services.AddSingleton<ISearchIndexEngine>(new SearchIndexEngine(serviceBuilder));
+        serviceBuilder.Services.AddSingleton<ISearch, SearchIndexService>();
 
-		return serviceBuilder.Services;
-	}
+        return serviceBuilder.Services;
+    }
 
-	public static IApplicationBuilder UsePiranhaSearch(
-		this IApplicationBuilder app,
-		IApi api,
-		ILogger logger,
-		Action<PiranhaSearchApplicationBuilder> options)
-	{
-		var applicationBuilder = new PiranhaSearchApplicationBuilder(app);
-		options?.Invoke(applicationBuilder);
+    public static IServiceCollection AddMusicSearch(this IServiceCollection services, string indexFolderName)
+    {
+        services.AddSingleton<IMusicSearchIndexEngine>(new MusicSearchIndexEngine(indexFolderName));
+        services.AddTransient<IMusicSearchIndexHelpers, MusicSearchIndexHelpers>();
 
-		var searchIndexEngine = app.ApplicationServices.GetService<ISearchIndexEngine>();
+        return services;
+    }
 
-		if (searchIndexEngine == null)
-			throw new Exception("Search engine not initialized!");
+    public static IApplicationBuilder UseMusicSearch(
+        this IApplicationBuilder app,
+        ILogger logger)
+    {
+        if (!App.MediaTypes.Documents.ContainsExtension(".mla"))
+            App.MediaTypes.Documents.Add(".mla", "application/mla", false);
 
-		logger.LogDebug("Site indexing started...");
+        logger.LogDebug("Attaching events on media file saved...");
 
-		_ = new SearchOptions(applicationBuilder.Include);
+        var musicSearchIndexHelpers = app.ApplicationServices.GetRequiredService<IMusicSearchIndexHelpers>();
+        App.Hooks.Media.RegisterOnAfterSave(musicSearchIndexHelpers.ExtractMLA);
 
-		var pagesIndexed = IndexSite(searchIndexEngine, api, applicationBuilder.ForceReindexing)
-			.GetAwaiter()
-			.GetResult();
+        return app;
+    }
 
-		logger.LogDebug($"Site indexing ended, total pages indexed: {pagesIndexed}.");
+    public static IApplicationBuilder UsePiranhaSearch(
+        this IApplicationBuilder app,
+        IApi api,
+        ILogger logger,
+        Action<PiranhaSearchApplicationBuilder> options)
+    {
+        var applicationBuilder = new PiranhaSearchApplicationBuilder(app);
+        options?.Invoke(applicationBuilder);
 
-		return app;
-	}
+        var searchIndexEngine = app.ApplicationServices.GetService<ISearchIndexEngine>();
 
-	private static async Task<int> IndexSite(
-		ISearchIndexEngine searchIndexEngine,
-		IApi api,
-		bool forceReindexing)
-	{
-		if (!forceReindexing && searchIndexEngine.IndexExists()) return 0;
-		if (forceReindexing) searchIndexEngine.DeleteAll();
+        if (searchIndexEngine == null)
+            throw new Exception("Search engine not initialized!");
 
-		var defaultSite = await api.Sites.GetDefaultAsync();
-		var pages = await api.Pages.GetAllAsync(defaultSite?.Id);
+        logger.LogDebug("Site indexing started...");
 
-		if (pages == null) return 0;
+        _ = new SearchOptions(applicationBuilder.Include);
 
-		var counter = 0;
-		foreach (var page in pages)
-		{
-			if (!SearchOptions.Include.Any(x => x.Name.Equals(page.TypeId))) continue;
-			if (!page.IsPublished || page.Permissions.Any()) continue;
+        var pagesIndexed = IndexSite(searchIndexEngine, api, applicationBuilder.ForceReindexing)
+            .GetAwaiter()
+            .GetResult();
 
-			var body = PageContentHelpers.ExtractPageContent(page);
-			var content = new Content
-			{
-				ContentId = page.Id.ToString(),
-				Title = page.Title,
-				RouteName = page.Slug,
-				ContentType = page.TypeId,
-				Url = page.Permalink,
-				Text = body,
-				Category = page.TypeId
-			};
+        logger.LogDebug($"Site indexing ended, total pages indexed: {pagesIndexed}.");
 
-			searchIndexEngine.AddToIndexWithoutCommit(content);
-			counter++;
-		}
+        return app;
+    }
 
-		searchIndexEngine.Commit();
-		return counter;
-	}
+    private static async Task<int> IndexSite(
+        ISearchIndexEngine searchIndexEngine,
+        IApi api,
+        bool forceReindexing)
+    {
+        if (!forceReindexing && searchIndexEngine.IndexExists()) return 0;
+        if (forceReindexing) searchIndexEngine.DeleteAll();
+
+        var defaultSite = await api.Sites.GetDefaultAsync();
+        var pages = await api.Pages.GetAllAsync(defaultSite?.Id);
+
+        if (pages == null) return 0;
+
+        var counter = 0;
+        foreach (var page in pages)
+        {
+            if (!SearchOptions.Include.Any(x => x.Name.Equals(page.TypeId))) continue;
+            if (!page.IsPublished || page.Permissions.Any()) continue;
+
+            var body = PageContentHelpers.ExtractPageContent(page);
+            var content = new Content
+            {
+                ContentId = page.Id.ToString(),
+                Title = page.Title,
+                RouteName = page.Slug,
+                ContentType = page.TypeId,
+                Url = page.Permalink,
+                Text = body,
+                Category = page.TypeId
+            };
+
+            searchIndexEngine.AddToIndexWithoutCommit(content);
+            counter++;
+        }
+
+        searchIndexEngine.Commit();
+        return counter;
+    }
 }

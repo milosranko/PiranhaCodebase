@@ -1,9 +1,6 @@
 @using PiranhaCMS.ContentTypes.Helpers;
 @using PiranhaCMS.PublicWeb.Helpers;
-@model PiranhaCMS.Search.Models.SearchResult
-@{
-    var searchPage = PageHelpers.GetSiteSettings().SearchPageReference?.Page?.Permalink;
-}
+@model PiranhaCMS.Search.Models.MusicSearchResult
 
 @if (Model != null && Model.HasHits)
 {
@@ -11,35 +8,44 @@
         Total results: @Model.TotalHits
     </div>
 
+    <ul class="list-group">
     @foreach (var hit in Model.Hits)
     {
+        var tags = hit.Tags.Split("|", StringSplitOptions.TrimEntries);
+
         <div class="col-lg-12 mb-2">
             <div class="bg-secondary d-flex">
                 <div class="d-flex flex-column justify-content-center py-3 px-4">
                     <div class="d-flex mb-2">
-                        <small class="text-uppercase me-3"><i class="bi bi-bookmarks me-2"></i>@hit.Title</small>
+                        <small class="text-uppercase me-3">
+                            <i class="bi bi-bookmarks me-2"></i>
+                            <a href="?artist=@Html.UrlEncoder.Encode(tags[0])">@Html.Raw(tags[0])</a> | 
+                            @tags[2] 
+                            <a href="?release=@Html.UrlEncoder.Encode(tags[1])">@Html.Raw(tags[1])</a>
+                        </small>
                     </div>
-                    <a class="h4" href="@hit.Url">@Html.Raw(hit.HighlightedText)</a>
+                    @Html.Raw(hit.Name)
                 </div>
             </div>
         </div>
     }
+    </ul>
     <div class="col-12 mt-2">
         <nav aria-label="Page navigation">
-            <ul class="pagination pagination-lg m-0">
+            <ul class="pagination">
                 <li class="page-item @(Model.Pagination.PageIndex > 0 ? string.Empty : "disabled")">
-                    <a class="page-link rounded-0" href="@searchPage?q=@Model.SearchText@(Model.Pagination.PageIndex-1 == 0 ? "" : $"&page={Model.Pagination.PageIndex-1}")" aria-label="Previous" title="Previous">
+                    <a class="page-link rounded-0" href="?q=@Model.SearchText@(Model.Pagination.PageIndex-1 == 0 ? "" : $"&page={Model.Pagination.PageIndex-1}")" aria-label="Previous" title="Previous">
                         <span aria-hidden="true"><i class="bi bi-arrow-left"></i></span>
                     </a>
                 </li>
                 @for (int i = 0; i < Math.Ceiling(decimal.Divide(Model.TotalHits, Model.Pagination.PageSize)); i++)
                 {
                     <li class="page-item @(Model.Pagination.PageIndex.Equals(i) ? "active" : string.Empty)">
-                        <a class="page-link" href="@searchPage?q=@Model.SearchText@(Model.Pagination.PageIndex == 0 ? "" : $"&page={i+1}")">@(i + 1)</a>
+                        <a class="page-link" href="?q=@Model.SearchText@(Model.Pagination.PageIndex == 0 && i == 0 ? "" : $"&page={i + 1}")">@(i + 1)</a>
                     </li>
                 }
                 <li class="page-item @(Model.Pagination.PageIndex + 1 < Math.Ceiling(decimal.Divide(Model.TotalHits, Model.Pagination.PageSize)) ? string.Empty : "disabled")">
-                    <a class="page-link rounded-0" href="@searchPage?q=@Model.SearchText&page=@(Model.Pagination.PageIndex+1)" aria-label="Next" title="Next">
+                    <a class="page-link rounded-0" href="?q=@Model.SearchText&page=@(Model.Pagination.PageIndex+1)" aria-label="Next" title="Next">
                         <span aria-hidden="true"><i class="bi bi-arrow-right"></i></span>
                     </a>
                 </li>
@@ -47,7 +53,7 @@
         </nav>
     </div>
 }
-else if (!string.IsNullOrEmpty(Model.SearchText))
+else if (!string.IsNullOrEmpty(Model?.SearchText))
 {
     <i>No results found! Try some other keyword...</i>
 }

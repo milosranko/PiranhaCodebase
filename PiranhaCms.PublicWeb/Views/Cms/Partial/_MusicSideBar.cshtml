@@ -1,0 +1,18 @@
+@using PiranhaCMS.ContentTypes.Helpers;
+@{
+    var searchPage = PageHelpers.GetSiteSettings().MusicSearchPageReference?.Page?.Permalink;
+    var searchQuery = PiranhaCMS.Common.Helpers.PageHelpers.GetSearchQuery();
+}
+
+@if (searchPage != null)
+{
+<div class="mb-5">
+    @using (Html.BeginForm(FormMethod.Get, new { action = searchPage }))
+    {
+        <div class="mb-5 input-group">
+            @Html.TextBox("q", searchQuery, new { @class = "form-control p-3", placeholder = "Search music library"})
+            <button class="btn btn-primary px-4" title="Search"><i class="bi bi-search"></i></button>
+        </div>
+    }
+</div>
+}

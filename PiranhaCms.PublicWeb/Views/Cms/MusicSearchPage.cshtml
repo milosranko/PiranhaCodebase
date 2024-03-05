@@ -1,0 +1,21 @@
+@model PiranhaCMS.PublicWeb.Models.ViewModels.MusicSearchPageViewModel
+
+<partial name="Partial/_PageHeaderWithBreadcrumb.cshtml" model="Model.CurrentPage" />
+
+<div class="container-fluid py-6 px-5">
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <div class="row g-5">
+                <image-cache model="Model.CurrentPage.PrimaryImage"
+                             css="img-fluid w-100 mb-5"
+                             srcset="960x540|1280x720|1600x900"
+                             sizes="100vw" />
+                <partial name="Partial/_MusicIndexCounts" model="@Model.IndexCounts" />
+                <partial name="Partial/_MusicSearchResult" model="@Model.SearchResult" />
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <partial name="Partial/_MusicSideBar.cshtml" model="@Model.SearchResult" />
+        </div>
+    </div>
+</div>

@@ -28,10 +28,10 @@ builder.Logging.AddSerilog(new LoggerConfiguration().CreateLogger(), true);
 #region Configuration binding
 
 builder.Configuration
-	.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-	.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
-	.AddEnvironmentVariables()
-	.Build();
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables()
+    .Build();
 
 #endregion
 
@@ -42,42 +42,43 @@ builder.Services.AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>();
 #region Piranha CMS
 
 builder.Services
-	.AddPiranha(options =>
-	{
-		options.AddRazorRuntimeCompilation = true;
-		options.UseCms();
-		options.UseManager();
-		options.UseFileStorage();
-		options.UseImageSharp();
-		options.UseTinyMCE();
-		options.UseMemoryCache();
-		options.UseEF<SQLiteDb>(db =>
-			db.UseSqlite(builder.Configuration.GetConnectionString("piranha")));
-		options.UseIdentityWithSeed<IdentitySQLiteDb>(db =>
-			db.UseSqlite(builder.Configuration.GetConnectionString("piranha")));
-		//TODO Change this to use SQL Server DB
-		//options.UseEF<SQLServerDb>(db =>
-		//    db.UseSqlServer(Configuration.GetConnectionString("piranha")));
-		//options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
-		//    db.UseSqlServer(Configuration.GetConnectionString("piranha")));
-	})
-	.AddPiranhaValidators(options =>
-	{
-		options.UsePageValidation = true;
-		options.UseSiteValidation = true;
-	})
-	.AddPiranhaSearch(options =>
-	{
-		options.StorageType = IndexDirectory.FileSystem;
-		options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "Index");
-		options.DefaultAnalyzer = DefaultAnalyzer.English;
-	});
+    .AddPiranha(options =>
+    {
+        options.AddRazorRuntimeCompilation = true;
+        options.UseCms();
+        options.UseManager();
+        options.UseFileStorage();
+        options.UseImageSharp();
+        options.UseTinyMCE();
+        options.UseMemoryCache();
+        options.UseEF<SQLiteDb>(db =>
+            db.UseSqlite(builder.Configuration.GetConnectionString("piranha")));
+        options.UseIdentityWithSeed<IdentitySQLiteDb>(db =>
+            db.UseSqlite(builder.Configuration.GetConnectionString("piranha")));
+        //TODO Change this to use SQL Server DB
+        //options.UseEF<SQLServerDb>(db =>
+        //    db.UseSqlServer(Configuration.GetConnectionString("piranha")));
+        //options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
+        //    db.UseSqlServer(Configuration.GetConnectionString("piranha")));
+    })
+    .AddPiranhaValidators(options =>
+    {
+        options.UsePageValidation = true;
+        options.UseSiteValidation = true;
+    })
+    .AddPiranhaSearch(options =>
+    {
+        options.StorageType = IndexDirectory.FileSystem;
+        options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "Index");
+        options.DefaultAnalyzer = DefaultAnalyzer.English;
+    })
+    .AddMusicSearch("MusicIndex");
 
 #endregion
 
 builder.Services.AddControllersWithViews(options =>
 {
-	options.Filters.Add<PageContextActionFilter>();
+    options.Filters.Add<PageContextActionFilter>();
 });
 //.AddRazorOptions(options =>
 //{
@@ -97,23 +98,23 @@ ServiceActivator.Configure(app.Services);
 //HTTP 500 handler
 if (app.Environment.IsDevelopment())
 {
-	app.UseDeveloperExceptionPage();
+    app.UseDeveloperExceptionPage();
 }
 else
 {
-	app.UseExceptionHandler("/500.html");
-	app.UseHsts();
+    app.UseExceptionHandler("/500.html");
+    app.UseHsts();
 }
 
 //HTTP 404 handler
 app.Use(async (context, next) =>
 {
-	await next();
-	if (context.Response.StatusCode == (int)HttpStatusCode.NotFound)
-	{
-		context.Request.Path = "/404";
-		context.Response.Redirect(context.Request.Path, true);
-	}
+    await next();
+    if (context.Response.StatusCode == (int)HttpStatusCode.NotFound)
+    {
+        context.Request.Path = "/404";
+        context.Response.Redirect(context.Request.Path, true);
+    }
 });
 
 #endregion
@@ -130,7 +131,7 @@ App.Init(api);
 
 //Added support for SVG files, Piranha doesn't recognize it as an Image so it needs to be Document
 if (!App.MediaTypes.Documents.ContainsExtension(".svg"))
-	App.MediaTypes.Documents.Add(".svg", "image/svg+xml");
+    App.MediaTypes.Documents.Add(".svg", "image/svg+xml");
 
 //Custom blocks registration
 App.Blocks.AutoRegisterBlocks(typeof(StartPage).Assembly);
@@ -143,9 +144,9 @@ App.CacheLevel = CacheLevel.Basic;
 
 //Build content types
 new ContentTypeBuilder(api)
-	.AddAssembly(typeof(StartPage).Assembly)
-	.Build()
-	.DeleteOrphans();
+    .AddAssembly(typeof(StartPage).Assembly)
+    .Build()
+    .DeleteOrphans();
 
 //Configure Tiny MCE
 EditorConfig.FromFile("tinymce-config.json");
@@ -153,21 +154,23 @@ EditorConfig.FromFile("tinymce-config.json");
 //Init Piranha Search
 app.UsePiranhaSearch(api, app.Logger, options =>
 {
-	options.ForceReindexing = app.Configuration.GetRequiredSection("PiranhaSearch").GetValue<bool>("ForceReindexing");
-	options.UseTextHighlighter = true;
-	options.UseFacets = false;
-	options.Include =
-	[
-		typeof(ArticlePage)
-	];
+    options.ForceReindexing = app.Configuration.GetRequiredSection("PiranhaSearch").GetValue<bool>("ForceReindexing");
+    options.UseTextHighlighter = true;
+    options.UseFacets = false;
+    options.Include =
+    [
+        typeof(ArticlePage)
+    ];
 });
+
+app.UseMusicSearch(app.Logger);
 
 //Middleware setup
 app.UsePiranha(options =>
 {
-	options.UseManager();
-	options.UseTinyMCE();
-	options.UseIdentity();
+    options.UseManager();
+    options.UseTinyMCE();
+    options.UseIdentity();
 });
 
 #endregion
