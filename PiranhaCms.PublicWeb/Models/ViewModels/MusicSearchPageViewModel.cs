@@ -4,6 +4,7 @@ using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Models;
 using PiranhaCMS.Search.Models.Constants;
 using PiranhaCMS.Search.Models.Enums;
+using System.Text;
 using static PiranhaCMS.Common.Extensions.StringExtensions;
 
 namespace PiranhaCMS.PublicWeb.Models.ViewModels;
@@ -27,39 +28,51 @@ public record MusicSearchPageViewModel : PageViewModel<MusicSearchPage>
         var artist = httpContext.Request.Query["artist"].ToString();
         var release = httpContext.Request.Query["release"].ToString();
         int.TryParse(httpContext.Request.Query["page"], out int pageIndex);
+        var paginationQueryString = new StringBuilder();
 
         if (!string.IsNullOrEmpty(searchText))
         {
+            paginationQueryString.Append("?q=");
+            paginationQueryString.Append(searchText);
+
             var searchRequest = new MusicSearchRequest
             {
                 Text = searchText.SanitizeSearchString(),
                 Fields = [FieldNames.Text],
                 QueryType = QueryTypesEnum.Text,
-                Pagination = new Pagination(PageSize, pageIndex)
+                Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
+            };
+
+            SearchResult = musicSearchIndexEngine.Search(searchRequest);
+        }
+        else if (!string.IsNullOrEmpty(release) && !string.IsNullOrEmpty(artist))
+        {
+            paginationQueryString.Append("?artist=");
+            paginationQueryString.Append(artist);
+            paginationQueryString.Append("&release=");
+            paginationQueryString.Append(release);
+
+            var searchRequest = new MusicSearchRequest
+            {
+                Terms = [artist, release],
+                Fields = [FieldNames.Artist, FieldNames.Album],
+                QueryType = QueryTypesEnum.MultiTerm,
+                Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
             };
 
             SearchResult = musicSearchIndexEngine.Search(searchRequest);
         }
         else if (!string.IsNullOrEmpty(artist))
         {
+            paginationQueryString.Append("?artist=");
+            paginationQueryString.Append(artist);
+
             var searchRequest = new MusicSearchRequest
             {
-                Text = artist.SanitizeSearchString(),
+                Text = artist,
                 Fields = [FieldNames.Artist],
                 QueryType = QueryTypesEnum.Term,
-                Pagination = new Pagination(PageSize, pageIndex)
-            };
-
-            SearchResult = musicSearchIndexEngine.Search(searchRequest);
-        }
-        else if (!string.IsNullOrEmpty(release))
-        {
-            var searchRequest = new MusicSearchRequest
-            {
-                Text = release.SanitizeSearchString(),
-                Fields = [FieldNames.Album],
-                QueryType = QueryTypesEnum.Term,
-                Pagination = new Pagination(PageSize, pageIndex)
+                Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
             };
 
             SearchResult = musicSearchIndexEngine.Search(searchRequest);

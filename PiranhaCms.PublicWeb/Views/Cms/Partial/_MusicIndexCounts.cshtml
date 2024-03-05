@@ -30,7 +30,7 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <a href="?artist=@Html.UrlEncoder.Encode(hit.Item1)">@Html.Raw(hit.Item1)</a>
                     <span class="badge bg-secondary rounded-pill">
-                        <a href="?release=@Html.UrlEncoder.Encode(hit.Item2)">@Html.Raw(hit.Item2)</a>
+                        <a href="?artist=@Html.UrlEncoder.Encode(hit.Item1)&release=@Html.UrlEncoder.Encode(hit.Item2)">@Html.Raw(hit.Item2)</a>
                     </span>
                 </li>
             }
