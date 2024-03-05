@@ -44,7 +44,7 @@
                 @foreach (var hit in Model.GenreCount)
                 {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        @Html.Raw(hit.Key)
+                        <a href="?q=@Html.UrlEncoder.Encode(hit.Key)">@Html.Raw(hit.Key)</a>
                         <span class="badge bg-primary rounded-pill">@hit.Value</span>
                     </li>
                 }
@@ -56,7 +56,7 @@
                 @foreach (var hit in Model.ReleaseYears)
                 {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        @Html.Raw(hit.Key)
+                        <a href="?q=@Html.UrlEncoder.Encode(hit.Key)">@Html.Raw(hit.Key)</a>
                         <span class="badge bg-primary rounded-pill">@hit.Value</span>
                     </li>
                 }

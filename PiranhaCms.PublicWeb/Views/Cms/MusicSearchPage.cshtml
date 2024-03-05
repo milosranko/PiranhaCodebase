@@ -6,10 +6,13 @@
     <div class="row g-5">
         <div class="col-lg-8">
             <div class="row g-5">
+                @if (Model.CurrentPage.PrimaryImage?.Media != null)
+                {
                 <image-cache model="Model.CurrentPage.PrimaryImage"
                              css="img-fluid w-100 mb-5"
                              srcset="960x540|1280x720|1600x900"
                              sizes="100vw" />
+                }
                 <partial name="Partial/_MusicIndexCounts" model="@Model.IndexCounts" />
                 <partial name="Partial/_MusicSearchResult" model="@Model.SearchResult" />
             </div>

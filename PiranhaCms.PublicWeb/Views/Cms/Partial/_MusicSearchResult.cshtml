@@ -19,9 +19,9 @@
                     <div class="d-flex mb-2">
                         <small class="text-uppercase me-3">
                             <i class="bi bi-bookmarks me-2"></i>
-                            <a href="?artist=@Html.UrlEncoder.Encode(tags[0])">@Html.Raw(tags[0])</a> | 
-                            @tags[2] 
-                            <a href="?release=@Html.UrlEncoder.Encode(tags[1])">@Html.Raw(tags[1])</a>
+                            <a href="?artist=@Html.UrlEncoder.Encode(tags[0].ToLower().Trim())">@Html.Raw(tags[0])</a> | 
+                            <a href="?release=@Html.UrlEncoder.Encode(tags[1])">@tags[2] @Html.Raw(tags[1])</a>
+                            @(bool.Parse(tags[6]).Equals(true) ? Html.Raw("<span class=\"badge bg-primary rounded-pill\">Hi Res</span>") : "")
                         </small>
                     </div>
                     @Html.Raw(hit.Name)
@@ -41,7 +41,7 @@
                 @for (int i = 0; i < Math.Ceiling(decimal.Divide(Model.TotalHits, Model.Pagination.PageSize)); i++)
                 {
                     <li class="page-item @(Model.Pagination.PageIndex.Equals(i) ? "active" : string.Empty)">
-                        <a class="page-link" href="?q=@Model.SearchText@(Model.Pagination.PageIndex == 0 && i == 0 ? "" : $"&page={i + 1}")">@(i + 1)</a>
+                        <a class="page-link" href="?q=@Model.SearchText@(Model.Pagination.PageIndex == 0 && i == 0 ? "" : $"&page={i}")">@(i + 1)</a>
                     </li>
                 }
                 <li class="page-item @(Model.Pagination.PageIndex + 1 < Math.Ceiling(decimal.Divide(Model.TotalHits, Model.Pagination.PageSize)) ? string.Empty : "disabled")">

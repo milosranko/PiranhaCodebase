@@ -128,7 +128,7 @@ public class MusicSearchIndexEngine : IMusicSearchIndexEngine
 
         for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
         {
-            folder = System.IO.Path.GetDirectoryName(searcher.Doc(topDocs.ScoreDocs[i].Doc).Get(FieldNames.Id));
+            folder = Path.GetDirectoryName(searcher.Doc(topDocs.ScoreDocs[i].Doc).Get(FieldNames.Id));
             artist = searcher.Doc(topDocs.ScoreDocs[i].Doc).Get(FieldNames.Artist);
             release = searcher.Doc(topDocs.ScoreDocs[i].Doc).Get(FieldNames.Album);
 
@@ -194,8 +194,16 @@ public class MusicSearchIndexEngine : IMusicSearchIndexEngine
         return new MusicSearchHit
         {
             Id = id,
-            Name = Path.GetFileNameWithoutExtension(id),
+            Name = GetFileNameWithoutExtension(id),
             Tags = string.Join("|", doc.GetValues(FieldNames.Tags))
         };
+    }
+
+    private string GetFileNameWithoutExtension(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+            return path;
+
+        return path.Split(@"\", StringSplitOptions.RemoveEmptyEntries).Last();
     }
 }
