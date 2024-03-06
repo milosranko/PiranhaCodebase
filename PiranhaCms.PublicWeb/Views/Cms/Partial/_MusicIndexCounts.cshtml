@@ -4,8 +4,10 @@
 
 @if (Model != null && Model.TotalFiles.HasValue && Model.TotalFiles.Value > 0)
 {
-    <div class="mb-2">
-        Total files: @Model.TotalFiles.Value
+    <div class="row">
+        <span>
+            <h5>Total files: <b>@Model.TotalFiles.Value</b></h5>
+        </span>
     </div>
     <div class="row">
         <h5>Total by extension</h5>
@@ -44,7 +46,7 @@
                 @foreach (var hit in Model.GenreCount)
                 {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="?q=@Html.UrlEncoder.Encode(hit.Key)">@Html.Raw(hit.Key)</a>
+                        <a href="?genre=@Html.UrlEncoder.Encode(hit.Key)">@Html.Raw(hit.Key)</a>
                         <span class="badge bg-primary rounded-pill">@hit.Value</span>
                     </li>
                 }
@@ -56,7 +58,7 @@
                 @foreach (var hit in Model.ReleaseYears)
                 {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="?q=@Html.UrlEncoder.Encode(hit.Key)">@Html.Raw(hit.Key)</a>
+                        <a href="?year=@Html.UrlEncoder.Encode(hit.Key)">@Html.Raw(hit.Key)</a>
                         <span class="badge bg-primary rounded-pill">@hit.Value</span>
                     </li>
                 }

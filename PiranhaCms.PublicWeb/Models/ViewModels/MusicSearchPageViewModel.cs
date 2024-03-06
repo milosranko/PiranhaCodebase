@@ -27,6 +27,8 @@ public record MusicSearchPageViewModel : PageViewModel<MusicSearchPage>
         var searchText = httpContext.Request.Query["q"].ToString();
         var artist = httpContext.Request.Query["artist"].ToString();
         var release = httpContext.Request.Query["release"].ToString();
+        var genre = httpContext.Request.Query["genre"].ToString();
+        var year = httpContext.Request.Query["year"].ToString();
         int.TryParse(httpContext.Request.Query["page"], out int pageIndex);
         var paginationQueryString = new StringBuilder();
 
@@ -57,6 +59,36 @@ public record MusicSearchPageViewModel : PageViewModel<MusicSearchPage>
                 Terms = [artist, release],
                 Fields = [FieldNames.Artist, FieldNames.Album],
                 QueryType = QueryTypesEnum.MultiTerm,
+                Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
+            };
+
+            SearchResult = musicSearchIndexEngine.Search(searchRequest);
+        }
+        else if (!string.IsNullOrEmpty(genre))
+        {
+            paginationQueryString.Append("?genre=");
+            paginationQueryString.Append(genre);
+
+            var searchRequest = new MusicSearchRequest
+            {
+                Text = genre,
+                Fields = [FieldNames.Genre],
+                QueryType = QueryTypesEnum.Term,
+                Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
+            };
+
+            SearchResult = musicSearchIndexEngine.Search(searchRequest);
+        }
+        else if (!string.IsNullOrEmpty(year))
+        {
+            paginationQueryString.Append("?year=");
+            paginationQueryString.Append(year);
+
+            var searchRequest = new MusicSearchRequest
+            {
+                Text = year,
+                Fields = [FieldNames.Year],
+                QueryType = QueryTypesEnum.Numeric,
                 Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
             };
 

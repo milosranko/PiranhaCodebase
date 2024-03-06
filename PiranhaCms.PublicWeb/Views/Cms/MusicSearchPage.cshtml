@@ -1,5 +1,7 @@
 @model PiranhaCMS.PublicWeb.Models.ViewModels.MusicSearchPageViewModel
-
+@{
+    ViewData["CurrentPageUrl"] = Model.CurrentPage.Slug;
+}
 <partial name="Partial/_PageHeaderWithBreadcrumb.cshtml" model="Model.CurrentPage" />
 
 <div class="container-fluid py-6 px-5">
@@ -14,7 +16,7 @@
                              sizes="100vw" />
                 }
                 <partial name="Partial/_MusicIndexCounts" model="@Model.IndexCounts" />
-                <partial name="Partial/_MusicSearchResult" model="@Model.SearchResult" />
+                <partial name="Partial/_MusicSearchResult" model="@Model.SearchResult" view-data="ViewData" />
             </div>
         </div>
         <div class="col-lg-4">
