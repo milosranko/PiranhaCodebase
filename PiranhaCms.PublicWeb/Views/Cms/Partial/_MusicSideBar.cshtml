@@ -1,7 +1,10 @@
+@model PiranhaCMS.Search.Models.MusicSearchResult
 @using PiranhaCMS.ContentTypes.Helpers;
 @{
     var searchPage = PageHelpers.GetSiteSettings().MusicSearchPageReference?.Page?.Permalink;
     var searchQuery = PiranhaCMS.Common.Helpers.PageHelpers.GetSearchQuery();
+    var artists = Model.Hits.Select(x => x.Tags.Split("|", StringSplitOptions.RemoveEmptyEntries)[0]);
+    var releases = Model.Hits.Select(x => new { Artist = x.Tags.Split("|", StringSplitOptions.RemoveEmptyEntries)[0], Release = x.Tags.Split("|", StringSplitOptions.RemoveEmptyEntries)[1] });
 }
 
 @if (searchPage != null)
@@ -15,4 +18,34 @@
         </div>
     }
 </div>
+}
+
+@if (Model != null && Model.HasHits)
+{
+    <div class="row">
+        <div class="col">
+            <b>Artist</b>
+        </div>
+        <div class="col">
+            <b>Release</b>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @foreach (var item in artists.Distinct())
+            {
+                <div>
+                    <a href="?artist=@Html.UrlEncoder.Encode(item)">@item</a>
+                </div>
+            }
+        </div>
+        <div class="col">
+            @foreach (var item in releases.DistinctBy(x => x.Release))
+            {
+                <div>
+                    <a href="?artist=@Html.UrlEncoder.Encode(item.Artist)&release=@Html.UrlEncoder.Encode(item.Release)">@item.Release</a>
+                </div>
+            }
+        </div>
+    </div>
 }

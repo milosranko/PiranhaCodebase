@@ -73,6 +73,14 @@
 
                     pageCounter++;
                 }
+                @if (totalPages -1 > maxVisiblePages && Model.Pagination.PageIndex < totalPages - maxVisiblePages - 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@(Model.Pagination.QueryString)&page=@(totalPages - 1)" aria-label="Last" title="Last">
+                            @totalPages
+                        </a>
+                    </li>
+                }
                 <li class="page-item @(Model.Pagination.PageIndex + 1 < totalPages ? string.Empty : "disabled")">
                     <a class="page-link rounded-0" href="@(Model.Pagination.QueryString)&page=@(Model.Pagination.PageIndex+1)" aria-label="Next" title="Next">
                         <span aria-hidden="true"><i class="bi bi-arrow-right"></i></span>

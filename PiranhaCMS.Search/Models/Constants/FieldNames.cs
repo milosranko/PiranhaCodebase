@@ -9,7 +9,7 @@ public static class FieldNames
     public const string Id = "id";
     public const string Type = "type";
     public const string Category = "category";
-
+    //MusicLibrary fields
     public const string Name = "name";
     public const string Extension = "ext";
     public const string ModifiedDate = "date";
