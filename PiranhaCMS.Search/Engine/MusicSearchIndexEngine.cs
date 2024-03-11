@@ -81,6 +81,7 @@ public class MusicSearchIndexEngine : IMusicSearchIndexEngine
         searchResult.TotalHits = topDocs.TotalHits;
         searchResult.Hits = hits.OrderBy(x => x.Name).ToList();
         searchResult.Pagination = request.Pagination;
+        searchResult.Pagination.TotalPages = (int)Math.Ceiling(decimal.Divide(searchResult.TotalHits, request.Pagination.PageSize));
 
         return searchResult;
     }

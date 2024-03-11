@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Cms\Partial\_Pagination.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="piranha.codebase.db" />
     <None Remove="piranha.codebase.db-shm" />
     <None Remove="piranha.codebase.db-wal" />
@@ -43,6 +47,18 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Cms\Partial\_Pagination.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Cms\Partial\_Pagination.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Cms\Partial\_Pagination.cshtml" />
   </ItemGroup>
 
 </Project>

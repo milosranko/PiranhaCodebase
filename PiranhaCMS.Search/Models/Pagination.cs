@@ -11,5 +11,6 @@ public record Pagination
 
     public int PageSize { get; private set; }
     public int PageIndex { get; private set; }
+    public int TotalPages { get; set; }
     public string QueryString { get; private set; }
 }

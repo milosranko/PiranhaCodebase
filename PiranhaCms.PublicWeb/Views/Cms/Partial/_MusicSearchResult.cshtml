@@ -1,19 +1,20 @@
 @using PiranhaCMS.ContentTypes.Helpers;
 @using PiranhaCMS.PublicWeb.Helpers;
+@using System.Text.Encodings.Web
 @model PiranhaCMS.Search.Models.MusicSearchResult
+@{
+    var youtubeSearch = "https://www.youtube.com/results?search_query=";
+    var hiRes = "&nbsp;<span class=\"badge bg-primary rounded-pill\">Hi Res</span>";
+}
 
 @if (Model != null && Model.HasHits)
 {
-    var totalPages = (int)Math.Ceiling(decimal.Divide(Model.TotalHits, Model.Pagination.PageSize));
-    var maxVisiblePages = 4;
-    var pageCounter = 0;
-
     <div class="row">
         <div class="col">
             Total results: @Model.TotalHits
         </div>
         <div class="col">
-            Total pages: @totalPages
+            Total pages: @Model.Pagination.TotalPages
         </div>
         <div class="col">
             Page size: @Model.Pagination.PageSize
@@ -26,6 +27,9 @@
     @foreach (var hit in Model.Hits)
     {
         var tags = hit.Tags.Split("|", StringSplitOptions.TrimEntries);
+        var artist = UrlEncoder.Default.Encode(tags[0].Trim());
+        var release = UrlEncoder.Default.Encode(tags[1].Trim());
+        var name = UrlEncoder.Default.Encode(System.IO.Path.GetFileNameWithoutExtension(hit.Name));
 
         <div class="col-lg-12 mb-2">
             <div class="bg-secondary d-flex">
@@ -33,66 +37,24 @@
                     <div class="d-flex mb-2">
                         <small class="text-uppercase me-3">
                             <i class="bi bi-bookmarks me-2"></i>
-                            <a href="?artist=@Html.UrlEncoder.Encode(tags[0].Trim())">@Html.Raw(tags[0])</a> | 
-                            <a href="?artist=@Html.UrlEncoder.Encode(tags[0].Trim())&release=@Html.UrlEncoder.Encode(tags[1])">@tags[2] @Html.Raw(tags[1])</a>
-                            @(bool.Parse(tags[6]).Equals(true) ? Html.Raw("&nbsp;<span class=\"badge bg-primary rounded-pill\">Hi Res</span>") : "")
+                            <a href="?artist=@(artist)">@Html.Raw(tags[0])</a> | 
+                            <a href="?artist=@(artist)&release=@(release)">@(tags[2]) @Html.Raw(tags[1])</a>
+                            @(bool.Parse(tags[6]).Equals(true) ? Html.Raw(hiRes) : "")
                         </small>
                     </div>
-                    @Html.Raw(hit.Name)
+                    <span>
+                        @Html.Raw(hit.Name)
+                        <a href="@youtubeSearch@artist+@name" target="_blank" rel="noreferrer noopener">
+                            <i class="bi bi-youtube"></i>
+                        </a>
+                    </span>
                 </div>
             </div>
         </div>
     }
     </ul>
     <div class="col-12 mt-2">
-        <nav aria-label="Page navigation" class="nav d-flex justify-content-center">
-            <ul class="pagination flex-sm-wrap">
-                <li class="page-item @(Model.Pagination.PageIndex > 0 ? string.Empty : "disabled")">
-                    <a class="page-link rounded-0" href="@Model.Pagination.QueryString" aria-label="First" title="First">
-                        <span aria-hidden="true"><i class="bi bi-arrow-bar-left"></i></span>
-                    </a>
-                </li>
-                <li class="page-item @(Model.Pagination.PageIndex > 0 ? string.Empty : "disabled")">
-                    <a class="page-link rounded-0" href="@Model.Pagination.QueryString@(Model.Pagination.PageIndex-1 == 0 ? "" : $"&page={Model.Pagination.PageIndex-1}")" aria-label="Previous" title="Previous">
-                        <span aria-hidden="true"><i class="bi bi-arrow-left"></i></span>
-                    </a>
-                </li>
-                @for (int i = 0; i < totalPages; i++)
-                {
-                    if (i < Model.Pagination.PageIndex || pageCounter > maxVisiblePages)
-                    {
-                        continue;
-                    }
-                    
-                    if (i >= Model.Pagination.PageIndex)
-                    {
-                        <li class="page-item @(Model.Pagination.PageIndex.Equals(i) ? "active" : string.Empty)">
-                            <a class="page-link" href="@Model.Pagination.QueryString@(i == 0 ? "" : $"&page={i}")">@(i + 1)</a>
-                        </li>
-                    }
-
-                    pageCounter++;
-                }
-                @if (totalPages -1 > maxVisiblePages && Model.Pagination.PageIndex < totalPages - maxVisiblePages - 1)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="@(Model.Pagination.QueryString)&page=@(totalPages - 1)" aria-label="Last" title="Last">
-                            @totalPages
-                        </a>
-                    </li>
-                }
-                <li class="page-item @(Model.Pagination.PageIndex + 1 < totalPages ? string.Empty : "disabled")">
-                    <a class="page-link rounded-0" href="@(Model.Pagination.QueryString)&page=@(Model.Pagination.PageIndex+1)" aria-label="Next" title="Next">
-                        <span aria-hidden="true"><i class="bi bi-arrow-right"></i></span>
-                    </a>
-                </li>
-                <li class="page-item @(Model.Pagination.PageIndex + 1 < totalPages ? string.Empty : "disabled")">
-                    <a class="page-link rounded-0" href="@(Model.Pagination.QueryString)&page=@(totalPages - 1)" aria-label="Last" title="Last">
-                        <span aria-hidden="true"><i class="bi bi-arrow-bar-right"></i></span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <partial name="_Pagination.cshtml" model="Model.Pagination" />
     </div>
 }
 else if (!string.IsNullOrEmpty(Model?.SearchText))
