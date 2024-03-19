@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Piranha" Version="10.4.0" />
-    <PackageReference Include="Piranha.AspNetCore" Version="10.4.0" />
-    <PackageReference Include="Piranha.AttributeBuilder" Version="10.4.0" />
+    <PackageReference Include="Piranha" Version="11.0.0" />
+    <PackageReference Include="Piranha.AspNetCore" Version="11.0.0" />
+    <PackageReference Include="Piranha.AttributeBuilder" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>

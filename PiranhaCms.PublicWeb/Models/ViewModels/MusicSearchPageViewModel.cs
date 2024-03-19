@@ -1,4 +1,4 @@
-using Piranha;
+using Piranha.Cache;
 using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Models;

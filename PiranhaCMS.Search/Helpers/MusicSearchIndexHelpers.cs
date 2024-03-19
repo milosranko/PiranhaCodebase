@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Piranha;
+using Piranha.Cache;
 using Piranha.Models;
 using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Models.Constants;

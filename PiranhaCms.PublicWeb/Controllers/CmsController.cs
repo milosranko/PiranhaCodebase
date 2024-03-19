@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Piranha;
 using Piranha.AspNetCore.Services;
+using Piranha.Cache;
 using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.PublicWeb.Models.ViewModels;
 using PiranhaCMS.Search.Engine;
