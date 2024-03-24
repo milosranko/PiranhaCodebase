@@ -1,18 +1,20 @@
 using Piranha.Cache;
 using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.Search.Engine;
+using PiranhaCMS.Search.Extensions;
 using PiranhaCMS.Search.Models;
 using PiranhaCMS.Search.Models.Constants;
+using PiranhaCMS.Search.Models.Dto;
 using PiranhaCMS.Search.Models.Enums;
+using PiranhaCMS.Search.Models.Requests;
 using System.Text;
-using static PiranhaCMS.Common.Extensions.StringExtensions;
 
 namespace PiranhaCMS.PublicWeb.Models.ViewModels;
 
 public record MusicSearchPageViewModel : PageViewModel<MusicSearchPage>
 {
     public const int PageSize = 20;
-    public MusicSearchResult SearchResult { get; private set; }
+    public SearchResultDto<MusicLibraryDocument> SearchResult { get; private set; }
     public MusicIndexCounts IndexCounts { get; private set; }
 
     public MusicSearchPageViewModel(
@@ -20,15 +22,15 @@ public record MusicSearchPageViewModel : PageViewModel<MusicSearchPage>
         HttpContext httpContext,
         ICache cache) : base(currentPage)
     {
-        SearchResult = MusicSearchResult.Empty;
+        SearchResult = SearchResultDto<MusicLibraryDocument>.Empty();
         IndexCounts = MusicIndexCounts.Empty;
 
-        var musicSearchIndexEngine = httpContext.RequestServices.GetRequiredService<IMusicSearchIndexEngine>();
+        var engine = httpContext.RequestServices.GetRequiredService<ISearchIndexEngine<MusicLibraryDocument>>();
         var searchText = httpContext.Request.Query["q"].ToString();
-        var artist = httpContext.Request.Query["artist"].ToString();
-        var release = httpContext.Request.Query["release"].ToString();
-        var genre = httpContext.Request.Query["genre"].ToString();
-        var year = httpContext.Request.Query["year"].ToString();
+        var artist = httpContext.Request.Query[engine.GetFieldName(x => x.Artist)].ToString();
+        var release = httpContext.Request.Query[engine.GetFieldName(x => x.Release)].ToString();
+        var genre = httpContext.Request.Query[engine.GetFieldName(x => x.Genre)].ToString();
+        var year = httpContext.Request.Query[engine.GetFieldName(x => x.Year)].ToString();
         int.TryParse(httpContext.Request.Query["page"], out int pageIndex);
         var paginationQueryString = new StringBuilder();
 
@@ -37,77 +39,72 @@ public record MusicSearchPageViewModel : PageViewModel<MusicSearchPage>
             paginationQueryString.Append("?q=");
             paginationQueryString.Append(searchText);
 
-            var searchRequest = new MusicSearchRequest
-            {
-                Text = searchText.SanitizeSearchString(),
-                Fields = [FieldNames.Text],
-                QueryType = QueryTypesEnum.Text,
-                Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
-            };
-
-            SearchResult = musicSearchIndexEngine.Search(searchRequest);
+            SearchResult = PerformSearch(
+            engine,
+            searchText,
+            [],
+            [engine.GetFieldName(x => x.Text)],
+            QueryTypesEnum.Text,
+            new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
+            new Dictionary<string, IEnumerable<string?>?> { { engine.GetFieldName(x => x.Artist), [] } });
         }
         else if (!string.IsNullOrEmpty(release) && !string.IsNullOrEmpty(artist))
         {
-            paginationQueryString.Append("?artist=");
+            paginationQueryString.Append($"?{engine.GetFieldName(x => x.Artist)}=");
             paginationQueryString.Append(artist);
-            paginationQueryString.Append("&release=");
+            paginationQueryString.Append($"&{engine.GetFieldName(x => x.Release)}=");
             paginationQueryString.Append(release);
 
-            var searchRequest = new MusicSearchRequest
-            {
-                Terms = [artist, release],
-                Fields = [FieldNames.Artist, FieldNames.Album],
-                QueryType = QueryTypesEnum.MultiTerm,
-                Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
-            };
-
-            SearchResult = musicSearchIndexEngine.Search(searchRequest);
+            SearchResult = PerformSearch(
+            engine,
+            default,
+            [artist, release],
+            [engine.GetFieldName(x => x.Artist), engine.GetFieldName(x => x.Release)],
+            QueryTypesEnum.MultiTerm,
+            new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
+            new Dictionary<string, IEnumerable<string?>?> { { engine.GetFieldName(x => x.Artist), [] } });
         }
         else if (!string.IsNullOrEmpty(genre))
         {
-            paginationQueryString.Append("?genre=");
+            paginationQueryString.Append($"?{engine.GetFieldName(x => x.Genre)}=");
             paginationQueryString.Append(genre);
 
-            var searchRequest = new MusicSearchRequest
-            {
-                Text = genre,
-                Fields = [FieldNames.Genre],
-                QueryType = QueryTypesEnum.Term,
-                Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
-            };
-
-            SearchResult = musicSearchIndexEngine.Search(searchRequest);
+            SearchResult = PerformSearch(
+            engine,
+            default,
+            [genre],
+            [engine.GetFieldName(x => x.Genre)],
+            QueryTypesEnum.Term,
+            new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
+            new Dictionary<string, IEnumerable<string?>?> { { engine.GetFieldName(x => x.Artist), [] } });
         }
         else if (!string.IsNullOrEmpty(year))
         {
-            paginationQueryString.Append("?year=");
+            paginationQueryString.Append($"?{engine.GetFieldName(x => x.Year)}=");
             paginationQueryString.Append(year);
 
-            var searchRequest = new MusicSearchRequest
-            {
-                Text = year,
-                Fields = [FieldNames.Year],
-                QueryType = QueryTypesEnum.Numeric,
-                Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
-            };
-
-            SearchResult = musicSearchIndexEngine.Search(searchRequest);
+            SearchResult = PerformSearch(
+            engine,
+            default,
+            [year],
+            [engine.GetFieldName(x => x.Year)],
+            QueryTypesEnum.Numeric,
+            new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
+            new Dictionary<string, IEnumerable<string?>?> { { engine.GetFieldName(x => x.Artist), [] }, { engine.GetFieldName(x => x.Release), [] } });
         }
         else if (!string.IsNullOrEmpty(artist))
         {
-            paginationQueryString.Append("?artist=");
+            paginationQueryString.Append($"?{engine.GetFieldName(x => x.Artist)}=");
             paginationQueryString.Append(artist);
 
-            var searchRequest = new MusicSearchRequest
-            {
-                Text = artist,
-                Fields = [FieldNames.Artist],
-                QueryType = QueryTypesEnum.Term,
-                Pagination = new Pagination(PageSize, pageIndex, paginationQueryString.ToString())
-            };
-
-            SearchResult = musicSearchIndexEngine.Search(searchRequest);
+            SearchResult = PerformSearch(
+            engine,
+            default,
+            [artist],
+            [engine.GetFieldName(x => x.Artist)],
+            QueryTypesEnum.Term,
+            new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
+            new Dictionary<string, IEnumerable<string?>?> { { engine.GetFieldName(x => x.Release), [] } });
         }
         else
         {
@@ -118,10 +115,84 @@ public record MusicSearchPageViewModel : PageViewModel<MusicSearchPage>
             }
             else
             {
-                var indexCounts = musicSearchIndexEngine.GetIndexStatistics();
+                var indexCounts = GetIndexCounts(engine);
                 cache.Set(CacheKeys.MusicIndexCount, indexCounts);
                 IndexCounts = indexCounts;
             }
         }
+    }
+
+    private MusicIndexCounts GetIndexCounts(ISearchIndexEngine<MusicLibraryDocument> searchIndexEngine)
+    {
+        if (searchIndexEngine.IndexNotExistsOrEmpty())
+            return MusicIndexCounts.Empty;
+
+        return new MusicIndexCounts
+        {
+            TotalFiles = searchIndexEngine.CountDocuments(null).First().Value,
+            TotalFilesByExtension = searchIndexEngine.CountDocuments(new CounterRequest
+            {
+                Field = searchIndexEngine.GetFieldName(x => x.Extension)
+            }),
+            TotalHiResFiles = searchIndexEngine.Search(new Search.Models.Requests.SearchRequest
+            {
+                Text = "hr flac",
+                SearchFields = new Dictionary<string, string?> { { searchIndexEngine.GetFieldName(x => x.Text), string.Empty } },
+                QueryType = QueryTypesEnum.Text,
+                Pagination = new PaginationRequest(int.MaxValue, 0)
+            }).TotalHits,
+            ReleaseYears = searchIndexEngine.CountDocuments(new CounterRequest
+            {
+                Field = searchIndexEngine.GetFieldName(x => x.Year),
+                IsNumeric = true
+            }),
+            GenreCount = searchIndexEngine.CountDocuments(new CounterRequest
+            {
+                Field = searchIndexEngine.GetFieldName(x => x.Genre)
+            }),
+            LatestAdditions = searchIndexEngine.GetLatestAddedItems(new CounterRequest
+            {
+                Field = searchIndexEngine.GetFieldName(x => x.Release),
+                AdditionalField = searchIndexEngine.GetFieldName(x => x.Artist),
+                SortByField = searchIndexEngine.GetFieldName(x => x.ModifiedDate),
+                IsNumeric = false,
+                Top = 25
+            })
+        };
+    }
+
+    private SearchResultDto<MusicLibraryDocument> PerformSearch(
+        ISearchIndexEngine<MusicLibraryDocument> searchIndexEngine,
+        string query,
+        string[]? terms,
+        string[] fields,
+        QueryTypesEnum queryType,
+        PaginationRequest paginationRequest,
+        IDictionary<string, IEnumerable<string?>?>? facets = null)
+    {
+        if (string.IsNullOrEmpty(query) && (terms == null || terms.Length == 0))
+            return SearchResultDto<MusicLibraryDocument>.Empty();
+
+        if (fields == null || fields.Length == 0)
+            return SearchResultDto<MusicLibraryDocument>.Empty();
+
+        var searchFields = new Dictionary<string, string?>(fields.Length);
+
+        for (var i = 0; i < fields.Length; i++)
+            searchFields.Add(fields[i], terms is not null && i < terms.Length ? terms[i] : string.Empty);
+
+        var searchRequest = new Search.Models.Requests.SearchRequest
+        {
+            Text = query,
+            SearchFields = searchFields,
+            QueryType = queryType,
+            Pagination = paginationRequest,
+            Facets = facets,
+            SearchType = SearchType.ExactMatch
+        };
+        var res = searchIndexEngine.Search(searchRequest);
+        res.SearchFields = searchFields;
+
+        return res;
     }
 }

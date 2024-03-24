@@ -1,210 +1,93 @@
-﻿using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Core;
-using Lucene.Net.Documents;
-using Lucene.Net.Index;
-using Lucene.Net.QueryParsers.Classic;
-using Lucene.Net.Search;
-using Lucene.Net.Util;
-using PiranhaCMS.Search.Models;
-using PiranhaCMS.Search.Models.Constants;
-using PiranhaCMS.Search.Models.Enums;
-using PiranhaCMS.Search.Providers;
+﻿using Lucene.Net.Index;
+using PiranhaCMS.Search.Extensions;
+using PiranhaCMS.Search.Helpers;
+using PiranhaCMS.Search.Models.Base;
+using PiranhaCMS.Search.Models.Dto;
+using PiranhaCMS.Search.Models.Internal;
+using PiranhaCMS.Search.Models.Requests;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace PiranhaCMS.Search.Engine;
 
-public class MusicSearchIndexEngine : IMusicSearchIndexEngine
+public class MusicSearchIndexEngine<T> : ISearchIndexEngine<T> where T : MappingDocumentBase<T>, IDocument, new()
 {
-    private const LuceneVersion AppLuceneVersion = LuceneVersion.LUCENE_48;
-    private readonly Analyzer _analyzer;
-    private readonly string _indexName;
+    private readonly IDocumentReader _documentReader;
 
-    public string GetIndexName()
+    public MusicSearchIndexEngine()
     {
-        return _indexName;
+        DocumentModelHelpers<T>.ReflectDocumentFields();
+
+        _documentReader = new DocumentReader(DocumentFields<T>.IndexName, DocumentFields<T>.FacetsConfig, DocumentFields<T>.HasFacets);
     }
 
-    public MusicSearchIndexEngine(string indexName)
+    #region Public methods
+
+    public IEnumerable<string> SkipExistingDocuments(string[] ids)
     {
-        _indexName = indexName;
-        _analyzer = new WhitespaceAnalyzer(AppLuceneVersion);
+        if (ids.Length == 0)
+            return [];
+
+        var result = new Collection<string>();
+
+        foreach (var id in ids)
+            if (_documentReader.DocumentExists(id))
+                result.Add(id);
+
+        return result;
     }
 
-    public MusicSearchResult Search(MusicSearchRequest request)
+    public IEnumerable<T> GetByIds(string[] ids)
     {
-        using var directory = DirectoryProvider.GetMusicDocumentIndex(_indexName);
-        using var reader = DirectoryReader.Open(directory);
-        var searcher = new IndexSearcher(reader);
-        var searchResult = new MusicSearchResult
-        {
-            SearchText = request.Text,
-            Hits = Enumerable.Empty<MusicSearchHit>()
-        };
-
-        Query q = null;
-
-        switch (request.QueryType)
-        {
-            case QueryTypesEnum.Term:
-                q = new TermQuery(new Term(request.Fields[0], request.Text));
-                break;
-            case QueryTypesEnum.MultiTerm:
-                q = new BooleanQuery();
-
-                if (request.Terms.Length.Equals(request.Fields.Length) && request.Terms.Length > 0)
-                    for (int i = 0; i < request.Terms.Length; i++)
-                        ((BooleanQuery)q).Add(new TermQuery(new Term(request.Fields[i], request.Terms[i])), Occur.MUST);
-                break;
-            case QueryTypesEnum.Numeric:
-                q = NumericRangeQuery.NewInt32Range(request.Fields[0], int.Parse(request.Text), int.Parse(request.Text), true, true);
-                break;
-            case QueryTypesEnum.Text:
-                var parser = new QueryParser(AppLuceneVersion, request.Fields[0], _analyzer)
-                {
-                    AllowLeadingWildcard = true,
-                    DefaultOperator = Operator.AND
-                };
-                q = parser.Parse(request.Text);
-                break;
-        }
-
-        var startIndex = request.Pagination.PageIndex * request.Pagination.PageSize;
-        var topDocs = searcher.Search(q, startIndex + request.Pagination.PageSize);
-
-        if (topDocs.TotalHits == 0) return searchResult;
-
-        var hits = new List<MusicSearchHit>(topDocs.ScoreDocs.Skip(startIndex).Count());
-
-        foreach (var hit in topDocs.ScoreDocs.Skip(startIndex))
-            hits.Add(CreateSearchHit(searcher.Doc(hit.Doc)));
-
-        searchResult.TotalHits = topDocs.TotalHits;
-        searchResult.Hits = hits.OrderBy(x => x.Name).ToList();
-        searchResult.Pagination = request.Pagination;
-        searchResult.Pagination.TotalPages = (int)Math.Ceiling(decimal.Divide(searchResult.TotalHits, request.Pagination.PageSize));
-
-        return searchResult;
+        _documentReader.Init();
+        return _documentReader.GetByIds(ids).Select(x => new T().MapFromLuceneDocument(x));
     }
 
     public bool IndexNotExistsOrEmpty()
     {
-        using var directory = DirectoryProvider.GetMusicDocumentIndex(_indexName);
-        if (!DirectoryReader.IndexExists(directory)) return true;
-
-        using var reader = DirectoryReader.Open(directory);
-        return reader.NumDocs == 0;
+        _documentReader.Init();
+        return _documentReader.IndexNotExistsOrEmpty();
     }
 
-    public MusicIndexCounts GetIndexStatistics()
+    public SearchResultDto<T> Search(SearchRequest request)
     {
-        using var directory = DirectoryProvider.GetMusicDocumentIndex(_indexName);
-        using var reader = DirectoryReader.Open(directory);
-        var searcher = new IndexSearcher(reader);
-
-        return new MusicIndexCounts
-        {
-            TotalFiles = reader.NumDocs,
-            TotalFilesByExtension = GetMostFrequentTerms(searcher, FieldNames.Extension),
-            TotalHiResFiles = Search(new MusicSearchRequest
-            {
-                Text = QueryParser.Escape("hr flac"),
-                Fields = [FieldNames.Text],
-                QueryType = QueryTypesEnum.Text,
-                Terms = null,
-                Pagination = new Pagination(100000, 0)
-            }).TotalHits,
-            ReleaseYears = GetMostFrequentTermsNumeric(searcher, FieldNames.Year),
-            GenreCount = GetMostFrequentTerms(searcher, FieldNames.Genre),
-            LatestAdditions = GetLatestAddedItems(searcher, FieldNames.ModifiedDate, 500)
-        };
+        _documentReader.Init();
+        return _documentReader.Search(request).ToDto<T>();
     }
 
-    private ICollection<ValueTuple<string, string>> GetLatestAddedItems(IndexSearcher searcher, string field, int count)
+    public IEnumerable<string> GetAllIndexedIds()
     {
-        var res = new Collection<ValueTuple<string, string>>();
-        var query = new MatchAllDocsQuery();
-        var sort = new Sort(new SortField(field, SortFieldType.INT64, true));
-        var topDocs = searcher.Search(query, count, sort);
-        string artist, release, folder, prevFolder = null;
+        _documentReader.Init();
 
-        for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
-        {
-            folder = Path.GetDirectoryName(searcher.Doc(topDocs.ScoreDocs[i].Doc).Get(FieldNames.Id));
-            artist = searcher.Doc(topDocs.ScoreDocs[i].Doc).Get(FieldNames.Artist);
-            release = searcher.Doc(topDocs.ScoreDocs[i].Doc).Get(FieldNames.Album);
-
-            if (!res.Contains((artist, release)) && prevFolder != folder)
-                res.Add((artist, release));
-
-            if (res.Count == 50)
-                break;
-
-            if (prevFolder != folder)
-                prevFolder = folder;
-        }
-
-        return res;
-    }
-
-    private IDictionary<string, int> GetMostFrequentTerms(IndexSearcher searcher, string field)
-    {
-        var res = new Dictionary<string, int>();
-        var fields = MultiFields.GetFields(searcher.IndexReader);
-        var terms = fields.GetTerms(field);
+        var res = new Collection<string>();
+        var fields = MultiFields.GetFields(_documentReader.Reader);
+        var terms = fields.GetTerms(this.GetFieldName(x => x.Id));
         var termsEnum = terms.GetEnumerator(null);
 
         while (termsEnum.MoveNext() == true)
-        {
-            var collector = new TotalHitCountCollector();
-            searcher.Search(new TermQuery(new Term(field, termsEnum.Term)), collector);
-
-            if (collector.TotalHits > 0)
-                res.Add(termsEnum.Term.Utf8ToString(), collector.TotalHits);
-        }
+            res.Add(termsEnum.Term.Utf8ToString());
 
         return res;
     }
 
-    private IDictionary<string, int> GetMostFrequentTermsNumeric(IndexSearcher searcher, string field)
+    public IDictionary<string, int> CountDocuments(CounterRequest? request)
     {
-        var res = new Dictionary<string, int>();
-        var fields = MultiFields.GetFields(searcher.IndexReader);
-        var terms = fields.GetTerms(field);
-        var termsEnum = terms.GetEnumerator(null);
-        int term;
+        _documentReader.Init();
 
-        while (termsEnum.MoveNext() == true)
-        {
-            var collector = new TotalHitCountCollector();
-            searcher.Search(new TermQuery(new Term(field, termsEnum.Term)), collector);
-            term = NumericUtils.PrefixCodedToInt32(termsEnum.Term);
+        if (request is null && _documentReader.Reader is not null)
+            return new Dictionary<string, int> { { "Total", _documentReader.Reader.NumDocs } };
 
-            if (!res.ContainsKey(term.ToString()) &&
-                collector.TotalHits > 0 &&
-                term > 1921)
-                res.Add(term.ToString(), collector.TotalHits);
-        }
-
-        return res;
+        return _documentReader.TermsCounter(request.Value.Field, request.Value.IsNumeric);
     }
 
-    private MusicSearchHit CreateSearchHit(Document doc)
+    public IDictionary<string, string> GetLatestAddedItems(CounterRequest request)
     {
-        var id = doc.Get(FieldNames.Id);
+        ArgumentNullException.ThrowIfNull(request);
 
-        return new MusicSearchHit
-        {
-            Id = id,
-            Name = GetFileNameWithoutExtension(id),
-            Tags = string.Join("|", doc.GetValues(FieldNames.Tags))
-        };
+        _documentReader.Init();
+
+        return _documentReader.LatestAdded(request.Field, request.AdditionalField, request.SortByField, ListSortDirection.Descending, request.Top.Value);
     }
 
-    private string GetFileNameWithoutExtension(string path)
-    {
-        if (string.IsNullOrEmpty(path))
-            return path;
-
-        return path.Split(@"\", StringSplitOptions.RemoveEmptyEntries).Last();
-    }
+    #endregion
 }

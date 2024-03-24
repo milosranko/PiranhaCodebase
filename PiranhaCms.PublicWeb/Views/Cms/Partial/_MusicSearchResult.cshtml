@@ -1,13 +1,14 @@
 @using PiranhaCMS.ContentTypes.Helpers;
 @using PiranhaCMS.PublicWeb.Helpers;
 @using System.Text.Encodings.Web
-@model PiranhaCMS.Search.Models.MusicSearchResult
+@using PiranhaCMS.Search.Models
+@model PiranhaCMS.Search.Models.Dto.SearchResultDto<MusicLibraryDocument>
 @{
     var youtubeSearch = "https://www.youtube.com/results?search_query=";
     var hiRes = "&nbsp;<span class=\"badge bg-primary rounded-pill\">Hi Res</span>";
 }
 
-@if (Model != null && Model.HasHits)
+@if (Model.HasHits)
 {
     <div class="row">
         <div class="col">
@@ -24,12 +25,11 @@
         </div>
     </div>
     <ul class="list-group">
-    @foreach (var hit in Model.Hits)
+    @foreach (var hit in Model.Hits.OrderBy(x => x.Artist).ThenBy(x => x.Release).ThenBy(x => x.FileName))
     {
-        var tags = hit.Tags.Split("|", StringSplitOptions.TrimEntries);
-        var artist = UrlEncoder.Default.Encode(tags[0].Trim());
-        var release = UrlEncoder.Default.Encode(tags[1].Trim());
-        var name = UrlEncoder.Default.Encode(System.IO.Path.GetFileNameWithoutExtension(hit.Name));
+        var artist = UrlEncoder.Default.Encode(hit.Tags[0].Trim());
+        var release = UrlEncoder.Default.Encode(hit.Tags[1].Trim());
+        var name = UrlEncoder.Default.Encode(System.IO.Path.GetFileNameWithoutExtension(hit.FileName));
 
         <div class="col-lg-12 mb-2">
             <div class="bg-secondary d-flex">
@@ -37,13 +37,13 @@
                     <div class="d-flex mb-2">
                         <small class="text-uppercase me-3">
                             <i class="bi bi-bookmarks me-2"></i>
-                            <a href="?artist=@(artist)">@Html.Raw(tags[0])</a> | 
-                            <a href="?artist=@(artist)&release=@(release)">@(tags[2]) @Html.Raw(tags[1])</a>
-                            @(bool.Parse(tags[6]).Equals(true) ? Html.Raw(hiRes) : "")
+                            <a href="?art=@(artist)">@Html.Raw(hit.Tags[0])</a> | 
+                            <a href="?art=@(artist)&rel=@(release)">@(hit.Tags[2]) @Html.Raw(hit.Tags[1])</a>
+                            @(bool.Parse(hit.Tags[6]).Equals(true) ? Html.Raw(hiRes) : "")
                         </small>
                     </div>
                     <span>
-                        @Html.Raw(hit.Name)
+                        @Html.Raw(hit.FileName)
                         <a href="@youtubeSearch@artist+@name" target="_blank" rel="noreferrer noopener" title="Open in YouTube">
                             <i class="bi bi-youtube"></i>
                         </a>
@@ -57,7 +57,7 @@
         <partial name="_Pagination.cshtml" model="Model.Pagination" />
     </div>
 }
-else if (!string.IsNullOrEmpty(Model?.SearchText))
+else if (!string.IsNullOrEmpty(Model.Text))
 {
     <i>No results found! Try some other keyword...</i>
 }

@@ -1,0 +1,103 @@
+@model PiranhaCMS.Search.Models.Dto.SearchResultDto<MusicLibraryDocument>
+@using PiranhaCMS.ContentTypes.Helpers;
+@using PiranhaCMS.Search.Models
+@using PiranhaCMS.Search.Models.Facets
+
+@if (Model.Facets != null && Model.Facets.Any())
+{
+    if (Model.SearchFields == null || Model.SearchFields.Any(x => x.Key == "txt") || Model.SearchFields.Any(x => x.Key == "yer") || Model.SearchFields.Any(x => x.Key == "gnr"))
+    {
+    foreach (var item in Model.Facets.Where(x => x.Name.Equals("art")))
+    {
+        <div class="row">
+            <div class="col">
+                <b>Artist</b>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                @if (item.Values != null && item.Values.Any())
+                {
+                    foreach (var subitem in item.Values)
+                    {
+                        <div>
+                            <a href="?art=@Html.UrlEncoder.Encode(subitem.Value)">
+                                @subitem.Value
+                            </a>
+                            &nbsp;(@subitem.Count)
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        }
+    }
+    else if (Model.SearchFields.Any(x => x.Key == "art"))
+    {
+        foreach (var item in Model.Facets.Where(x => x.Name.Equals("rel")))
+        {
+            <div class="row">
+                <div class="col">
+                    <b>Release</b>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    @if (item.Values != null && item.Values.Any())
+                    {
+                        foreach (var subitem in item.Values)
+                        {
+                            <div>
+                                <a href="?art=@Html.UrlEncoder.Encode(Model.Text)&rel=@Html.UrlEncoder.Encode(subitem.Value)">@subitem.Value</a>&nbsp;(@subitem.Count)
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    }
+
+    @* foreach (var item in Model.Where(x => x.Name.Equals("rel")))
+    {
+        <div class="row">
+            <div class="col">
+                <b>Release</b>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                @if (item.Values != null && item.Values.Any())
+                {
+                    foreach (var subitem in item.Values)
+                    {
+                        <div>
+                            <a href="?release=@subitem.Value">@subitem.Value</a>&nbsp;(@subitem.Count)
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+
+    foreach (var item in Model.Where(x => x.Name.Equals("yer")))
+    {
+        <div class="row">
+            <div class="col">
+                <b>Year</b>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                @if (item.Values != null && item.Values.Any())
+                {
+                    foreach (var subitem in item.Values)
+                    {
+                        <div>
+                            <a href="?year=@subitem.Value">@subitem.Value</a>&nbsp;(@subitem.Count)
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    } *@
+}

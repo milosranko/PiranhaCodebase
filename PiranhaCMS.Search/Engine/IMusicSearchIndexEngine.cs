@@ -1,11 +1,16 @@
-﻿using PiranhaCMS.Search.Models;
+﻿using PiranhaCMS.Search.Models.Base;
+using PiranhaCMS.Search.Models.Dto;
+using PiranhaCMS.Search.Models.Requests;
 
 namespace PiranhaCMS.Search.Engine;
 
-public interface IMusicSearchIndexEngine
+public interface ISearchIndexEngine<T> where T : IDocument
 {
-    MusicSearchResult Search(MusicSearchRequest request);
+    IEnumerable<T> GetByIds(string[] ids);
     bool IndexNotExistsOrEmpty();
-    MusicIndexCounts GetIndexStatistics();
-    string GetIndexName();
+    IEnumerable<string> SkipExistingDocuments(string[] ids);
+    SearchResultDto<T> Search(SearchRequest request);
+    IDictionary<string, int> CountDocuments(CounterRequest? request);
+    IDictionary<string, string> GetLatestAddedItems(CounterRequest request);
+    IEnumerable<string> GetAllIndexedIds();
 }

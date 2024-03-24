@@ -4,7 +4,7 @@ public record SearchResult
 {
     public static SearchResult Empty => new()
     {
-        Hits = Enumerable.Empty<SearchHit>(),
+        Hits = [],
         SearchText = string.Empty,
         TotalHits = 0,
         Pagination = new Pagination(0, 0)

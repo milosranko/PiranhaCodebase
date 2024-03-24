@@ -21,16 +21,16 @@ public static class StartupExtensions
 
         App.Modules.Register<Module>();
 
-        serviceBuilder.Services.AddSingleton<ISearchIndexEngine>(new SearchIndexEngine(serviceBuilder));
-        serviceBuilder.Services.AddSingleton<ISearch, SearchIndexService>();
+        services.AddSingleton<ISearchIndexEngine>(x => new SearchIndexEngine(serviceBuilder));
+        services.AddSingleton<ISearch, SearchIndexService>();
 
         return serviceBuilder.Services;
     }
 
     public static IServiceCollection AddMusicSearch(this IServiceCollection services, string indexFolderName)
     {
-        services.AddSingleton<IMusicSearchIndexEngine>(new MusicSearchIndexEngine(indexFolderName));
-        services.AddTransient<IMusicSearchIndexHelpers, MusicSearchIndexHelpers>();
+        services.AddSingleton<ISearchIndexEngine<MusicLibraryDocument>, MusicSearchIndexEngine<MusicLibraryDocument>>();
+        services.AddSingleton<IMusicSearchIndexHelpers, MusicSearchIndexHelpers>();
 
         return services;
     }

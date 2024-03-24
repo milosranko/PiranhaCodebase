@@ -10,7 +10,7 @@ public record MusicIndexCounts
             TotalHiResFiles = default,
             GenreCount = new Dictionary<string, int>(),
             ReleaseYears = new Dictionary<string, int>(),
-            LatestAdditions = Enumerable.Empty<ValueTuple<string, string>>()
+            LatestAdditions = new Dictionary<string, string>()
         };
 
     public int? TotalFiles { get; set; }
@@ -18,5 +18,5 @@ public record MusicIndexCounts
     public int? TotalHiResFiles { get; set; }
     public IDictionary<string, int> GenreCount { get; set; }
     public IDictionary<string, int> ReleaseYears { get; set; }
-    public IEnumerable<ValueTuple<string, string>> LatestAdditions { get; set; }
+    public IDictionary<string, string> LatestAdditions { get; set; }
 }
