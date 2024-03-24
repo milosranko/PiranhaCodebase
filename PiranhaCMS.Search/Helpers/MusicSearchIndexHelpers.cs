@@ -4,7 +4,6 @@ using Piranha.Models;
 using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Models;
 using PiranhaCMS.Search.Models.Constants;
-using PiranhaCMS.Search.Models.Internal;
 using System.IO.Compression;
 
 namespace PiranhaCMS.Search.Helpers;
@@ -30,10 +29,7 @@ internal class MusicSearchIndexHelpers : IMusicSearchIndexHelpers
         if (media == null || !media.Filename.EndsWith(".mla"))
             return;
 
-        var path = Path.Combine(
-            Environment.CurrentDirectory,
-            "Index",
-            DocumentFields<MusicLibraryDocument>.IndexName);
+        var path = Path.Combine(Environment.CurrentDirectory, "Index");
 
         if (!Directory.Exists(path))
             Directory.CreateDirectory(path);
