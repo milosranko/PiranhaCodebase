@@ -28,11 +28,6 @@ internal static class DirectoryProvider
         }
     }
 
-    public static Directory GetMusicDocumentIndex(string indexName)
-    {
-        return FSDirectory.Open(Path.Combine(Environment.CurrentDirectory, indexName));
-    }
-
     public static Directory CreateFacetIndex(PiranhaSearchServiceBuilder serviceBuilder)
     {
         var path = Path.Combine(serviceBuilder.IndexDirectory, FacetsIndexFolderName);

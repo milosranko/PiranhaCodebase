@@ -18,7 +18,6 @@ using PiranhaCMS.Search.Models.Requests;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
 
 namespace PiranhaCMS.Search.Engine;
 
@@ -219,33 +218,15 @@ internal class DocumentReader : IDisposable, IDocumentReader
         if (_isInitialized)
             return;
 
-        var indexPath = new StringBuilder("\\MusicLibrary\\");
+        var path = Path.Combine(Environment.CurrentDirectory, "Index", _indexName);
 
-        if (!string.IsNullOrEmpty(_sharedIndexName))
-        {
-            indexPath.Append("shares\\");
-            indexPath.Append($"{_sharedIndexName}\\");
-        }
-        else
-        {
-            indexPath.Append("index\\");
-        }
-
-        indexPath.Append(_indexName);
-
-        var path = Environment.GetFolderPath(
-            Environment.SpecialFolder.LocalApplicationData,
-            Environment.SpecialFolderOption.Create) + indexPath.ToString();
-
-        if (!System.IO.Directory.Exists(path))
+        if (!System.IO.Directory.Exists(path.ToString()))
             return;
 
         _analyzer = new WhitespaceAnalyzer(AppLuceneVersion);
-        _reader = DirectoryReader.Open(FSDirectory.Open(path));
+        _reader = DirectoryReader.Open(FSDirectory.Open(path.ToString()));
 
-        var pathTaxo = Environment.GetFolderPath(
-            Environment.SpecialFolder.LocalApplicationData,
-            Environment.SpecialFolderOption.Create) + indexPath.ToString() + "-taxo";
+        var pathTaxo = path + "-taxo";
 
         if (_hasFacets && System.IO.Directory.Exists(pathTaxo) && System.IO.Directory.GetFiles(pathTaxo).Length > 0)
             _taxoReader = new DirectoryTaxonomyReader(FSDirectory.Open(pathTaxo));
