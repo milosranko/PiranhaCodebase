@@ -19,19 +19,19 @@ public record MusicSearchPageViewModel : PageViewModel<MusicSearchPage>
 
     public MusicSearchPageViewModel(
         MusicSearchPage currentPage,
-        HttpContext httpContext,
+        HttpRequest request,
+        ISearchIndexEngine<MusicLibraryDocument> engine,
         ICache cache) : base(currentPage)
     {
         SearchResult = SearchResultDto<MusicLibraryDocument>.Empty();
         IndexCounts = MusicIndexCounts.Empty;
 
-        var engine = httpContext.RequestServices.GetRequiredService<ISearchIndexEngine<MusicLibraryDocument>>();
-        var searchText = httpContext.Request.Query["q"].ToString();
-        var artist = httpContext.Request.Query[engine.GetFieldName(x => x.Artist)].ToString();
-        var release = httpContext.Request.Query[engine.GetFieldName(x => x.Release)].ToString();
-        var genre = httpContext.Request.Query[engine.GetFieldName(x => x.Genre)].ToString();
-        var year = httpContext.Request.Query[engine.GetFieldName(x => x.Year)].ToString();
-        int.TryParse(httpContext.Request.Query["page"], out int pageIndex);
+        var searchText = request.Query["q"].ToString();
+        var artist = request.Query[engine.GetFieldName(x => x.Artist)].ToString();
+        var release = request.Query[engine.GetFieldName(x => x.Release)].ToString();
+        var genre = request.Query[engine.GetFieldName(x => x.Genre)].ToString();
+        var year = request.Query[engine.GetFieldName(x => x.Year)].ToString();
+        int.TryParse(request.Query["page"], out int pageIndex);
         var paginationQueryString = new StringBuilder();
 
         if (!string.IsNullOrEmpty(searchText))

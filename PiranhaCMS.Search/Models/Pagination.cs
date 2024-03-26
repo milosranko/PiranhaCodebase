@@ -2,13 +2,14 @@
 
 public record Pagination
 {
-    public Pagination(int pageSize, int pageIndex, string queryString = "")
+    public Pagination(int? pageSize, int pageIndex, string queryString = "")
     {
-        PageSize = pageSize;
+        PageSize = pageSize ?? PageSizeFallback;
         PageIndex = pageIndex;
         QueryString = queryString;
     }
 
+    public const int PageSizeFallback = 5;
     public int PageSize { get; private set; }
     public int PageIndex { get; private set; }
     public int TotalPages { get; set; }

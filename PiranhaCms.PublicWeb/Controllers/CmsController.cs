@@ -4,23 +4,20 @@ using Piranha.Cache;
 using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.PublicWeb.Models.ViewModels;
 using PiranhaCMS.Search.Engine;
+using PiranhaCMS.Search.Models;
 
 namespace PiranhaCMS.PublicWeb.Controllers;
 
-[ResponseCache(Duration = 36000, VaryByQueryKeys = ["id"])]
 public class CmsController : Controller
 {
     private readonly IModelLoader _loader;
-    private readonly ISearchIndexEngine _searchIndexEngine;
-    private readonly ICache _cache;
 
-    public CmsController(IModelLoader loader, ISearchIndexEngine searchIndexEngine, ICache cache)
+    public CmsController(IModelLoader loader)
     {
         _loader = loader;
-        _searchIndexEngine = searchIndexEngine;
-        _cache = cache;
     }
 
+    [ResponseCache(Duration = 36000, VaryByQueryKeys = ["id"])]
     [Route(nameof(StartPage))]
     public async Task<IActionResult> StartPage(Guid id, bool draft = false)
     {
@@ -30,6 +27,7 @@ public class CmsController : Controller
         return View(viewModel);
     }
 
+    [ResponseCache(Duration = 36000, VaryByQueryKeys = ["id"])]
     [Route(nameof(ArticlePage))]
     public async Task<IActionResult> ArticlePage(Guid id, bool draft = false)
     {
@@ -39,6 +37,7 @@ public class CmsController : Controller
         return View(viewModel);
     }
 
+    [ResponseCache(Duration = 36000, VaryByQueryKeys = ["id"])]
     [Route(nameof(ArticleListPage))]
     public async Task<IActionResult> ArticleListPage(Guid id, bool draft = false)
     {
@@ -50,24 +49,29 @@ public class CmsController : Controller
 
     [ResponseCache(Duration = 36000, VaryByQueryKeys = ["id", "q"])]
     [Route(nameof(SearchPage))]
-    public async Task<IActionResult> SearchPage(Guid id, bool draft = false)
+    public async Task<IActionResult> SearchPage([FromServices] ISearchIndexEngine engine, Guid id, bool draft = false)
     {
         var currentPage = await _loader.GetPageAsync<SearchPage>(id, HttpContext.User, draft);
-        var viewModel = new SearchPageViewModel(currentPage, HttpContext.Request, _searchIndexEngine);
+        var viewModel = new SearchPageViewModel(currentPage, HttpContext.Request, engine);
 
         return View(viewModel);
     }
 
     [ResponseCache(NoStore = true)]
     [Route(nameof(MusicSearchPage))]
-    public async Task<IActionResult> MusicSearchPage(Guid id, bool draft = false)
+    public async Task<IActionResult> MusicSearchPage(
+        [FromServices] ICache cache,
+        [FromServices] ISearchIndexEngine<MusicLibraryDocument> engine,
+        Guid id,
+        bool draft = false)
     {
         var currentPage = await _loader.GetPageAsync<MusicSearchPage>(id, HttpContext.User, draft);
-        var viewModel = new MusicSearchPageViewModel(currentPage, HttpContext, _cache);
+        var viewModel = new MusicSearchPageViewModel(currentPage, HttpContext.Request, engine, cache);
 
         return View(viewModel);
     }
 
+    [ResponseCache(Duration = 36000, VaryByQueryKeys = ["id"])]
     [Route(nameof(NotFoundPage))]
     public async Task<IActionResult> NotFoundPage(Guid id, bool draft = false)
     {

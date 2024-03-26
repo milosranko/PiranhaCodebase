@@ -131,7 +131,7 @@ public class SearchIndexEngine : ISearchIndexEngine
 
         var fc = new FacetsCollector();
         searcher.Search(q, null, fc);
-        FacetsCollector.Search(searcher, q, 1000, fc);
+        FacetsCollector.Search(searcher, q, 50, fc);
 
         var facets = new FastTaxonomyFacetCounts(taxoReader, _facetsConfig, fc);
         var results = new List<FacetResult>

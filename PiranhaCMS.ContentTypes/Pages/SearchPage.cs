@@ -7,6 +7,8 @@ namespace PiranhaCMS.ContentTypes.Pages;
 
 [PageType(Title = "Search Page", UseBlocks = false)]
 [ContentTypeRoute(Title = "Default", Route = $"/{nameof(SearchPage)}")]
-[AllowedPageTypes(Availability.None)]
+[AllowedPageTypes([
+    typeof(MusicSearchPage)
+])]
 public class SearchPage : Page<SearchPage>, IPage
 { }

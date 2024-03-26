@@ -21,7 +21,7 @@ using System.ComponentModel;
 
 namespace PiranhaCMS.Search.Engine;
 
-internal class DocumentReader : IDisposable, IDocumentReader
+internal class DocumentReader : IDocumentReader
 {
     public DirectoryReader? Reader => _reader;
     private const LuceneVersion AppLuceneVersion = LuceneVersion.LUCENE_48;
@@ -33,20 +33,23 @@ internal class DocumentReader : IDisposable, IDocumentReader
     private bool _hasFacets = false;
     private readonly FacetsConfig _facetsConfig;
     private readonly string _id;
-    private readonly string _sharedIndexName;
+    private bool _disposed = false;
 
-    public DocumentReader(string indexName, FacetsConfig facetsConfig, bool hasFacets = false, string idField = "id", string sharedIndexName = "")
+    public DocumentReader(string indexName, FacetsConfig facetsConfig, bool hasFacets = false, string idField = "id")
     {
         _indexName = indexName ?? "index";
         _hasFacets = hasFacets;
         _facetsConfig = facetsConfig;
         _id = idField;
-        _sharedIndexName = sharedIndexName;
+
+        Init();
     }
 
     public bool DocumentExists(string id)
     {
-        return _reader is null ? false : _reader.DocFreq(new Term(_id, id)) != 0;
+        return _reader is null
+            ? false
+            : _reader.DocFreq(new Term(_id, id)) != 0;
     }
 
     public IDictionary<string, int> TermsCounter(string field, bool isNumeric = false)
@@ -120,7 +123,7 @@ internal class DocumentReader : IDisposable, IDocumentReader
 
     public bool IndexNotExistsOrEmpty()
     {
-        return _reader is null ? true : _reader.NumDocs == 0;
+        return !DirectoryReader.IndexExists(_reader?.Directory);
     }
 
     public SearchResult Search(SearchRequest request)
@@ -234,11 +237,6 @@ internal class DocumentReader : IDisposable, IDocumentReader
         _isInitialized = true;
     }
 
-    public void Init(DirectoryReader reader)
-    {
-        _reader = reader;
-    }
-
     private IEnumerable<FacetFilter> GetFacets(IndexSearcher searcher, Query q)
     {
         if (_facetsConfig == null)
@@ -249,7 +247,7 @@ internal class DocumentReader : IDisposable, IDocumentReader
             new SortField("art", SortFieldType.STRING, false),
             new SortField("yer", SortFieldType.INT32, false),
             new SortField("fnm", SortFieldType.STRING, false));
-        FacetsCollector.Search(searcher, q, null, 100, sort, fc);
+        FacetsCollector.Search(searcher, q, null, 50, sort, fc);
         var facets = new FastTaxonomyFacetCounts(_taxoReader, _facetsConfig, fc);
         var facetResults = facets.GetAllDims(100)
             .Select(facet => new FacetFilter
@@ -263,8 +261,22 @@ internal class DocumentReader : IDisposable, IDocumentReader
 
     public void Dispose()
     {
-        _reader?.Dispose();
-        _taxoReader?.Dispose();
-        _analyzer?.Dispose();
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (_disposed)
+            return;
+
+        if (disposing)
+        {
+            _reader?.Dispose();
+            _taxoReader?.Dispose();
+            _analyzer?.Dispose();
+        }
+
+        _disposed = true;
     }
 }
