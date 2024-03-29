@@ -1,4 +1,5 @@
 using Piranha.Cache;
+using PiranhaCMS.Common.Extensions;
 using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Extensions;
@@ -26,12 +27,12 @@ public record MusicSearchPageViewModel : PageViewModel<MusicSearchPage>
         SearchResult = SearchResultDto<MusicLibraryDocument>.Empty();
         IndexCounts = MusicIndexCounts.Empty;
 
-        var searchText = request.Query["q"].ToString();
+        var searchText = request.Query["q"].ToString().SanitizeSearchString();
         var artist = request.Query[engine.GetFieldName(x => x.Artist)].ToString();
         var release = request.Query[engine.GetFieldName(x => x.Release)].ToString();
         var genre = request.Query[engine.GetFieldName(x => x.Genre)].ToString();
         var year = request.Query[engine.GetFieldName(x => x.Year)].ToString();
-        int.TryParse(request.Query["page"], out int pageIndex);
+        _ = int.TryParse(request.Query["page"], out int pageIndex);
         var paginationQueryString = new StringBuilder();
 
         if (!string.IsNullOrEmpty(searchText))
@@ -156,7 +157,7 @@ public record MusicSearchPageViewModel : PageViewModel<MusicSearchPage>
                 AdditionalField = searchIndexEngine.GetFieldName(x => x.Artist),
                 SortByField = searchIndexEngine.GetFieldName(x => x.ModifiedDate),
                 IsNumeric = false,
-                Top = 25
+                Top = 10
             })
         };
     }
