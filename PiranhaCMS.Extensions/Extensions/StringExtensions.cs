@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace PiranhaCMS.Common.Extensions;
@@ -95,5 +97,29 @@ public static class StringExtensions
         }
 
         return result;
+    }
+
+    public static string AddOrReplaceQueryStringParameter(this string input, string name, string value, bool isArray = false)
+    {
+        var queryString = QueryHelpers.ParseQuery(input);
+
+        if (!queryString.Keys.Any())
+            return string.Empty;
+
+        if (queryString.ContainsKey(name) && !isArray)
+        {
+            queryString.Remove(name);
+            queryString.Add(name, value);
+        }
+        else if (queryString.ContainsKey(name) && isArray)
+        {
+            queryString[name].Append(value);
+        }
+        else
+        {
+            queryString.Add(name, value);
+        }
+
+        return QueryString.Create(queryString).ToString();
     }
 }

@@ -4,9 +4,9 @@ using PiranhaCMS.Search.Models.Facets;
 
 namespace PiranhaCMS.Search.Models.Internal;
 
-internal struct SearchResult
+internal struct SearchResultInternal
 {
-    public static SearchResult Empty => new()
+    public static SearchResultInternal Empty => new()
     {
         Hits = [],
         SearchParam = string.Empty,
@@ -15,6 +15,7 @@ internal struct SearchResult
         Pagination = new PaginationDto(0, 0, 0)
     };
 
+    public SearchRequestInternal SearchRequest { get; set; }
     public string SearchParam { get; set; }
     public string SearchText { get; set; }
     public int TotalHits { get; set; }

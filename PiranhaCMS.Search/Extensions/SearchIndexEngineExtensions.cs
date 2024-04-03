@@ -33,12 +33,12 @@ public static class SearchIndexEngineExtensions
 
     private static string GetFieldName<T>(ISearchIndexEngine<T> engine, string fieldName) where T : IDocument
     {
-        if (DocumentFields<T>.Fields is null || DocumentFields<T>.Fields.Count.Equals(0))
-            ArgumentNullException.ThrowIfNull(DocumentFields<T>.Fields);
+        if (!DocumentFields<T>.HasFields)
+            throw new Exception("Document index is empty");
 
-        if (!DocumentFields<T>.Fields.ContainsKey(fieldName))
+        if (DocumentFields<T>.GetField(fieldName) is null)
             throw new ArgumentException($"The provided property doesn't exists: {fieldName}.");
 
-        return DocumentFields<T>.Fields[fieldName].FieldName;
+        return DocumentFields<T>.GetField(fieldName).Value.FieldName;
     }
 }

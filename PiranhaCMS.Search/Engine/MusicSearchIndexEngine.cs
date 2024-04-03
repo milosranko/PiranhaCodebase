@@ -10,13 +10,9 @@ namespace PiranhaCMS.Search.Engine;
 
 public class MusicSearchIndexEngine<T> : ISearchIndexEngine<T> where T : MappingDocumentBase<T>, IDocument, new()
 {
-    //private readonly IDocumentReader _documentReader;
-
     public MusicSearchIndexEngine()
     {
         DocumentModelHelpers<T>.ReflectDocumentFields();
-
-        //_documentReader = new DocumentReader(DocumentFields<T>.IndexName, DocumentFields<T>.FacetsConfig, DocumentFields<T>.HasFacets);
     }
 
     #region Public methods
@@ -27,9 +23,13 @@ public class MusicSearchIndexEngine<T> : ISearchIndexEngine<T> where T : Mapping
         return dr.IndexNotExistsOrEmpty();
     }
 
-    public SearchResultDto<T> Search(SearchRequest request)
+    public SearchResultDto<T> Search(SearchRequestInternal request)
     {
         using var dr = new DocumentReader(DocumentFields<T>.IndexName, DocumentFields<T>.FacetsConfig, DocumentFields<T>.HasFacets);
+
+        //TODO Extend SearchRequest, discover field type for each term, each search term should have: field name, field value, field type, search type
+        //Extend facets search to accept different query than search query
+
         return dr.Search(request).ToDto<T>();
     }
 

@@ -1,5 +1,6 @@
 ﻿using PiranhaCMS.Search.Attributes;
 using PiranhaCMS.Search.Models.Base;
+using PiranhaCMS.Search.Models.Enums;
 
 namespace PiranhaCMS.Search.Models;
 

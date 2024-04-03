@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Piranha.AspNetCore.Services;
-using Piranha.Cache;
 using PiranhaCMS.ContentTypes.Pages;
+using PiranhaCMS.PublicWeb.Models.ViewModelFactories.Base;
 using PiranhaCMS.PublicWeb.Models.ViewModels;
 using PiranhaCMS.Search.Engine;
-using PiranhaCMS.Search.Models;
 
 namespace PiranhaCMS.PublicWeb.Controllers;
 
@@ -60,13 +59,12 @@ public class CmsController : Controller
     [ResponseCache(NoStore = true)]
     [Route(nameof(MusicSearchPage))]
     public async Task<IActionResult> MusicSearchPage(
-        [FromServices] ICache cache,
-        [FromServices] ISearchIndexEngine<MusicLibraryDocument> engine,
+        [FromServices] IPageViewModelFactory<MusicSearchPage, MusicSearchPageViewModel> pageViewModelFactory,
         Guid id,
         bool draft = false)
     {
         var currentPage = await _loader.GetPageAsync<MusicSearchPage>(id, HttpContext.User, draft);
-        var viewModel = new MusicSearchPageViewModel(currentPage, HttpContext.Request, engine, cache);
+        var viewModel = pageViewModelFactory.Create(currentPage);
 
         return View(viewModel);
     }

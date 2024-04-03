@@ -10,7 +10,7 @@ internal static class DocumentModelHelpers<T> where T : IDocument
 {
     public static void ReflectDocumentFields()
     {
-        if (!string.IsNullOrEmpty(DocumentFields<T>.IndexName) && DocumentFields<T>.Fields.Any())
+        if (!string.IsNullOrEmpty(DocumentFields<T>.IndexName) && DocumentFields<T>.HasFields)
             return;
 
         var indexName = typeof(T).GetCustomAttribute<IndexConfigAttribute>()?.IndexName ?? "index";

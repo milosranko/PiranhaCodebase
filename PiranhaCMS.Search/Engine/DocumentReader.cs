@@ -10,11 +10,11 @@ using Lucene.Net.Search;
 using Lucene.Net.Search.Grouping;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
+using PiranhaCMS.Common.Extensions;
 using PiranhaCMS.Search.Models.Dto;
 using PiranhaCMS.Search.Models.Enums;
 using PiranhaCMS.Search.Models.Facets;
 using PiranhaCMS.Search.Models.Internal;
-using PiranhaCMS.Search.Models.Requests;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -126,15 +126,16 @@ internal class DocumentReader : IDocumentReader
         return !DirectoryReader.IndexExists(_reader?.Directory);
     }
 
-    public SearchResult Search(SearchRequest request)
+    public SearchResultInternal Search(SearchRequestInternal request)
     {
         var searcher = new IndexSearcher(_reader);
-        var searchResult = new SearchResult
+        var searchResult = new SearchResultInternal
         {
+            SearchRequest = request,
             SearchParam = request.SearchFields != null && request.SearchFields.Any()
-            ? request.SearchFields.First().Key
+            ? request.SearchFields.First().Name
             : "q",
-            SearchText = request.Text ?? request.SearchFields.First().Value,
+            SearchText = request.SearchFields.First().Value,
             Hits = []
         };
         Query? q = null;
@@ -143,51 +144,64 @@ internal class DocumentReader : IDocumentReader
         switch (request.QueryType)
         {
             case QueryTypesEnum.Term:
-                if (request.SearchFields is null || request.SearchFields.Count == 0)
+                if (request.SearchFields is null || request.SearchFields.Count() == 0)
                     break;
 
-                q = new TermQuery(new Term(request.SearchFields.First().Key, request.SearchFields.First().Value));
+                q = new TermQuery(new Term(request.SearchFields.First().Name, request.SearchFields.First().Value));
                 facetsQuery = q;
                 break;
             case QueryTypesEnum.MultiTerm:
                 q = new BooleanQuery();
 
-                if (request.SearchFields is null) break;
-
-                foreach (var (fieldName, value) in request.SearchFields)
-                {
-                    Query searchQuery = request.SearchType switch
-                    {
-                        SearchType.ExactMatch => new TermQuery(new Term(fieldName, value)),
-                        SearchType.PrefixMatch => new PrefixQuery(new Term(fieldName, value)),
-                        SearchType.FuzzyMatch => new FuzzyQuery(new Term(fieldName, value)),
-                        _ => new TermQuery(new Term(fieldName, value))
-                    };
-
-                    ((BooleanQuery)q).Add(searchQuery, Occur.MUST);
-                }
-                facetsQuery = new TermQuery(new Term(request.SearchFields.First().Key, request.SearchFields.First().Value));
-                break;
-            case QueryTypesEnum.Numeric:
-                if (request.SearchFields is null || request.SearchFields.Count == 0)
+                if (request.SearchFields is null)
                     break;
 
-                q = NumericRangeQuery.NewInt32Range(request.SearchFields.First().Key, int.Parse(request.SearchFields.First().Value), int.Parse(request.SearchFields.First().Value), true, true);
+                foreach (var field in request.SearchFields)
+                {
+                    if (field.Properties.FieldType == FieldTypeEnum.Int32Field)
+                    {
+                        ((BooleanQuery)q).Add(NumericRangeQuery.NewInt32Range(field.Name, int.Parse(field.Value), int.Parse(field.Value), true, true), Occur.MUST);
+                    }
+                    else
+                    {
+                        Query searchQuery = field.SearchType switch
+                        {
+                            SearchType.ExactMatch => new TermQuery(new Term(field.Name, field.Value)),
+                            SearchType.PrefixMatch => new PrefixQuery(new Term(field.Name, field.Value)),
+                            SearchType.FuzzyMatch => new FuzzyQuery(new Term(field.Name, field.Value)),
+                            SearchType.QueryMatch => new QueryParser(AppLuceneVersion, request.SearchFields.First().Name, _analyzer)
+                            {
+                                AllowLeadingWildcard = true,
+                                DefaultOperator = Operator.AND
+                            }.Parse(field.Value),
+                            _ => new TermQuery(new Term(field.Name, field.Value))
+                        };
+
+                        ((BooleanQuery)q).Add(searchQuery, Occur.MUST);
+                    }
+                }
+                facetsQuery = new TermQuery(new Term(request.SearchFields.First().Name, request.SearchFields.First().Value));
+                break;
+            case QueryTypesEnum.Numeric:
+                if (request.SearchFields is null || request.SearchFields.Count() == 0)
+                    break;
+
+                q = NumericRangeQuery.NewInt32Range(request.SearchFields.First().Name, int.Parse(request.SearchFields.First().Value), int.Parse(request.SearchFields.First().Value), true, true);
                 facetsQuery = q;
                 break;
             case QueryTypesEnum.Text:
-                var parser = new QueryParser(AppLuceneVersion, request.SearchFields.First().Key, _analyzer)
+                var parser = new QueryParser(AppLuceneVersion, request.SearchFields.First().Name, _analyzer)
                 {
                     AllowLeadingWildcard = true,
                     DefaultOperator = Operator.AND
                 };
-                q = parser.Parse(request.Text);
+                q = parser.Parse(request.SearchFields.First().Value);
                 facetsQuery = q;
                 break;
         }
 
         if (request.Facets != null && request.Facets.Any() && facetsQuery is not null)
-            searchResult.Facets = GetFacets(searcher, facetsQuery);
+            searchResult.Facets = GetFacets(searcher, facetsQuery, request.Pagination.QueryString);
 
         var startIndex = request.Pagination.PageIndex * request.Pagination.PageSize;
         var sort = new Sort(
@@ -237,7 +251,7 @@ internal class DocumentReader : IDocumentReader
         _isInitialized = true;
     }
 
-    private IEnumerable<FacetFilter> GetFacets(IndexSearcher searcher, Query q)
+    private IEnumerable<FacetFilter> GetFacets(IndexSearcher searcher, Query q, string queryString)
     {
         if (_facetsConfig == null)
             return [];
@@ -245,15 +259,20 @@ internal class DocumentReader : IDocumentReader
         var fc = new FacetsCollector();
         var sort = new Sort(
             new SortField("art", SortFieldType.STRING, false),
-            new SortField("yer", SortFieldType.INT32, false),
-            new SortField("fnm", SortFieldType.STRING, false));
-        FacetsCollector.Search(searcher, q, null, 50, sort, fc);
+            new SortField("yer", SortFieldType.INT32, false));
+        FacetsCollector.Search(searcher, q, null, 1, sort, fc);
         var facets = new FastTaxonomyFacetCounts(_taxoReader, _facetsConfig, fc);
         var facetResults = facets.GetAllDims(100)
             .Select(facet => new FacetFilter
             {
                 Name = facet.Dim,
-                Values = facet.LabelValues.Select(p => new FacetValue { Value = p.Label, Count = (int)p.Value, })
+                Values = facet.LabelValues.Select(p =>
+                new FacetValue
+                {
+                    Value = p.Label,
+                    Count = (int)p.Value,
+                    QueryString = queryString.AddOrReplaceQueryStringParameter(facet.Dim, p.Label)
+                })
             });
 
         return facetResults;

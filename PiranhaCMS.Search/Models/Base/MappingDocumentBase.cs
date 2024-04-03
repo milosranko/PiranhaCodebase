@@ -2,6 +2,7 @@
 using Lucene.Net.Documents.Extensions;
 using Lucene.Net.Facet;
 using PiranhaCMS.Search.Attributes;
+using PiranhaCMS.Search.Models.Enums;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 

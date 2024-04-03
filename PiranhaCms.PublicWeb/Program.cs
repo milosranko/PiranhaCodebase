@@ -10,6 +10,9 @@ using PiranhaCMS.Common.Extensions;
 using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.ImageCache;
 using PiranhaCMS.PublicWeb.Business.Filters;
+using PiranhaCMS.PublicWeb.Models.ViewModelFactories;
+using PiranhaCMS.PublicWeb.Models.ViewModelFactories.Base;
+using PiranhaCMS.PublicWeb.Models.ViewModels;
 using PiranhaCMS.Search.Models.Enums;
 using PiranhaCMS.Search.Startup;
 using PiranhaCMS.Validators.Startup;
@@ -38,6 +41,7 @@ builder.Configuration
 #region Services registration
 
 builder.Services.AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>();
+builder.Services.AddScoped<IPageViewModelFactory<MusicSearchPage, MusicSearchPageViewModel>, MusicSearchPageViewModelFactory>();
 
 #region Piranha CMS
 
