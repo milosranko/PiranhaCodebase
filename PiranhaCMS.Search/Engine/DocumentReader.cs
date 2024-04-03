@@ -152,6 +152,7 @@ internal class DocumentReader : IDocumentReader
                 break;
             case QueryTypesEnum.MultiTerm:
                 q = new BooleanQuery();
+                facetsQuery = new BooleanQuery();
 
                 if (request.SearchFields is null)
                     break;
@@ -161,6 +162,8 @@ internal class DocumentReader : IDocumentReader
                     if (field.Properties.FieldType == FieldTypeEnum.Int32Field)
                     {
                         ((BooleanQuery)q).Add(NumericRangeQuery.NewInt32Range(field.Name, int.Parse(field.Value), int.Parse(field.Value), true, true), Occur.MUST);
+                        if (request.Facets.Any(x => x.Key.Equals(field.Name)))
+                            ((BooleanQuery)facetsQuery).Add(NumericRangeQuery.NewInt32Range(field.Name, int.Parse(field.Value), int.Parse(field.Value), true, true), Occur.MUST);
                     }
                     else
                     {
@@ -176,11 +179,13 @@ internal class DocumentReader : IDocumentReader
                             }.Parse(field.Value),
                             _ => new TermQuery(new Term(field.Name, field.Value))
                         };
-
                         ((BooleanQuery)q).Add(searchQuery, Occur.MUST);
+
+                        if (request.Facets.Any(x => x.Key.Equals(field.Name)))
+                            ((BooleanQuery)facetsQuery).Add(searchQuery, Occur.MUST);
                     }
                 }
-                facetsQuery = new TermQuery(new Term(request.SearchFields.First().Name, request.SearchFields.First().Value));
+                //facetsQuery = q;
                 break;
             case QueryTypesEnum.Numeric:
                 if (request.SearchFields is null || request.SearchFields.Count() == 0)
@@ -201,7 +206,7 @@ internal class DocumentReader : IDocumentReader
         }
 
         if (request.Facets != null && request.Facets.Any() && facetsQuery is not null)
-            searchResult.Facets = GetFacets(searcher, facetsQuery, request.Pagination.QueryString);
+            searchResult.Facets = GetFacets(searcher, facetsQuery, request);
 
         var startIndex = request.Pagination.PageIndex * request.Pagination.PageSize;
         var sort = new Sort(
@@ -251,14 +256,14 @@ internal class DocumentReader : IDocumentReader
         _isInitialized = true;
     }
 
-    private IEnumerable<FacetFilter> GetFacets(IndexSearcher searcher, Query q, string queryString)
+    private IEnumerable<FacetFilter> GetFacets(IndexSearcher searcher, Query q, SearchRequestInternal request)
     {
         if (_facetsConfig == null)
             return [];
 
         var fc = new FacetsCollector();
         var sort = new Sort(
-            new SortField("art", SortFieldType.STRING, false),
+            //new SortField("art", SortFieldType.STRING, false),
             new SortField("yer", SortFieldType.INT32, false));
         FacetsCollector.Search(searcher, q, null, 1, sort, fc);
         var facets = new FastTaxonomyFacetCounts(_taxoReader, _facetsConfig, fc);
@@ -271,7 +276,9 @@ internal class DocumentReader : IDocumentReader
                 {
                     Value = p.Label,
                     Count = (int)p.Value,
-                    QueryString = queryString.AddOrReplaceQueryStringParameter(facet.Dim, p.Label)
+                    QueryString = facet.Dim.Equals("art")
+                    ? request.Pagination.QueryString.RemoveQueryStringParameter("rel").AddOrReplaceQueryStringParameter(facet.Dim, p.Label)
+                    : request.Pagination.QueryString.AddOrReplaceQueryStringParameter(facet.Dim, p.Label)
                 })
             });
 

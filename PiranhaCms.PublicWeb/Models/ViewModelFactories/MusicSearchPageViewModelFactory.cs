@@ -56,9 +56,81 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 _engine.GetFieldName(x => x.Text),
                 searchText,
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
-                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Artist), [] } });
+                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Text), [] } });
         }
-        else if (!string.IsNullOrEmpty(searchText) && !string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(release) && string.IsNullOrEmpty(genre) && string.IsNullOrEmpty(year))
+        else if (!string.IsNullOrEmpty(searchText) && !string.IsNullOrEmpty(artist) && !string.IsNullOrEmpty(release))
+        {
+            paginationQueryString.Append("?q=");
+            paginationQueryString.Append(searchText);
+            paginationQueryString.Append($"&{_engine.GetFieldName(x => x.Artist)}=");
+            paginationQueryString.Append(artist);
+            paginationQueryString.Append($"&{_engine.GetFieldName(x => x.Release)}=");
+            paginationQueryString.Append(release);
+
+            model.SearchResult = MultiTermSearch(
+                [
+                    new()
+                    {
+                        Name = _engine.GetFieldName(x => x.Text),
+                        Value = searchText,
+                        SearchType = SearchType.QueryMatch,
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Text)).Value
+                    },
+                    new()
+                    {
+                        Name = _engine.GetFieldName(x => x.Artist),
+                        Value = artist,
+                        SearchType = SearchType.ExactMatch,
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist)).Value
+                    },
+                    new()
+                    {
+                        Name = _engine.GetFieldName(x => x.Release),
+                        Value = release,
+                        SearchType = SearchType.ExactMatch,
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Release)).Value
+                    }
+                ],
+                new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
+                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Text), [] }, { _engine.GetFieldName(x => x.Artist), [] } });
+        }
+        else if (!string.IsNullOrEmpty(genre) && !string.IsNullOrEmpty(artist) && !string.IsNullOrEmpty(release))
+        {
+            paginationQueryString.Append($"?{_engine.GetFieldName(x => x.Genre)}=");
+            paginationQueryString.Append(genre);
+            paginationQueryString.Append($"&{_engine.GetFieldName(x => x.Artist)}=");
+            paginationQueryString.Append(artist);
+            paginationQueryString.Append($"&{_engine.GetFieldName(x => x.Release)}=");
+            paginationQueryString.Append(release);
+
+            model.SearchResult = MultiTermSearch(
+                [
+                    new()
+                    {
+                        Name = _engine.GetFieldName(x => x.Genre),
+                        Value = genre,
+                        SearchType = SearchType.ExactMatch,
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Genre)).Value
+                    },
+                    new()
+                    {
+                        Name = _engine.GetFieldName(x => x.Artist),
+                        Value = artist,
+                        SearchType = SearchType.ExactMatch,
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist)).Value
+                    },
+                    new()
+                    {
+                        Name = _engine.GetFieldName(x => x.Release),
+                        Value = release,
+                        SearchType = SearchType.ExactMatch,
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Release)).Value
+                    }
+                ],
+                new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
+                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Genre), [] }, { _engine.GetFieldName(x => x.Artist), [] } });
+        }
+        else if (!string.IsNullOrEmpty(searchText) && !string.IsNullOrEmpty(artist))
         {
             paginationQueryString.Append("?q=");
             paginationQueryString.Append(searchText);
@@ -83,7 +155,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                     }
                 ],
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
-                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Artist), [] } });
+                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Text), [] }, { _engine.GetFieldName(x => x.Artist), [] } });
         }
         else if (!string.IsNullOrEmpty(year) && !string.IsNullOrEmpty(artist))
         {
@@ -110,7 +182,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                     }
                 ],
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
-                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Release), [] } });
+                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Year), [] }, { _engine.GetFieldName(x => x.Artist), [] } });
         }
         else if (!string.IsNullOrEmpty(release) && !string.IsNullOrEmpty(artist))
         {
@@ -160,11 +232,11 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                     Name = _engine.GetFieldName(x => x.Artist),
                     Value = artist,
                     SearchType = SearchType.ExactMatch,
-                    Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Release)).Value
+                    Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist)).Value
                 }
             ],
             new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
-            new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Artist), [] } });
+            new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Artist), [] }, { _engine.GetFieldName(x => x.Genre), [] } });
         }
         else if (!string.IsNullOrEmpty(genre))
         {
@@ -175,7 +247,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 _engine.GetFieldName(x => x.Genre),
                 genre,
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
-                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Artist), [] } });
+                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Genre), [] } });
         }
         else if (!string.IsNullOrEmpty(year))
         {
@@ -186,9 +258,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 _engine.GetFieldName(x => x.Year),
                 year,
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
-                new Dictionary<string, IEnumerable<string?>?> {
-                    { _engine.GetFieldName(x => x.Artist), [] },
-                    { _engine.GetFieldName(x => x.Release), [] } },
+                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Year), [] } },
                 true);
         }
         else if (!string.IsNullOrEmpty(artist))
@@ -200,7 +270,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 _engine.GetFieldName(x => x.Artist),
                 artist,
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
-                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Release), [] } });
+                new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Artist), [] } });
         }
         else
         {
@@ -323,7 +393,6 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
             Facets = facets,
         };
         var res = _engine.Search(searchRequest);
-        //res.SearchFields = searchRequest.SearchFields.Select(x => new KeyValuePair<string, string?>(x.Name, x.Value)).ToDictionary();
 
         return res;
     }
@@ -341,7 +410,6 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
             Facets = facets,
         };
         var res = _engine.Search(searchRequest);
-        //res.SearchFields = searchFields.Select(x => new KeyValuePair<string, string?>(x.Name, x.Value)).ToDictionary();
 
         return res;
     }

@@ -103,7 +103,7 @@ public static class StringExtensions
     {
         var queryString = QueryHelpers.ParseQuery(input);
 
-        if (!queryString.Keys.Any())
+        if (queryString.Keys.Count == 0)
             return string.Empty;
 
         if (queryString.ContainsKey(name) && !isArray)
@@ -119,6 +119,18 @@ public static class StringExtensions
         {
             queryString.Add(name, value);
         }
+
+        return QueryString.Create(queryString).ToString();
+    }
+
+    public static string RemoveQueryStringParameter(this string input, string name)
+    {
+        var queryString = QueryHelpers.ParseQuery(input);
+
+        if (queryString.Keys.Count == 0)
+            return string.Empty;
+
+        queryString.Remove(name);
 
         return QueryString.Create(queryString).ToString();
     }

@@ -5,11 +5,9 @@
 
 @if (Model.Facets != null && Model.Facets.Any())
 {
-    if (Model.SearchRequest.SearchFields == null || Model.SearchRequest.SearchFields.Any(x => x.Name == "txt") || Model.SearchRequest.SearchFields.Any(x => x.Name == "yer") || Model.SearchRequest.SearchFields.Any(x => x.Name == "gnr"))
-    {
     foreach (var item in Model.Facets.Where(x => x.Name.Equals("art")))
     {
-        <div class="row">
+        <div class="row py-1">
             <div class="col">
                 <b>Artist</b>
             </div>
@@ -21,22 +19,20 @@
                     foreach (var subitem in item.Values.OrderBy(x => x.Value))
                     {
                         <div>
-                            <a href="@subitem.QueryString">
-                                @subitem.Value
-                            </a>
-                            &nbsp;(@subitem.Count)
+                            <a href="@subitem.QueryString">@subitem.Value</a>
+                            <span class="badge bg-primary rounded-pill">@subitem.Count</span>
                         </div>
                     }
                 }
             </div>
         </div>
-        }
     }
-    else if (Model.SearchRequest.SearchFields.Any(x => x.Name == "art"))
+    
+    if (Model.SearchRequest.SearchFields.Any(x => x.Name == "art"))
     {
         foreach (var item in Model.Facets.Where(x => x.Name.Equals("rel")))
         {
-            <div class="row">
+            <div class="row py-1">
                 <div class="col">
                     <b>Release</b>
                 </div>
@@ -48,7 +44,8 @@
                         foreach (var subitem in item.Values)
                         {
                             <div>
-                                <a href="?art=@Html.UrlEncoder.Encode(Model.Text)&rel=@Html.UrlEncoder.Encode(subitem.Value)">@subitem.Value</a>&nbsp;(@subitem.Count)
+                                <a href="@subitem.QueryString">@subitem.Value</a>
+                                <span class="badge bg-primary rounded-pill">@subitem.Count</span>
                             </div>
                         }
                     }
