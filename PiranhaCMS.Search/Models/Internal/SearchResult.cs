@@ -12,7 +12,8 @@ internal struct SearchResultInternal
         SearchParam = string.Empty,
         SearchText = string.Empty,
         TotalHits = 0,
-        Pagination = new PaginationDto(0, 0, 0)
+        Pagination = new PaginationDto(0, 0, 0),
+        Facets = []
     };
 
     public SearchRequestInternal SearchRequest { get; set; }
@@ -22,5 +23,5 @@ internal struct SearchResultInternal
     public IEnumerable<Document> Hits { get; set; }
     public readonly bool HasHits => Hits != null && Hits.Any();
     public PaginationDto Pagination { get; set; }
-    public IEnumerable<FacetFilter> Facets { get; set; }
+    public FacetFilter[] Facets { get; set; }
 }

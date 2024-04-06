@@ -41,7 +41,7 @@
                 <div class="col">
                     @if (item.Values != null && item.Values.Any())
                     {
-                        foreach (var subitem in item.Values)
+                        foreach (var subitem in item.Values.OrderBy(x => x.Value))
                         {
                             <div>
                                 <a href="@subitem.QueryString">@subitem.Value</a>

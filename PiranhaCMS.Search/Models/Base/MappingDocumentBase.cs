@@ -1,10 +1,9 @@
 ﻿using Lucene.Net.Documents;
 using Lucene.Net.Documents.Extensions;
 using Lucene.Net.Facet;
-using PiranhaCMS.Search.Attributes;
 using PiranhaCMS.Search.Models.Enums;
+using PiranhaCMS.Search.Models.Internal;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 
 namespace PiranhaCMS.Search.Models.Base;
 
@@ -13,23 +12,16 @@ public abstract class MappingDocumentBase<T> : IEqualityComparer<IDocument> wher
     public virtual Document MapToLuceneDocument()
     {
         var document = new Document();
-        var properties = typeof(T)
-            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-            .Where(x => x.GetCustomAttribute<SearchableAttribute>() is not null);
 
-        foreach (var property in properties)
+        foreach (var field in DocumentFields<T>.AllFields)
         {
-            var searchableAttr = property.GetCustomAttribute<SearchableAttribute>();
-            var facetAttr = property.GetCustomAttribute<FacetPropertyAttribute>();
-            var propName = string.IsNullOrEmpty(searchableAttr?.FieldName) ? property.Name : searchableAttr.FieldName;
-            var propValue = property.GetValue(this);
+            var propValue = field.Value.OriginalProperty.GetValue(this);
 
-            if (facetAttr is not null && propValue is not null)
-                document.AddFacetField(propName, propValue.ToString());
+            if (field.Value.IsFacet && propValue is not null)
+                document.AddFacetField(field.Value.FieldName, propValue.ToString());
 
-            if (property.PropertyType.IsArray)
+            if (field.Value.IsArray)
             {
-                var facetAttribute = property.GetCustomAttribute<FacetPropertyAttribute>();
                 var array = (Array?)propValue;
 
                 if (array is null) continue;
@@ -38,40 +30,40 @@ public abstract class MappingDocumentBase<T> : IEqualityComparer<IDocument> wher
                 {
                     var arrValue = arrayItem?.ToString() ?? string.Empty;
 
-                    document.Add(new StringField(propName, arrValue, searchableAttr.Stored ? Field.Store.YES : Field.Store.NO));
+                    document.Add(new StringField(field.Value.FieldName, arrValue, field.Value.Stored ? Field.Store.YES : Field.Store.NO));
 
-                    if (facetAttribute != null)
-                        document.Add(new FacetField(propName, arrValue));
+                    if (field.Value.IsFacet)
+                        document.Add(new FacetField(field.Value.FieldName, arrValue));
                 }
             }
             else
-                switch (searchableAttr.FieldType)
+                switch (field.Value.FieldType)
                 {
                     case FieldTypeEnum.StringField:
                         document.AddStringField(
-                            propName,
+                            field.Value.FieldName,
                             (string)propValue,
-                            searchableAttr.Stored ? Field.Store.YES : Field.Store.NO);
+                            field.Value.Stored ? Field.Store.YES : Field.Store.NO);
                         break;
                     case FieldTypeEnum.TextField:
                         document.AddTextField(
-                            propName,
+                            field.Value.FieldName,
                             (string)propValue,
-                            searchableAttr.Stored ? Field.Store.YES : Field.Store.NO);
+                            field.Value.Stored ? Field.Store.YES : Field.Store.NO);
                         break;
                     case FieldTypeEnum.Int32Field:
                         document.AddInt32Field(
-                            propName,
+                            field.Value.FieldName,
                             (int)propValue,
-                            searchableAttr.Stored ? Field.Store.YES : Field.Store.NO);
+                            field.Value.Stored ? Field.Store.YES : Field.Store.NO);
                         break;
                     case FieldTypeEnum.NumericDocValuesField:
                         document.AddNumericDocValuesField(
-                            propName,
+                            field.Value.FieldName,
                             ((DateTime)propValue).Ticks);
 
-                        if (searchableAttr.Stored)
-                            document.AddStoredField(propName, ((DateTime)propValue).Ticks);
+                        if (field.Value.Stored)
+                            document.AddStoredField(field.Value.FieldName, ((DateTime)propValue).Ticks);
                         break;
                 }
         }
@@ -82,25 +74,19 @@ public abstract class MappingDocumentBase<T> : IEqualityComparer<IDocument> wher
     public virtual T MapFromLuceneDocument(Document document)
     {
         var instance = new T();
-        var properties = typeof(T)
-            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-            .Where(x => x.GetCustomAttribute<SearchableAttribute>() is not null);
 
-        foreach (var property in properties)
+        foreach (var field in DocumentFields<T>.AllFields)
         {
-            var searchableAttr = property.GetCustomAttribute<SearchableAttribute>();
-            var propName = string.IsNullOrEmpty(searchableAttr?.FieldName) ? property.Name : searchableAttr.FieldName;
+            if (!field.Value.Stored) continue;
 
-            if (!searchableAttr.Stored) continue;
-
-            if (property.PropertyType.IsArray)
-                property.SetValue(instance, document.GetFields(propName).Select(x => x.GetStringValue()).ToArray());
-            else if (property.PropertyType == typeof(DateTime) && searchableAttr.FieldType == FieldTypeEnum.NumericDocValuesField)
-                property.SetValue(instance, new DateTime(document.GetField(propName).GetInt64Value().Value));
-            else if (property.PropertyType == typeof(string))
-                property.SetValue(instance, document.GetField(propName).GetStringValue());
-            else if (property.PropertyType == typeof(int))
-                property.SetValue(instance, document.GetField(propName).GetInt32Value());
+            if (field.Value.IsArray)
+                field.Value.OriginalProperty.SetValue(instance, document.GetFields(field.Value.FieldName).Select(x => x.GetStringValue()).ToArray());
+            else if (field.Value.OriginalProperty.PropertyType == typeof(DateTime) && field.Value.FieldType == FieldTypeEnum.NumericDocValuesField)
+                field.Value.OriginalProperty.SetValue(instance, new DateTime(document.GetField(field.Value.FieldName).GetInt64Value().Value));
+            else if (field.Value.FieldType == FieldTypeEnum.StringField)
+                field.Value.OriginalProperty.SetValue(instance, document.GetField(field.Value.FieldName).GetStringValue());
+            else if (field.Value.FieldType == FieldTypeEnum.Int32Field)
+                field.Value.OriginalProperty.SetValue(instance, document.GetField(field.Value.FieldName).GetInt32Value());
         }
 
         return instance;

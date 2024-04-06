@@ -1,12 +1,12 @@
 ﻿using PiranhaCMS.Search.Models.Enums;
+using System.Reflection;
 
 namespace PiranhaCMS.Search.Models.Internal;
 
-public struct FieldProperties
-{
-    public required string FieldName { get; set; }
-    public required FieldTypeEnum FieldType { get; set; }
-    public required bool Stored { get; set; }
-    public required bool IsFacet { get; set; }
-    public required bool IsArray { get; set; }
-}
+public record FieldProperties(
+    string FieldName,
+    FieldTypeEnum FieldType,
+    bool Stored,
+    bool IsFacet,
+    bool IsArray,
+    PropertyInfo OriginalProperty);

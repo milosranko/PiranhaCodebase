@@ -10,13 +10,12 @@ using Lucene.Net.Search;
 using Lucene.Net.Search.Grouping;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
-using PiranhaCMS.Common.Extensions;
+using PiranhaCMS.Search.Extensions;
 using PiranhaCMS.Search.Models.Dto;
 using PiranhaCMS.Search.Models.Enums;
 using PiranhaCMS.Search.Models.Facets;
 using PiranhaCMS.Search.Models.Internal;
 using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace PiranhaCMS.Search.Engine;
@@ -83,7 +82,7 @@ internal class DocumentReader : IDocumentReader
     public IDictionary<string, string> LatestAdded(string field, string additionalField, string sortBy, ListSortDirection sortDirection, int top)
     {
         var sort = new Sort(new SortField(sortBy, SortFieldType.INT64, sortDirection.Equals(ListSortDirection.Descending)));
-        var res = new Dictionary<string, string>();
+        var res = new ConcurrentDictionary<string, string>();
         var searcher = new IndexSearcher(_reader);
         var query = new MatchAllDocsQuery();
         var groupingSearch = new GroupingSearch(field);
@@ -92,8 +91,9 @@ internal class DocumentReader : IDocumentReader
         groupingSearch.SetGroupDocsLimit(1);
         var groupingDocs = groupingSearch.SearchByField(searcher, query, 0, top);
 
-        foreach (var item in groupingDocs.Groups)
-            res.Add(item.GroupValue.Utf8ToString(), searcher.Doc(item.ScoreDocs[0].Doc).Get(additionalField));
+        groupingDocs.Groups
+            .AsParallel()
+            .ForAll(x => res.AddOrUpdate(x.GroupValue.Utf8ToString(), searcher.Doc(x.ScoreDocs[0].Doc).Get(additionalField), (newValue, existingValue) => newValue));
 
         return res;
     }
@@ -101,24 +101,22 @@ internal class DocumentReader : IDocumentReader
     public IEnumerable<Document> GetByIds(string[] ids)
     {
         if (ids == null || ids.Length == 0)
-            return [];
+            yield return [];
 
-        var hits = new Collection<Document>();
         var searcher = new IndexSearcher(_reader);
 
         TermQuery q;
 
-        foreach (var id in ids)
+        for (int i = 0; i < ids.Length; i++)
         {
+            string? id = ids[i];
             q = new TermQuery(new Term(_id, id));
 
             var res = searcher.Search(q, 1);
             if (res.TotalHits == 0) continue;
 
-            hits.Add(searcher.Doc(res.ScoreDocs[0].Doc));
+            yield return searcher.Doc(res.ScoreDocs[0].Doc);
         }
-
-        return hits;
     }
 
     public bool IndexNotExistsOrEmpty()
@@ -219,7 +217,7 @@ internal class DocumentReader : IDocumentReader
 
         var hits = new ConcurrentBag<Document>();
 
-        Parallel.ForEach(topDocs.ScoreDocs.Skip(startIndex), new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, hit =>
+        Parallel.ForEach(topDocs.ScoreDocs.Skip(startIndex), hit =>
         {
             hits.Add(searcher.Doc(hit.Doc));
         });
@@ -256,33 +254,24 @@ internal class DocumentReader : IDocumentReader
         _isInitialized = true;
     }
 
-    private IEnumerable<FacetFilter> GetFacets(IndexSearcher searcher, Query q, SearchRequestInternal request)
+    private FacetFilter[] GetFacets(IndexSearcher searcher, Query q, SearchRequestInternal request)
     {
         if (_facetsConfig == null)
             return [];
 
         var fc = new FacetsCollector();
         var sort = new Sort(
-            //new SortField("art", SortFieldType.STRING, false),
-            new SortField("yer", SortFieldType.INT32, false));
-        FacetsCollector.Search(searcher, q, null, 1, sort, fc);
-        var facets = new FastTaxonomyFacetCounts(_taxoReader, _facetsConfig, fc);
-        var facetResults = facets.GetAllDims(100)
-            .Select(facet => new FacetFilter
-            {
-                Name = facet.Dim,
-                Values = facet.LabelValues.Select(p =>
-                new FacetValue
-                {
-                    Value = p.Label,
-                    Count = (int)p.Value,
-                    QueryString = facet.Dim.Equals("art")
-                    ? request.Pagination.QueryString.RemoveQueryStringParameter("rel").AddOrReplaceQueryStringParameter(facet.Dim, p.Label)
-                    : request.Pagination.QueryString.AddOrReplaceQueryStringParameter(facet.Dim, p.Label)
-                })
-            });
+            new SortField("yer", SortFieldType.INT32, false),
+            new SortField("rel", SortFieldType.STRING, false));
 
-        return facetResults;
+        FacetsCollector.Search(searcher, q, null, 1, sort, fc);
+
+        //TODO Append year to release facet value
+        return new FastTaxonomyFacetCounts(_taxoReader, _facetsConfig, fc)
+            .GetAllDims(100)
+            .AsParallel()
+            .Select(facet => facet.ToFacetFilter(request.Pagination.QueryString))
+            .ToArray();
     }
 
     public void Dispose()

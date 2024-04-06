@@ -74,21 +74,21 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                         Name = _engine.GetFieldName(x => x.Text),
                         Value = searchText,
                         SearchType = SearchType.QueryMatch,
-                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Text)).Value
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Text))
                     },
                     new()
                     {
                         Name = _engine.GetFieldName(x => x.Artist),
                         Value = artist,
                         SearchType = SearchType.ExactMatch,
-                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist)).Value
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist))
                     },
                     new()
                     {
                         Name = _engine.GetFieldName(x => x.Release),
                         Value = release,
                         SearchType = SearchType.ExactMatch,
-                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Release)).Value
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Release))
                     }
                 ],
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
@@ -110,21 +110,21 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                         Name = _engine.GetFieldName(x => x.Genre),
                         Value = genre,
                         SearchType = SearchType.ExactMatch,
-                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Genre)).Value
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Genre))
                     },
                     new()
                     {
                         Name = _engine.GetFieldName(x => x.Artist),
                         Value = artist,
                         SearchType = SearchType.ExactMatch,
-                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist)).Value
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist))
                     },
                     new()
                     {
                         Name = _engine.GetFieldName(x => x.Release),
                         Value = release,
                         SearchType = SearchType.ExactMatch,
-                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Release)).Value
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Release))
                     }
                 ],
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
@@ -144,14 +144,14 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                         Name = _engine.GetFieldName(x => x.Text),
                         Value = searchText,
                         SearchType = SearchType.QueryMatch,
-                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Text)).Value
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Text))
                     },
                     new()
                     {
                         Name = _engine.GetFieldName(x => x.Artist),
                         Value = artist,
                         SearchType = SearchType.ExactMatch,
-                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist)).Value
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist))
                     }
                 ],
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
@@ -171,14 +171,14 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                         Name = _engine.GetFieldName(x => x.Year),
                         Value = year,
                         SearchType = SearchType.ExactMatch,
-                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Year)).Value
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Year))
                     },
                     new()
                     {
                         Name = _engine.GetFieldName(x => x.Artist),
                         Value = artist,
                         SearchType = SearchType.ExactMatch,
-                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist)).Value
+                        Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist))
                     }
                 ],
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
@@ -198,14 +198,14 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                     Name = _engine.GetFieldName(x => x.Artist),
                     Value = artist,
                     SearchType = SearchType.ExactMatch,
-                    Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist)).Value
+                    Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist))
                 },
                 new()
                 {
                     Name = _engine.GetFieldName(x => x.Release),
                     Value = release,
                     SearchType = SearchType.ExactMatch,
-                    Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Release)).Value
+                    Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Release))
                 }
             ],
             new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
@@ -225,14 +225,14 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                     Name = _engine.GetFieldName(x => x.Genre),
                     Value = genre,
                     SearchType = SearchType.ExactMatch,
-                    Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Genre)).Value
+                    Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Genre))
                 },
                 new()
                 {
                     Name = _engine.GetFieldName(x => x.Artist),
                     Value = artist,
                     SearchType = SearchType.ExactMatch,
-                    Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist)).Value
+                    Properties = DocumentFields<MusicLibraryDocument>.GetField(_engine.GetFieldName(x => x.Artist))
                 }
             ],
             new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
@@ -358,7 +358,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                     Name = field,
                     Value = value,
                     SearchType = SearchType.QueryMatch,
-                    Properties = DocumentFields<MusicLibraryDocument>.GetField(field).Value
+                    Properties = DocumentFields<MusicLibraryDocument>.GetField(field)
                 }
             ],
             QueryType = QueryTypesEnum.Text,

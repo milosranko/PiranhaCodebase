@@ -29,4 +29,6 @@ public static class DocumentFields<T> where T : IDocument
 
         return _fields.SingleOrDefault(x => x.Value.FieldName.Equals(fieldName)).Value;
     }
+
+    public static IDictionary<string, FieldProperties> AllFields => _fields;
 }

@@ -13,8 +13,9 @@ internal static class DocumentModelHelpers<T> where T : IDocument
         if (!string.IsNullOrEmpty(DocumentFields<T>.IndexName) && DocumentFields<T>.HasFields)
             return;
 
-        var indexName = typeof(T).GetCustomAttribute<IndexConfigAttribute>()?.IndexName ?? "index";
-        var props = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        var documentType = typeof(T);
+        var indexName = documentType.GetCustomAttribute<IndexConfigAttribute>()?.IndexName ?? "index";
+        var props = documentType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         var fields = new Dictionary<string, FieldProperties>(props.Length);
         var facetsConfig = new FacetsConfig();
         SearchableAttribute? searchableAttr;
@@ -31,14 +32,7 @@ internal static class DocumentModelHelpers<T> where T : IDocument
 
             var fieldName = GetFieldName(searchableAttr, prop);
 
-            fields.Add(prop.Name, new FieldProperties
-            {
-                FieldName = fieldName,
-                FieldType = searchableAttr.FieldType,
-                Stored = searchableAttr.Stored,
-                IsFacet = facetAttr is not null,
-                IsArray = prop.PropertyType.IsArray
-            });
+            fields.Add(prop.Name, new FieldProperties(fieldName, searchableAttr.FieldType, searchableAttr.Stored, facetAttr is not null, prop.PropertyType.IsArray, prop));
 
             if (multiValueFacetAttr is not null)
                 facetsConfig.SetMultiValued(fieldName, true);
