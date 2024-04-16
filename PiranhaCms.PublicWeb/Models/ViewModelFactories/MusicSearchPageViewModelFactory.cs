@@ -296,7 +296,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
             return MusicIndexCounts.Empty;
 
         var totalFilesTask = Task.Run(() => searchIndexEngine.CountDocuments(null));
-        var totalFilesByExtension = Task.Run(() => searchIndexEngine.CountDocuments(new CounterRequest
+        var totalFilesByExtensionTask = Task.Run(() => searchIndexEngine.CountDocuments(new CounterRequest
         {
             Field = searchIndexEngine.GetFieldName(x => x.Extension)
         }));
@@ -320,7 +320,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
 
         Task.WhenAll(
             totalFilesTask,
-            totalFilesByExtension,
+            totalFilesByExtensionTask,
             releaseYearsTask,
             genreCountTask,
             latestAdditionsTask)
@@ -330,7 +330,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
         return new MusicIndexCounts
         {
             TotalFiles = totalFilesTask.Result.First().Value,
-            TotalFilesByExtension = totalFilesByExtension.Result,
+            TotalFilesByExtension = totalFilesByExtensionTask.Result,
             //TotalHiResFiles = FullTextSearch(
             //    searchIndexEngine.GetFieldName(x => x.Text), 
             //    "hr flac",
