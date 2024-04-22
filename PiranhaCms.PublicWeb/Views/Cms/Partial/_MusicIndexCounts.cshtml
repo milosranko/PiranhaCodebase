@@ -31,7 +31,7 @@
             {
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <a href="?art=@Html.UrlEncoder.Encode(hit.Value)">@Html.Raw(hit.Value)</a>
-                    <span class="badge bg-secondary rounded-pill">
+                    <span class="badge bg-secondary rounded-pill" style="white-space: normal !important">
                         <a href="?art=@Html.UrlEncoder.Encode(hit.Value)&rel=@Html.UrlEncoder.Encode(hit.Key)">@Html.Raw(hit.Key)</a>
                     </span>
                 </li>

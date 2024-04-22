@@ -91,7 +91,7 @@ public class SearchIndexEngine : ISearchIndexEngine
         var searchResult = new SearchResult
         {
             SearchText = request.Text,
-            Hits = Enumerable.Empty<SearchHit>()
+            Hits = []
         };
 
         if (string.IsNullOrEmpty(request.Text))
