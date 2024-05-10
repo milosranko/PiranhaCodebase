@@ -1,6 +1,6 @@
 ﻿namespace PiranhaCMS.Search.Models.Facets;
 
-public class FacetValue
+public record FacetValue
 {
     public string? Value { get; set; }
     public int Count { get; set; }

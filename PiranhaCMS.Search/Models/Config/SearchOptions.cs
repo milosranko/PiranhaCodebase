@@ -1,11 +1,11 @@
 ﻿namespace PiranhaCMS.Search.Models.Config;
 
-internal class SearchOptions
+internal record SearchOptions
 {
-	public SearchOptions(Type[] include)
-	{
-		Include = include;
-	}
+    public SearchOptions(Type[] include)
+    {
+        Include = include;
+    }
 
-	internal static Type[] Include { get; private set; }
+    internal static Type[] Include { get; private set; }
 }
