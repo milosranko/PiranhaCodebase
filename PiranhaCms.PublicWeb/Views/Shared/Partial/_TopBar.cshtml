@@ -4,7 +4,8 @@
     <div class="row gx-0">
         <div class="col-md-6 text-center text-lg-start mb-2 mb-lg-0">
             <div class="d-inline-flex align-items-center">
-                @foreach (var item in Model.Header.TopLinks)
+                @if (Model.Header.TopLinks is not null)
+                foreach (var item in Model.Header.TopLinks)
                 {
                     <partial name="Partial/_LinkButton" model="@item" />
                 }
