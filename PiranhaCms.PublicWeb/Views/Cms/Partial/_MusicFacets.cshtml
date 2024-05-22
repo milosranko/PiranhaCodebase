@@ -28,7 +28,7 @@
         </div>
     }
     
-    if (Model.SearchRequest.SearchFields.Any(x => x.Name == "art"))
+    if (Model.SearchRequest.HasValue && Model.SearchRequest.Value.SearchFields.Any(x => x.Name == "art"))
     {
         foreach (var item in Model.Facets.Where(x => x.Name.Equals("rel")))
         {

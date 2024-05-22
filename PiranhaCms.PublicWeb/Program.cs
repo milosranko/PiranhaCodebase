@@ -5,10 +5,14 @@ using Piranha.AttributeBuilder;
 using Piranha.Cache;
 using Piranha.Data.EF.SQLite;
 using Piranha.Manager.Editor;
+using PiranhaCMS.Business.OpenAi;
+using PiranhaCMS.Business.OpenAi.Abstractions;
 using PiranhaCMS.Common;
 using PiranhaCMS.Common.Extensions;
 using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.ImageCache;
+using PiranhaCMS.PublicWeb.Api;
+using PiranhaCMS.PublicWeb.Api.Services;
 using PiranhaCMS.PublicWeb.Business.Filters;
 using PiranhaCMS.PublicWeb.Models.ViewModelFactories;
 using PiranhaCMS.PublicWeb.Models.ViewModelFactories.Base;
@@ -18,6 +22,7 @@ using PiranhaCMS.Search.Startup;
 using PiranhaCMS.Validators.Startup;
 using Serilog;
 using System.Net;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +39,7 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables()
+    .AddUserSecrets(Assembly.GetExecutingAssembly())
     .Build();
 
 #endregion
@@ -42,6 +48,11 @@ builder.Configuration
 
 builder.Services.AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>();
 builder.Services.AddScoped<IPageViewModelFactory<MusicSearchPage, MusicSearchPageViewModel>, MusicSearchPageViewModelFactory>();
+builder.Services.AddTransient<IApiService, ApiService>();
+#region OpenAI
+builder.Services.Configure<OpenAiOptions>(builder.Configuration.GetSection(OpenAiOptions.Position));
+builder.Services.AddOpenAiApi();
+#endregion
 
 #region Piranha CMS
 
@@ -125,6 +136,7 @@ app.Use(async (context, next) =>
 
 app.UseResponseCaching();
 app.UseHttpsRedirection();
+app.UseApiEndpoints();
 
 #region Piranha init
 

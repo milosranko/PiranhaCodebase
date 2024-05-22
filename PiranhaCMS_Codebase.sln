@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiranhaCMS.Validators", "Pi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiranhaCMS.ImageCache", "PiranhaCMS.ImageCache\PiranhaCMS.ImageCache.csproj", "{12537FF0-02BC-49F8-93DE-043F017E037C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiranhaCMS.ContentTypes", "PiranhaCMS.ContentTypes\PiranhaCMS.ContentTypes.csproj", "{3A532B05-010D-4886-A3FE-76D1E1CDCA60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiranhaCMS.ContentTypes", "PiranhaCMS.ContentTypes\PiranhaCMS.ContentTypes.csproj", "{3A532B05-010D-4886-A3FE-76D1E1CDCA60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiranhaCMS.Tests", "PiranhaCMS.Tests\PiranhaCMS.Tests.csproj", "{A53CFA40-48A3-4FB3-B617-49445D98D52D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiranhaCMS.Tests", "PiranhaCMS.Tests\PiranhaCMS.Tests.csproj", "{A53CFA40-48A3-4FB3-B617-49445D98D52D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiranhaCMS.Business", "PiranhaCMS.Business\PiranhaCMS.Business.csproj", "{27203A9C-6BC9-410E-A1D6-AEE70F819E5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{A53CFA40-48A3-4FB3-B617-49445D98D52D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A53CFA40-48A3-4FB3-B617-49445D98D52D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A53CFA40-48A3-4FB3-B617-49445D98D52D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27203A9C-6BC9-410E-A1D6-AEE70F819E5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27203A9C-6BC9-410E-A1D6-AEE70F819E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27203A9C-6BC9-410E-A1D6-AEE70F819E5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27203A9C-6BC9-410E-A1D6-AEE70F819E5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

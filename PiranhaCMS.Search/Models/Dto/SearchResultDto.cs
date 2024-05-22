@@ -14,11 +14,12 @@ public struct SearchResultDto<T> where T : IDocument
             Text = string.Empty,
             TotalHits = 0,
             Pagination = new PaginationDto(0, 0, 0),
-            Facets = []
+            Facets = [],
+            SearchRequest = null
         };
     }
 
-    public SearchRequestInternal SearchRequest { get; set; }
+    public SearchRequestInternal? SearchRequest { get; set; }
     public string Text { get; set; }
     public int TotalHits { get; set; }
     public IEnumerable<T> Hits { get; set; }

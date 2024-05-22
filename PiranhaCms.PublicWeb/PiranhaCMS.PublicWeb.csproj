@@ -36,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PiranhaCMS.Business\PiranhaCMS.Business.csproj" />
     <ProjectReference Include="..\PiranhaCMS.ContentTypes\PiranhaCMS.ContentTypes.csproj" />
     <ProjectReference Include="..\PiranhaCMS.ImageCache\PiranhaCMS.ImageCache.csproj" />
     <ProjectReference Include="..\PiranhaCMS.Search\PiranhaCMS.Search.csproj" />
