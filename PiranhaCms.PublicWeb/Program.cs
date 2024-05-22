@@ -1,3 +1,4 @@
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Piranha;
 using Piranha.AspNetCore.Identity.SQLite;
@@ -22,7 +23,6 @@ using PiranhaCMS.Search.Startup;
 using PiranhaCMS.Validators.Startup;
 using Serilog;
 using System.Net;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,12 +35,17 @@ builder.Logging.AddSerilog(new LoggerConfiguration().CreateLogger(), true);
 
 #region Configuration binding
 
-builder.Configuration
+var configBuilder = builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
-    .AddEnvironmentVariables()
-    .AddUserSecrets(Assembly.GetExecutingAssembly())
-    .Build();
+    .AddEnvironmentVariables();
+
+if (builder.Environment.IsProduction())
+{
+    configBuilder.AddAzureKeyVault(new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"), new DefaultAzureCredential());
+}
+
+configBuilder.Build();
 
 #endregion
 
