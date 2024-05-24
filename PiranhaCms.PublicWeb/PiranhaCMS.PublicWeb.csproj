@@ -25,15 +25,15 @@
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.1" />
     <PackageReference Include="Azure.Identity" Version="1.11.3" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
-    <PackageReference Include="Piranha" Version="11.0.0" />
-    <PackageReference Include="Piranha.AspNetCore" Version="11.0.0" />
-    <PackageReference Include="Piranha.AspNetCore.Identity.SQLite" Version="11.0.0" />
-    <PackageReference Include="Piranha.AttributeBuilder" Version="11.0.0" />
-    <PackageReference Include="Piranha.Data.EF.SQLite" Version="11.0.0" />
-    <PackageReference Include="Piranha.ImageSharp" Version="11.0.0" />
-    <PackageReference Include="Piranha.Local.FileStorage" Version="11.0.0" />
-    <PackageReference Include="Piranha.Manager" Version="11.0.0" />
-    <PackageReference Include="Piranha.Manager.TinyMCE" Version="11.0.0" />
+    <PackageReference Include="Piranha" Version="11.1.0" />
+    <PackageReference Include="Piranha.AspNetCore" Version="11.1.0" />
+    <PackageReference Include="Piranha.AspNetCore.Identity.SQLite" Version="11.1.0" />
+    <PackageReference Include="Piranha.AttributeBuilder" Version="11.1.0" />
+    <PackageReference Include="Piranha.Data.EF.SQLite" Version="11.1.0" />
+    <PackageReference Include="Piranha.ImageSharp" Version="11.1.0" />
+    <PackageReference Include="Piranha.Local.FileStorage" Version="11.1.0" />
+    <PackageReference Include="Piranha.Manager" Version="11.1.0" />
+    <PackageReference Include="Piranha.Manager.TinyMCE" Version="11.1.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
   </ItemGroup>
 

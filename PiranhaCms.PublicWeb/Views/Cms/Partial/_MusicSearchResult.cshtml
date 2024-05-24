@@ -36,14 +36,13 @@
                 <div class="d-flex flex-column justify-content-center py-3 px-4">
                     <div class="d-flex mb-2">
                         <small class="text-uppercase me-3">
-                            <i class="bi bi-bookmarks me-2"></i>
                             <a href="?art=@(artist)">@Html.Raw(hit.Tags[0])</a> | 
                             <a href="?art=@(artist)&rel=@(release)">@(hit.Tags[2]) @Html.Raw(hit.Tags[1])</a>
                             @(bool.Parse(hit.Tags[6]).Equals(true) ? Html.Raw(hiRes) : "")
                         </small>
                     </div>
                     <span>
-                        @Html.Raw(hit.FileName)
+                        @Html.Raw(hit.Tags[4])
                         <a href="@youtubeSearch@artist+@name" target="_blank" rel="noreferrer noopener" title="Open in YouTube">
                             <i class="bi bi-youtube"></i>
                         </a>
