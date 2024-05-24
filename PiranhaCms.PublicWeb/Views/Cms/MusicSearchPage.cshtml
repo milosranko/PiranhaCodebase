@@ -28,20 +28,8 @@
 @section scripts
 {
     <script>
-        function promptChatGpt() {
-            $.ajax({
-                url: encodeURI('/api/chatgpt/?query=@(Model.SearchResult.SearchRequest != null ? Model.SearchResult.SearchRequest.Value.SearchFields.FirstOrDefault(x => x.Name == "art").Value : "")'),
-                method: 'GET'
-            })
-            .done(function (data) {
-                var loading = $("#loading");
-                loading.remove();
-                $("#chatGpt").html(data);
-            });
-        }
-
         $(function () {
-            promptChatGpt();
+            promptChatGpt('@(Model.SearchResult.SearchRequest != null ? Model.SearchResult.SearchRequest.Value.SearchFields.FirstOrDefault(x => x.Name == "art").Value : "")');
         })
     </script>
 }

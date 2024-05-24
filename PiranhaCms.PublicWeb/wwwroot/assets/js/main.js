@@ -26,8 +26,7 @@
         toggleNavbarMethod();
         $(window).resize(toggleNavbarMethod);
     });
-    
-    
+        
     // Back to top button
     $(window).scroll(function () {
         if ($(this).scrollTop() > 100) {
@@ -40,8 +39,7 @@
         $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
         return false;
     });
-
-
+    
     // Testimonials carousel
     $(".testimonial-carousel").owlCarousel({
         autoplay: true,
@@ -55,6 +53,25 @@
             '<i class="bi bi-arrow-right"></i>'
         ],
     });
-    
+
 })(jQuery);
 
+// OpenAi API
+function promptChatGpt(query) {
+    if (query.length == 0) { return; }
+
+    $.ajax({
+        url: '/api/chatgpt/?q=' + encodeURI(query),
+        method: 'GET'
+    })
+        .done(function (data) {
+            var loading = $("#loading");
+            loading.remove();
+            if (data.length > 0) {
+                $("#chatGpt").html(data);
+            }
+            else {
+                $("#chatGpt").html("ChatGPT haven't found any facts.");
+            }
+        });
+}

@@ -15,13 +15,12 @@ public static class Endpoints
         return builder;
     }
 
-    private static async Task<IResult> Get([FromQuery] string query, IApiService apiService)
+    private static async Task<IResult> Get([FromQuery] string q, IApiService apiService)
     {
-        if (string.IsNullOrEmpty(query))
+        if (string.IsNullOrEmpty(q))
             return Results.Empty;
 
-        //var response = "The Beatles were a British rock band formed in Liverpool in 1960, consisting of John Lennon, Paul McCartney, George Harrison, and Ringo Starr, known for their innovative songwriting, musicianship, and huge influence on popular music.";
-        var res = await apiService.SendChatGptPrompt(query);
+        var res = await apiService.SendChatGptPrompt(q);
 
         if (string.IsNullOrEmpty(res))
             return Results.Empty;
