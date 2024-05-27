@@ -2,7 +2,7 @@
 
 public record OpenAiOptions
 {
-    public const string Position = "OpenAI";
+    public const string Position = "OpenAI:ApiKey";
 
     public string ApiKey { get; set; } = string.Empty;
 }

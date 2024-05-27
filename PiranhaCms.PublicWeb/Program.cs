@@ -51,12 +51,17 @@ configBuilder.Build();
 
 #region Services registration
 
-builder.Services.AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>();
-builder.Services.AddScoped<IPageViewModelFactory<MusicSearchPage, MusicSearchPageViewModel>, MusicSearchPageViewModelFactory>();
-builder.Services.AddTransient<IApiService, ApiService>();
+builder.Services
+    .AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>()
+    .AddScoped<IPageViewModelFactory<MusicSearchPage, MusicSearchPageViewModel>, MusicSearchPageViewModelFactory>()
+    .AddTransient<IApiService, ApiService>();
+
 #region OpenAI
-builder.Services.Configure<OpenAiOptions>(builder.Configuration.GetSection(OpenAiOptions.Position));
-builder.Services.AddOpenAiApi();
+
+builder.Services
+    .Configure<OpenAiOptions>(builder.Configuration.GetSection(OpenAiOptions.Position))
+    .AddOpenAiApi(builder.Configuration);
+
 #endregion
 
 #region Piranha CMS

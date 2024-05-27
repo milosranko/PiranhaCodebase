@@ -1,36 +1,33 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.SemanticKernel.ChatCompletion;
 using PiranhaCMS.Business.OpenAi.Abstractions;
 using PiranhaCMS.Business.OpenAi.Dto;
-using PiranhaCMS.Business.OpenAi.Models;
-using RestSharp;
 
 namespace PiranhaCMS.Business.OpenAi.Services;
 
-internal class OpenAiService(ILogger<OpenAiService> log, IOpenApiClient httpClient) : IOpenAiService
+internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService chatService) : IOpenAiService
 {
-    private readonly IOpenApiClient _httpClient = httpClient;
     private readonly ILogger<OpenAiService> _log = log;
+    private readonly IChatCompletionService _chatService = chatService;
 
     public async Task<ResponseDto?> CreatePrompt(RequestDto request)
     {
         if (string.IsNullOrEmpty(request.Text))
             return null;
 
-        var requestModel = ChatRequest.FromDto(request);
-
-        var chatRequest = _httpClient.GetChatRequest();
-        chatRequest.AddBody(requestModel, ContentType.Json);
+        var chatHistory = new ChatHistory("You are a music expert with knowledge of music and artists from year 1920 up until now. Response should be in one sentence, up to 400 characters long.");
+        chatHistory.AddUserMessage($"Tell me about {request.Text}.");
 
         try
         {
-            var restRes = await _httpClient.ExecuteAsync<ChatResponse>(chatRequest);
+            var res = await _chatService.GetChatMessageContentAsync(chatHistory);
 
-            if (restRes.IsSuccessStatusCode)
-                return restRes.Data?.ToDto();
+            if (res != null)
+                return new ResponseDto(res.Content);
         }
         catch (Exception ex)
         {
-            _log.LogError(ex, $"Prompt values: {string.Join(Environment.NewLine, requestModel.Messages.Select(x => x.ToString()))}");
+            _log.LogError(ex, $"Prompt values: {string.Join(Environment.NewLine, chatHistory.Select(x => x.Content))}");
         }
 
         return null;

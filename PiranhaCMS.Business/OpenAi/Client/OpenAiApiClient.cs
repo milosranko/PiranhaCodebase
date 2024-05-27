@@ -10,6 +10,11 @@ internal class OpenAiApiClient : RestClient, IOpenApiClient
     private const string CHAT_ENDPOINT = "/v1/chat/completions";
     private readonly OpenAiOptions _options;
 
+    public OpenAiApiClient(IOptions<OpenAiOptions> options) : base(new RestClientOptions(API_URL) { MaxTimeout = 10000 })
+    {
+        _options = options.Value;
+    }
+
     public RestRequest GetChatRequest()
     {
         var request = new RestRequest(CHAT_ENDPOINT, Method.Post);
@@ -17,10 +22,5 @@ internal class OpenAiApiClient : RestClient, IOpenApiClient
         request.AddHeader("Authorization", $"Bearer {_options.ApiKey}");
 
         return request;
-    }
-
-    public OpenAiApiClient(IOptions<OpenAiOptions> options) : base(new RestClientOptions(API_URL) { MaxTimeout = 10000 })
-    {
-        _options = options.Value;
     }
 }
