@@ -30,7 +30,7 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
         {
             await InvokeAgentAsync($"Tell me about: {request.Text}.");
             await InvokeAgentAsync(
-                @"Suggest three similar artists. Artists are contained in file with id: file-63lSw8j3HP1ZATsdbH3bG6F2.
+                @$"Suggest three similar artists. Artists are contained in file with id: {_options.FileId}.
                 Response should show just bulleted list with each artist in a new line, without leading text. If you can't find any related artists, respond with an empty string.", true);
 
             async Task InvokeAgentAsync(string input, bool parse = false)
