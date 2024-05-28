@@ -10,8 +10,13 @@ public static class StartupExtensions
 {
     public static IServiceCollection AddOpenAiApi(this IServiceCollection services, IConfiguration config)
     {
+        var options = config.GetSection(OpenAiOptions.Position).Get<OpenAiOptions>();
+
+        if (options is null || string.IsNullOrEmpty(options.ApiKey))
+            throw new ArgumentNullException(nameof(options));
+
         services
-            .AddOpenAIChatCompletion("gpt-3.5-turbo-16k", config.GetRequiredSection(OpenAiOptions.Position).Value, "org-BeYeyeOLo1Jc6sRTGzlHLqkO")
+            .AddOpenAIChatCompletion("gpt-3.5-turbo", options.ApiKey, options.OrganisationId)
             .AddTransient<IOpenAiService, OpenAiService>();
 
         return services;

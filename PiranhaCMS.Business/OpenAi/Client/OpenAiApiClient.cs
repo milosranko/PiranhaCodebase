@@ -10,7 +10,7 @@ internal class OpenAiApiClient : RestClient, IOpenApiClient
     private const string CHAT_ENDPOINT = "/v1/chat/completions";
     private readonly OpenAiOptions _options;
 
-    public OpenAiApiClient(IOptions<OpenAiOptions> options) : base(new RestClientOptions(API_URL) { MaxTimeout = 10000 })
+    public OpenAiApiClient(IOptions<OpenAiOptions> options) : base(new RestClientOptions(API_URL))
     {
         _options = options.Value;
     }
