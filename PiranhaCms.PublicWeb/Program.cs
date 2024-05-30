@@ -14,7 +14,7 @@ using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.ImageCache;
 using PiranhaCMS.PublicWeb.Api;
 using PiranhaCMS.PublicWeb.Api.Services;
-using PiranhaCMS.PublicWeb.Business.Filters;
+using PiranhaCMS.PublicWeb.Filters;
 using PiranhaCMS.PublicWeb.Models.ViewModelFactories;
 using PiranhaCMS.PublicWeb.Models.ViewModelFactories.Base;
 using PiranhaCMS.PublicWeb.Models.ViewModels;

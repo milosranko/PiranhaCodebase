@@ -1,0 +1,11 @@
+@model PiranhaCMS.Search.Models.Dto.SearchResultDto<MusicLibraryDocument>
+@using PiranhaCMS.Search.Models
+
+@if (!Model.SearchRequest.HasValue)
+{
+    <div class="row">
+        <div class="col">
+            <p>Welcome to the vibrant realm of music, where the echoes of Bob Marley, Bonnie Raitt, and Bruce Springsteen harmonize through the rhythms of time, inviting you to explore their captivating melodies and stories!</p>
+        </div>
+    </div>
+}
