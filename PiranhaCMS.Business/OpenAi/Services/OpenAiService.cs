@@ -15,6 +15,10 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
     private readonly OpenAiOptions _options = options.Value;
     private readonly ILogger<OpenAiService> _log = log;
     private readonly IChatCompletionService _chatService = chatService;
+    private static readonly string promptTemplate1 = "Tell me about: {0}.";
+    private static readonly string promptTemplate2 =
+        @"Suggest three similar artists. Artists are contained in artists.txt file.
+        Response should show just bulleted list with each artist in a new line, without leading text. If you can't find any related artist, respond with an empty string.";
 
     public async Task<ResponseDto?> CreatePrompt(RequestDto request)
     {
@@ -28,13 +32,18 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
 
         try
         {
-            await InvokeAgentAsync($"Tell me about: {request.Text}.");
-            await InvokeAgentAsync(
-                @$"Suggest three similar artists. Artists are contained in file with id: {_options.FileId}.
-                Response should show just bulleted list with each artist in a new line, without leading text. If you can't find any related artists, respond with an empty string.", true);
+            await InvokeAgentAsync(string.Format(promptTemplate1, request.Text));
+            await InvokeAgentAsync(promptTemplate2, true);
 
             async Task InvokeAgentAsync(string input, bool parse = false)
             {
+                if (parse)
+                {
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Tool, $"artists.txt file_id: {_options.FileId}"));
+                    //Adding an response example improves chances that real response will be constructed in a same way
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, "Suggest three similar artists."));
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Assistant, "- Artist 1\n- Artist 2\n- Artist 3"));
+                }
                 chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, input));
                 await foreach (var content in chat.InvokeAsync(agent))
                 {

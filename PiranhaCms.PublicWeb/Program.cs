@@ -51,6 +51,11 @@ configBuilder.Build();
 
 #region Services registration
 
+if (builder.Environment.IsProduction())
+{
+    builder.Services.AddApplicationInsightsTelemetry();
+}
+
 builder.Services
     .AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>()
     .AddScoped<IPageViewModelFactory<MusicSearchPage, MusicSearchPageViewModel>, MusicSearchPageViewModelFactory>()
