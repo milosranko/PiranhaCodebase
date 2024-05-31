@@ -81,10 +81,10 @@ builder.Services
         {
             options.UseBlobStorage(new Uri($"https://{builder.Configuration["BlobStorageName"]}.blob.core.windows.net/{builder.Configuration["Piranha:UploadsContainerName"]}"), new DefaultAzureCredential());
         }
-        else if (builder.Environment.IsDevelopment())
-        {
-            options.UseBlobStorage(builder.Configuration["Piranha:StorageConnectionString"]);
-        }
+        //else if (builder.Environment.IsDevelopment())
+        //{
+        //    options.UseBlobStorage(builder.Configuration["Piranha:StorageConnectionString"]);
+        //}
         else
         {
             options.UseFileStorage();
@@ -109,11 +109,45 @@ builder.Services
     })
     .AddPiranhaSearch(options =>
     {
-        options.StorageType = IndexDirectory.FileSystem;
-        options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "Index");
+        if (builder.Environment.IsProduction())
+        {
+            options.StorageType = IndexDirectory.Azure;
+            options.AzureStorageCredentials = builder.Configuration["Piranha:StorageConnectionString"];
+            options.IndexDirectory = "piranha-lucene";
+        }
+        //else if (builder.Environment.IsDevelopment())
+        //{
+        //    options.StorageType = IndexDirectory.Azure;
+        //    options.AzureStorageCredentials = builder.Configuration["Piranha:StorageConnectionString"];
+        //    options.IndexDirectory = "piranha-lucene";
+        //}
+        else
+        {
+            options.StorageType = IndexDirectory.FileSystem;
+            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "Index");
+        }
         options.DefaultAnalyzer = DefaultAnalyzer.English;
     })
-    .AddMusicSearch("MusicIndex");
+    .AddMusicSearch(options =>
+    {
+        if (builder.Environment.IsProduction())
+        {
+            options.StorageType = IndexDirectory.Azure;
+            options.AzureStorageCredentials = builder.Configuration["Piranha:StorageConnectionString"];
+            options.IndexDirectory = "music-lucene";
+        }
+        //else if (builder.Environment.IsDevelopment())
+        //{
+        //    options.StorageType = IndexDirectory.Azure;
+        //    options.AzureStorageCredentials = builder.Configuration["Piranha:StorageConnectionString"];
+        //    options.IndexDirectory = "music-lucene";
+        //}
+        else
+        {
+            options.StorageType = IndexDirectory.FileSystem;
+            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "Index", "music-library");
+        }
+    });
 
 #endregion
 

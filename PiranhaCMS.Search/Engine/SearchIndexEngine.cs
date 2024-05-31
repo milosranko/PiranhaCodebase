@@ -19,14 +19,19 @@ namespace PiranhaCMS.Search.Engine;
 
 public class SearchIndexEngine : ISearchIndexEngine
 {
+    #region Private fields
+
     private const LuceneVersion AppLuceneVersion = LuceneVersion.LUCENE_48;
     private readonly FacetsConfig _facetsConfig;
     private readonly Lucene.Net.Store.Directory _directory;
     private readonly Lucene.Net.Store.Directory _taxoDirectory;
     private readonly Analyzer _analyzer;
 
-    private IndexWriter IndexWriter =>
-        new(_directory, new IndexWriterConfig(AppLuceneVersion, _analyzer));
+    private IndexWriter IndexWriter => new(_directory, new IndexWriterConfig(AppLuceneVersion, _analyzer));
+
+    #endregion
+
+    #region Constructors
 
     public SearchIndexEngine(PiranhaSearchServiceBuilder serviceBuilder)
     {
@@ -42,6 +47,10 @@ public class SearchIndexEngine : ISearchIndexEngine
             _ => new StandardAnalyzer(AppLuceneVersion),
         };
     }
+
+    #endregion
+
+    #region Public methods
 
     public void AddToIndex(WebPage webPage)
     {
@@ -198,4 +207,6 @@ public class SearchIndexEngine : ISearchIndexEngine
     {
         return DirectoryReader.IndexExists(_directory);
     }
+
+    #endregion
 }

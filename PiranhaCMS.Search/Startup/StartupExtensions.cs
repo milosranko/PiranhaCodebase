@@ -6,6 +6,7 @@ using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Helpers;
 using PiranhaCMS.Search.Models;
 using PiranhaCMS.Search.Models.Config;
+using PiranhaCMS.Search.Models.Enums;
 using PiranhaCMS.Search.Services;
 
 namespace PiranhaCMS.Search.Startup;
@@ -27,10 +28,19 @@ public static class StartupExtensions
         return serviceBuilder.Services;
     }
 
-    public static IServiceCollection AddMusicSearch(this IServiceCollection services, string indexFolderName)
+    public static IServiceCollection AddMusicSearch(
+        this IServiceCollection services,
+        Action<PiranhaSearchServiceBuilder> options)
     {
-        services.AddSingleton<ISearchIndexEngine<MusicLibraryDocument>, MusicSearchIndexEngine<MusicLibraryDocument>>();
-        services.AddSingleton<IMusicSearchIndexHelpers, MusicSearchIndexHelpers>();
+        var serviceBuilder = new PiranhaSearchServiceBuilder(services);
+        options?.Invoke(serviceBuilder);
+
+        services.AddSingleton<ISearchIndexEngine<MusicLibraryDocument>>(x => new MusicSearchIndexEngine<MusicLibraryDocument>(serviceBuilder));
+
+        if (serviceBuilder.StorageType == IndexDirectory.Azure)
+            services.AddSingleton<IMusicSearchIndexHelpers, AzureMusicSearchIndexHelpers>();
+        else
+            services.AddSingleton<IMusicSearchIndexHelpers, MusicSearchIndexHelpers>();
 
         return services;
     }

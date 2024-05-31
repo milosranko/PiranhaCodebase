@@ -8,7 +8,6 @@ using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Search.Grouping;
-using Lucene.Net.Store;
 using Lucene.Net.Util;
 using PiranhaCMS.Search.Extensions;
 using PiranhaCMS.Search.Models.Dto;
@@ -34,14 +33,20 @@ internal class DocumentReader : IDocumentReader
     private readonly string _id;
     private bool _disposed = false;
 
-    public DocumentReader(string indexName, FacetsConfig facetsConfig, bool hasFacets = false, string idField = "id")
+    public DocumentReader(
+        Lucene.Net.Store.Directory directory,
+        Lucene.Net.Store.Directory taxoDirectory,
+        string indexName,
+        FacetsConfig facetsConfig,
+        bool hasFacets = false,
+        string idField = "id")
     {
         _indexName = indexName ?? "index";
         _hasFacets = hasFacets;
         _facetsConfig = facetsConfig;
         _id = idField;
 
-        Init();
+        Init(directory, taxoDirectory);
     }
 
     public bool DocumentExists(string id)
@@ -233,23 +238,23 @@ internal class DocumentReader : IDocumentReader
         return searchResult;
     }
 
-    public void Init()
+    public void Init(Lucene.Net.Store.Directory directory, Lucene.Net.Store.Directory taxoDirectory)
     {
         if (_isInitialized)
             return;
 
-        var path = Path.Combine(Environment.CurrentDirectory, "Index", _indexName);
+        //var path = Path.Combine(Environment.CurrentDirectory, "Index", _indexName);
 
-        if (!System.IO.Directory.Exists(path.ToString()))
-            return;
+        //if (!Directory.Exists(path.ToString()))
+        //    return;
 
         _analyzer = new WhitespaceAnalyzer(AppLuceneVersion);
-        _reader = DirectoryReader.Open(FSDirectory.Open(path.ToString()));
+        _reader = DirectoryReader.Open(directory);
 
-        var pathTaxo = path + "-taxo";
+        //var pathTaxo = path + "-taxo";
 
-        if (_hasFacets && System.IO.Directory.Exists(pathTaxo) && System.IO.Directory.GetFiles(pathTaxo).Length > 0)
-            _taxoReader = new DirectoryTaxonomyReader(FSDirectory.Open(pathTaxo));
+        //if (_hasFacets && Directory.Exists(pathTaxo) && Directory.GetFiles(pathTaxo).Length > 0)
+        _taxoReader = new DirectoryTaxonomyReader(taxoDirectory);
 
         _isInitialized = true;
     }

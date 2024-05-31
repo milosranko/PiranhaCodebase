@@ -4,7 +4,7 @@ using PiranhaCMS.Search.Models.Enums;
 
 namespace PiranhaCMS.Search.Models;
 
-[IndexConfig(IndexName = "music-library")]
+[IndexConfig(IndexName = "music-lucene")]
 public class MusicLibraryDocument : MappingDocumentBase<MusicLibraryDocument>, IDocument
 {
     [Searchable(FieldName = "id", FieldType = FieldTypeEnum.StringField, Stored = true)]

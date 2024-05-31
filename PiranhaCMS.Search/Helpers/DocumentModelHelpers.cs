@@ -8,13 +8,13 @@ namespace PiranhaCMS.Search.Helpers;
 
 internal static class DocumentModelHelpers<T> where T : IDocument
 {
-    public static void ReflectDocumentFields()
+    public static void ReflectDocumentFields(string? indexName)
     {
         if (!string.IsNullOrEmpty(DocumentFields<T>.IndexName) && DocumentFields<T>.HasFields)
             return;
 
         var documentType = typeof(T);
-        var indexName = documentType.GetCustomAttribute<IndexConfigAttribute>()?.IndexName ?? "index";
+        var index = string.IsNullOrEmpty(indexName) ? documentType.GetCustomAttribute<IndexConfigAttribute>()?.IndexName ?? "index" : indexName;
         var props = documentType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         var fields = new Dictionary<string, FieldProperties>(props.Length);
         var facetsConfig = new FacetsConfig();
@@ -38,7 +38,7 @@ internal static class DocumentModelHelpers<T> where T : IDocument
                 facetsConfig.SetMultiValued(fieldName, true);
         }
 
-        DocumentFields<T>.SetFields(indexName, fields, facetsConfig);
+        DocumentFields<T>.SetFields(index, fields, facetsConfig);
     }
 
     private static string GetFieldName(SearchableAttribute? searchableAttr, PropertyInfo prop)
