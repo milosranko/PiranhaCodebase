@@ -28,6 +28,22 @@ using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#region Configuration binding
+
+var configBuilder = builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
+if (builder.Environment.IsProduction())
+{
+    configBuilder.AddAzureKeyVault(new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"), new DefaultAzureCredential());
+}
+
+configBuilder.Build();
+
+#endregion
+
 #region Configure logger
 
 //builder.Host.UseSerilog((ctx, provider, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
@@ -55,22 +71,6 @@ else
             restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug)
         .CreateLogger(), true);
 }
-
-#endregion
-
-#region Configuration binding
-
-var configBuilder = builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
-    .AddEnvironmentVariables();
-
-if (builder.Environment.IsProduction())
-{
-    configBuilder.AddAzureKeyVault(new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"), new DefaultAzureCredential());
-}
-
-configBuilder.Build();
 
 #endregion
 
