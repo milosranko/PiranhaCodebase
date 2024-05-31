@@ -124,7 +124,7 @@ builder.Services
         else
         {
             options.StorageType = IndexDirectory.FileSystem;
-            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "Index");
+            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "index");
         }
         options.DefaultAnalyzer = DefaultAnalyzer.English;
     })
@@ -145,7 +145,7 @@ builder.Services
         else
         {
             options.StorageType = IndexDirectory.FileSystem;
-            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "Index", "music-library");
+            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "index", "music-library");
         }
     });
 
