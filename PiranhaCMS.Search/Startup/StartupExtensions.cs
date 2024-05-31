@@ -54,6 +54,7 @@ public static class StartupExtensions
 
         logger.LogDebug("Attaching events on media file saved...");
 
+
         var musicSearchIndexHelpers = app.ApplicationServices.GetRequiredService<IMusicSearchIndexHelpers>();
         App.Hooks.Media.RegisterOnAfterSave(musicSearchIndexHelpers.ExtractMLA);
 

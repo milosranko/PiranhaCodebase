@@ -11,41 +11,46 @@ namespace PiranhaCMS.Validators.Services;
 
 public class SiteValidatorService : ISiteValidatorService
 {
-	private IEnumerable<Type> siteTypes;
-	private IDictionary<string, IEnumerable<PageValidatorModel>> siteValidatorCollection = new Dictionary<string, IEnumerable<PageValidatorModel>>();
+    private IEnumerable<Type> siteTypes;
+    private IDictionary<string, IEnumerable<PageValidatorModel>> siteValidatorCollection = new Dictionary<string, IEnumerable<PageValidatorModel>>();
+    private readonly ILogger<SiteValidatorService> _logger;
 
-	public void Initialize(Assembly modelsAssembly)
-	{
-		var types = modelsAssembly.ExportedTypes;
+    public SiteValidatorService(ILogger<SiteValidatorService> logger)
+    {
+        _logger = logger;
+    }
 
-		siteTypes = types.Where(x =>
-			x.GetTypeInfo().GetCustomAttributes().Any(y => y is SiteTypeAttribute));
+    public void Initialize(Assembly modelsAssembly)
+    {
+        var types = modelsAssembly.ExportedTypes;
 
-		siteValidatorCollection = ValidatorHelpers.GetPageTypeValidators(siteTypes);
-	}
+        siteTypes = types.Where(x =>
+            x.GetTypeInfo().GetCustomAttributes().Any(y => y is SiteTypeAttribute));
 
-	public void Validate(SiteContentBase model, ILogger logger)
-	{
-		if (model == null) return;
+        siteValidatorCollection = ValidatorHelpers.GetPageTypeValidators(siteTypes);
+    }
 
-		try
-		{
-			if (!siteValidatorCollection.Any() ||
-				!siteValidatorCollection.ContainsKey(model.TypeId)) return;
+    public void Validate(SiteContentBase model)
+    {
+        if (model == null) return;
 
-			foreach (var region in siteValidatorCollection[model.TypeId])
-			{
-				ValidatorHelpers.ValidateRegion(model, model.TypeId, region, siteValidatorCollection);
-			}
-		}
-		catch (ValidationException)
-		{
-			throw;
-		}
-		catch (Exception e)
-		{
-			logger.LogError(e, $"Unhandled exception occured while validating: {e.Message}");
-			throw new ValidationException($"Unhandled exception occured while validating: {e.Message}");
-		}
-	}
+        try
+        {
+            if (!siteValidatorCollection.Any() || !siteValidatorCollection.ContainsKey(model.TypeId)) return;
+
+            foreach (var region in siteValidatorCollection[model.TypeId])
+            {
+                ValidatorHelpers.ValidateRegion(model, model.TypeId, region, siteValidatorCollection);
+            }
+        }
+        catch (ValidationException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Unhandled exception occured while validating: {e.Message}");
+            throw new ValidationException($"Unhandled exception occured while validating: {e.Message}");
+        }
+    }
 }

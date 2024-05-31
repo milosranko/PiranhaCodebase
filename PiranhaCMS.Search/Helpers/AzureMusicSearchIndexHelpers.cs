@@ -8,13 +8,13 @@ using System.IO.Compression;
 
 namespace PiranhaCMS.Search.Helpers;
 
-internal class MusicSearchIndexHelpers : IMusicSearchIndexHelpers
+internal class AzureMusicSearchIndexHelpers : IMusicSearchIndexHelpers
 {
     private readonly ICache _cache;
     private readonly ISearchIndexEngine<MusicLibraryDocument> _engine;
     private readonly ILogger<MusicSearchIndexHelpers> _logger;
 
-    public MusicSearchIndexHelpers(
+    public AzureMusicSearchIndexHelpers(
         ICache cache,
         ISearchIndexEngine<MusicLibraryDocument> engine,
         ILogger<MusicSearchIndexHelpers> logger)
@@ -28,6 +28,8 @@ internal class MusicSearchIndexHelpers : IMusicSearchIndexHelpers
     {
         if (media == null || !media.Filename.EndsWith(".mla"))
             return;
+
+        //TODO Extract files to Azure storage containers, music-lucene and music-lucene-taxo
 
         var path = Path.Combine(Environment.CurrentDirectory, "Index");
 

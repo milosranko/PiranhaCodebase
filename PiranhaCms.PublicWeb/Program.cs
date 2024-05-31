@@ -1,4 +1,5 @@
 using Azure.Identity;
+using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using Piranha;
 using Piranha.AspNetCore.Identity.SQLite;
@@ -22,14 +23,38 @@ using PiranhaCMS.Search.Models.Enums;
 using PiranhaCMS.Search.Startup;
 using PiranhaCMS.Validators.Startup;
 using Serilog;
+using Serilog.Formatting.Compact;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
 #region Configure logger
 
-builder.Host.UseSerilog((ctx, provider, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
-builder.Logging.AddSerilog(new LoggerConfiguration().CreateLogger(), true);
+//builder.Host.UseSerilog((ctx, provider, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
+
+if (builder.Environment.IsProduction())
+{
+    builder.Logging.AddSerilog(
+        new LoggerConfiguration()
+        .WriteTo.AzureBlobStorage(
+            new CompactJsonFormatter(),
+            new BlobServiceClient(builder.Configuration["Piranha:StorageConnectionString"]),
+            storageContainerName: "logs",
+            storageFileName: "application.log",
+            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error)
+        .CreateLogger(), true);
+}
+else
+{
+    builder.Logging.AddSerilog(
+        new LoggerConfiguration()
+        .WriteTo.Console(new CompactJsonFormatter())
+        .WriteTo.File(
+            "./logs/application.log",
+            rollingInterval: RollingInterval.Hour,
+            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug)
+        .CreateLogger(), true);
+}
 
 #endregion
 
@@ -187,6 +212,7 @@ app.Use(async (context, next) =>
     await next();
     if (context.Response.StatusCode == (int)HttpStatusCode.NotFound)
     {
+        context.RequestServices.GetRequiredService<ILogger<Program>>().LogInformation("Page not found: " + context.Request.Path.Value);
         context.Request.Path = "/404";
         context.Response.Redirect(context.Request.Path, true);
     }
@@ -213,7 +239,7 @@ if (!App.MediaTypes.Documents.ContainsExtension(".svg"))
 App.Blocks.AutoRegisterBlocks(typeof(StartPage).Assembly);
 
 //Configure validator
-app.UsePiranhaValidators(typeof(StartPage).Assembly, app.Logger);
+app.UsePiranhaValidators(typeof(StartPage).Assembly);
 
 //Configure cache level
 App.CacheLevel = CacheLevel.Basic;

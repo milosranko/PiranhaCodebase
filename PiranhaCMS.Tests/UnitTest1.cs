@@ -50,9 +50,7 @@ public class PiranhaTests
                 config.UseUrls(HostUrl);
                 config.Configure(app =>
                 {
-                    app.UsePiranhaValidators(
-                        typeof(StartPage).Assembly,
-                        app.ApplicationServices.GetRequiredService<ILogger<PiranhaTests>>());
+                    app.UsePiranhaValidators(typeof(StartPage).Assembly);
                     app.UseCmsContentBuilder(typeof(StartPage).Assembly,
                     builderOptions: o =>
                     {
