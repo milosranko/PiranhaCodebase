@@ -45,7 +45,7 @@ public class ImageCacheTag : TagHelper
     {
         var media = imageRef.Media;
         var imageAlt = media.AltText ?? string.Empty;
-        var imageUrl = media.PublicUrl.Remove(0, 1);
+        var imageUrl = media.PublicUrl.StartsWith("~") ? media.PublicUrl.Remove(0, 1) : media.PublicUrl;
         var src = imageUrl;
 
         if (!string.IsNullOrEmpty(SrcSet))

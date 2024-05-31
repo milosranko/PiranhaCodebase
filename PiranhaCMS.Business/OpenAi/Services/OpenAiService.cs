@@ -17,7 +17,7 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
     private readonly IChatCompletionService _chatService = chatService;
     private static readonly string promptTemplate1 = "Tell me about: {0}.";
     private static readonly string promptTemplate2 =
-        @"Suggest three similar artists. Artists are contained in artists.txt file.
+        @"Suggest three similar artists..
         Response should show just bulleted list with each artist in a new line, without leading text. If you can't find any related artist, respond with an empty string.";
 
     public async Task<ResponseDto?> CreatePrompt(RequestDto request)
@@ -39,7 +39,7 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
             {
                 if (parse)
                 {
-                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Tool, $"artists.txt file_id: {_options.FileId}"));
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Tool, $"artists.json file_id: {_options.FileId}"));
                     //Adding an response example improves chances that real response will be constructed in a same way
                     chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, "Suggest three similar artists."));
                     chat.AddChatMessage(new ChatMessageContent(AuthorRole.Assistant, "- Artist 1\n- Artist 2\n- Artist 3"));

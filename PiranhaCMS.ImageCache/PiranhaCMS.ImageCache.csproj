@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Piranha.AspNetCore" Version="11.1.0" />
     <PackageReference Include="Piranha.ImageSharp" Version="11.1.0" />
+    <PackageReference Include="Piranha.Local.FileStorage" Version="11.1.0" />
   </ItemGroup>
 
 </Project>

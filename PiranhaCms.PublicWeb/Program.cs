@@ -77,7 +77,18 @@ builder.Services
         options.AddRazorRuntimeCompilation = true;
         options.UseCms();
         options.UseManager();
-        options.UseFileStorage();
+        if (builder.Environment.IsProduction())
+        {
+            options.UseBlobStorage(new Uri($"https://{builder.Configuration["BlobStorageName"]}.blob.core.windows.net/{builder.Configuration["Piranha:UploadsContainerName"]}"), new DefaultAzureCredential());
+        }
+        else if (builder.Environment.IsDevelopment())
+        {
+            options.UseBlobStorage(builder.Configuration["Piranha:StorageConnectionString"]);
+        }
+        else
+        {
+            options.UseFileStorage();
+        }
         options.UseImageSharp();
         options.UseTinyMCE();
         options.UseMemoryCache();
