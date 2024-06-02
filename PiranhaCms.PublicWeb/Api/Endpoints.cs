@@ -15,12 +15,12 @@ public static class Endpoints
         return builder;
     }
 
-    private static async Task<IResult> Get([FromQuery] string q, IApiService apiService)
+    private static async Task<IResult> Get([FromQuery] string art, [FromQuery] string? rel, IApiService apiService)
     {
-        if (string.IsNullOrEmpty(q))
+        if (string.IsNullOrEmpty(art))
             return Results.Empty;
 
-        var res = await apiService.SendChatGptPrompt(q);
+        var res = await apiService.SendChatGptPrompt(art, rel);
 
         if (string.IsNullOrEmpty(res))
             return Results.Empty;

@@ -15,12 +15,16 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
     private readonly OpenAiOptions _options = options.Value;
     private readonly ILogger<OpenAiService> _log = log;
     private readonly IChatCompletionService _chatService = chatService;
-    private static readonly string promptTemplate1 = "Tell me about: {0}.";
-    private static readonly string promptTemplate2 =
-        @"Suggest three similar artists..
+    private static readonly string artistPromptTemplate1 = "Tell me about: {0}.";
+    private static readonly string artistPromptTemplate2 =
+        @"Suggest three similar artists.
         Response should show just bulleted list with each artist in a new line, without leading text. If you can't find any related artist, respond with an empty string.";
+    private static readonly string releasePromptTemplate1 = "Tell me about release: {0}.";
+    private static readonly string releasePromptTemplate2 =
+        @"Suggest three similar releases by other artists.
+        Response should show just bulleted list with each release in a new line, without leading text. If you can't find any related releases, respond with an empty string.";
 
-    public async Task<ResponseDto?> CreatePrompt(RequestDto request)
+    public async Task<ResponseDto?> CreateArtistPrompt(RequestDto request)
     {
         if (string.IsNullOrEmpty(request.Text))
             return null;
@@ -32,8 +36,8 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
 
         try
         {
-            await InvokeAgentAsync(string.Format(promptTemplate1, request.Text));
-            await InvokeAgentAsync(promptTemplate2, true);
+            await InvokeAgentAsync(string.Format(artistPromptTemplate1, request.Text));
+            await InvokeAgentAsync(artistPromptTemplate2, true);
 
             async Task InvokeAgentAsync(string input, bool parse = false)
             {
@@ -91,6 +95,47 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
         //}
 
         //return null;
+    }
+
+    public async Task<ResponseDto?> CreateReleasePrompt(RequestDto request)
+    {
+        if (string.IsNullOrEmpty(request.Text))
+            return null;
+
+#pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+        var agent = await OpenAIAssistantAgent.RetrieveAsync(new(), new(_options.ApiKey), _options.AssistantId);
+        var chat = new AgentGroupChat(agent);
+        var responseSb = new StringBuilder();
+
+        try
+        {
+            await InvokeAgentAsync(string.Format(releasePromptTemplate1, request.Text));
+            await InvokeAgentAsync(releasePromptTemplate2, true);
+
+            async Task InvokeAgentAsync(string input, bool parse = false)
+            {
+                if (parse)
+                {
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, "Suggest three similar releses."));
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Assistant, "- Release 1\n- Release 2\n- Release 3"));
+                }
+                chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, input));
+                await foreach (var content in chat.InvokeAsync(agent))
+                {
+                    if (parse && !string.IsNullOrEmpty(content.Content))
+                        responseSb.AppendLine($"Related releases:</br>{ParseSuggestedArtists(content.Content)}</br>");
+                    else
+                        responseSb.AppendLine($"{content.Content}</br>");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, $"Prompt value: {request.Text}");
+        }
+
+        return new ResponseDto(responseSb.ToString());
+#pragma warning restore SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
     }
 
     private string ParseSuggestedArtists(string? input)

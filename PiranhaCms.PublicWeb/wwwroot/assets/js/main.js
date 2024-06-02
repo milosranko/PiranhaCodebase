@@ -57,11 +57,11 @@
 })(jQuery);
 
 // OpenAi API
-function promptChatGpt(query) {
-    if (query.length == 0) { return; }
+function promptChatGpt(artist) {
+    if (artist.length == 0) { return; }
 
     $.ajax({
-        url: '/api/chatgpt/?q=' + encodeURI(query),
+        url: '/api/chatgpt/?art=' + encodeURI(artist),
         method: 'GET'
     })
         .done(function (data) {
@@ -72,6 +72,25 @@ function promptChatGpt(query) {
             }
             else {
                 $("#chatGpt").html("ChatGPT haven't found any facts.");
+            }
+        });
+}
+
+function promptChatGptRelease(artist, release) {
+    if (artist.length == 0 || release.length == 0) { return; }
+
+    $.ajax({
+        url: '/api/chatgpt/?art=' + encodeURI(artist) + '&rel=' + encodeURI(release),
+        method: 'GET'
+    })
+        .done(function (data) {
+            var loading = $("#loading-release");
+            loading.remove();
+            if (data.length > 0) {
+                $("#chatGpt-release").html(data);
+            }
+            else {
+                $("#chatGpt-release").html("ChatGPT haven't found any facts.");
             }
         });
 }

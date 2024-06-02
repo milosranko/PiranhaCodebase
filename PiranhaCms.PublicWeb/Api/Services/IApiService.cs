@@ -2,5 +2,5 @@
 
 public interface IApiService
 {
-    Task<string?> SendChatGptPrompt(string text);
+    Task<string?> SendChatGptPrompt(string artist, string? release);
 }

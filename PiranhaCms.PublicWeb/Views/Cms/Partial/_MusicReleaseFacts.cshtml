@@ -1,0 +1,23 @@
+@model PiranhaCMS.Search.Models.Dto.SearchResultDto<MusicLibraryDocument>
+@using PiranhaCMS.ContentTypes.Helpers;
+@using PiranhaCMS.Search.Models
+
+@if (Model.SearchRequest.HasValue && 
+     Model.SearchRequest.Value.SearchFields.Any(x => x.Name == "art") && 
+     Model.SearchRequest.Value.SearchFields.Any(x => x.Name == "rel"))
+{
+    <div class="row py-1">
+        <div class="col">
+            <b>About @Model.SearchRequest.Value.SearchFields.First(x => x.Name == "rel").Value</b>
+        </div>
+        <div id="loading-release" class="d-flex align-items-center">
+            <span>checking ChatGPT...</span>
+            <div class="spinner-border spinner-border-sm ms-2 mt-1" role="status" aria-hidden="true"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p id="chatGpt-release"></p>
+        </div>
+    </div>
+}

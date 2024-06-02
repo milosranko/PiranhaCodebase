@@ -29,7 +29,13 @@
 {
     <script>
         $(function () {
-            promptChatGpt('@(Model.SearchResult.SearchRequest != null ? Model.SearchResult.SearchRequest.Value.SearchFields.FirstOrDefault(x => x.Name == "art").Value : "")');
+            promptChatGpt('@Model.SearchResult.SearchRequest?.SearchFields.FirstOrDefault(x => x.Name == "art").Value');
+        });
+
+        $(function () {
+            promptChatGptRelease(
+                '@Model.SearchResult.SearchRequest?.SearchFields.FirstOrDefault(x => x.Name == "art").Value',
+                '@Model.SearchResult.SearchRequest?.SearchFields.FirstOrDefault(x => x.Name == "rel").Value');
         })
     </script>
 }
