@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Piranha.AspNetCore.Services;
 using Piranha.Extend.Fields;
+using System.Text;
 
 namespace PiranhaCMS.ImageCache.Tag;
 
@@ -49,32 +50,22 @@ public class ImageCacheTag : TagHelper
             output.TagMode = TagMode.SelfClosing;
             var imageField = (ImageField)Model;
 
-            SetImageAttributes(imageField, output.Attributes, out var resizeParams);
-
-            //TODO Check if image sizes exists, process images resizing if needed
-            if (resizeParams.Length == 0) return;
-
-            Parallel.ForEach(resizeParams, x => _appService.Media.ResizeImage(imageField, x.w, x.h));
+            SetImageAttributes(imageField, output.Attributes);
         }
     }
 
-    private void SetImageAttributes(ImageField imageRef, TagHelperAttributeList attributes, out ResizeParams[] resizeParams)
+    private void SetImageAttributes(ImageField imageRef, TagHelperAttributeList attributes)
     {
         var media = imageRef.Media;
         var imageAlt = media.AltText ?? string.Empty;
-        var imageUrl = media.PublicUrl.StartsWith("~")
-            ? media.PublicUrl.Substring(1)
-            : media.PublicUrl;
+        var imageUrl = SanitizeImageUrl(media.PublicUrl);
         var src = imageUrl;
 
         if (!string.IsNullOrEmpty(SrcSet))
         {
-            src = imageUrl.GetSrc(SrcSet.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries).First());
-            attributes.Add("srcset", imageUrl.GetSrcSet(out resizeParams, SrcSet));
-        }
-        else
-        {
-            resizeParams = [];
+            var breakingPoints = SrcSet.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            src = GetSrc(imageRef, breakingPoints[0]);
+            attributes.Add("srcset", GetSrcSet(imageRef, breakingPoints));
         }
 
         attributes.Add("src", src);
@@ -102,5 +93,43 @@ public class ImageCacheTag : TagHelper
         {
             attributes.Add("sizes", Sizes);
         }
+    }
+
+    private string GetSrc(ImageField image, string dimensions)
+    {
+        var dim = dimensions.Split('x');
+        var width = dim[0];
+        var height = string.Empty;
+
+        if (dim.Length == 2)
+            height = dim[1];
+
+        return _appService.Media.ResizeImage(image, int.Parse(width), string.IsNullOrEmpty(height) ? default : int.Parse(height));
+    }
+
+    private string GetSrcSet(ImageField image, string[] breakingPoints)
+    {
+        var result = new StringBuilder();
+
+        foreach (var point in breakingPoints)
+        {
+            var dim = point.Split('x');
+            var width = dim[0];
+            var height = string.Empty;
+
+            if (dim.Length == 2)
+                height = dim[1];
+
+            result.Append($"{SanitizeImageUrl(_appService.Media.ResizeImage(image, int.Parse(width), string.IsNullOrEmpty(height) ? default : int.Parse(height)))} {width}w, ");
+        }
+
+        return result.ToString().TrimEnd(' ', ',');
+    }
+
+    private string SanitizeImageUrl(string imageUrl)
+    {
+        return imageUrl.StartsWith("~")
+            ? imageUrl.Substring(1)
+            : imageUrl;
     }
 }
