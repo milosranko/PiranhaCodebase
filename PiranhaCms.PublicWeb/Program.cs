@@ -14,7 +14,6 @@ using PiranhaCMS.Business.OpenAi.Abstractions;
 using PiranhaCMS.Common;
 using PiranhaCMS.Common.Extensions;
 using PiranhaCMS.ContentTypes.Pages;
-using PiranhaCMS.ImageCache;
 using PiranhaCMS.PublicWeb.Api;
 using PiranhaCMS.PublicWeb.Api.Services;
 using PiranhaCMS.PublicWeb.Filters;
@@ -84,7 +83,7 @@ if (builder.Environment.IsProduction())
 }
 
 builder.Services
-    .AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>()
+    //.AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>()
     .AddScoped<IPageViewModelFactory<MusicSearchPage, MusicSearchPageViewModel>, MusicSearchPageViewModelFactory>()
     .AddTransient<IApiService, ApiService>();
 

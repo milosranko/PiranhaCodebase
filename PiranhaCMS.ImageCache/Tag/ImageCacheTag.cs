@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+using Piranha.AspNetCore.Services;
 using Piranha.Extend.Fields;
 
-namespace PiranhaCMS.ImageCache;
+namespace PiranhaCMS.ImageCache.Tag;
 
 [HtmlTargetElement("image-cache")]
 public class ImageCacheTag : TagHelper
@@ -21,8 +22,18 @@ public class ImageCacheTag : TagHelper
     [HtmlAttributeName("model")]
     public object Model { get; set; }
 
+    [HtmlAttributeName("mode")]
+    public ResizeMode Mode { get; set; } = ResizeMode.Undefined;
+
     [HtmlAttributeName("altfallback")]
     public string? AltFallback { get; set; }
+
+    private readonly IApplicationService _appService;
+
+    public ImageCacheTag(IApplicationService appService)
+    {
+        _appService = appService;
+    }
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
@@ -36,26 +47,34 @@ public class ImageCacheTag : TagHelper
         {
             output.TagName = "img";
             output.TagMode = TagMode.SelfClosing;
+            var imageField = (ImageField)Model;
 
-            SetImageAttributes((ImageField)Model, output.Attributes);
+            SetImageAttributes(imageField, output.Attributes, out var resizeParams);
+
+            //TODO Check if image sizes exists, process images resizing if needed
+            if (resizeParams.Length == 0) return;
+
+            Parallel.ForEach(resizeParams, x => _appService.Media.ResizeImage(imageField, x.w, x.h));
         }
     }
 
-    private void SetImageAttributes(ImageField imageRef, TagHelperAttributeList attributes)
+    private void SetImageAttributes(ImageField imageRef, TagHelperAttributeList attributes, out ResizeParams[] resizeParams)
     {
         var media = imageRef.Media;
         var imageAlt = media.AltText ?? string.Empty;
-        var imageUrl = media.PublicUrl.StartsWith("~") ? media.PublicUrl.Remove(0, 1) : media.PublicUrl;
+        var imageUrl = media.PublicUrl.StartsWith("~")
+            ? media.PublicUrl.Substring(1)
+            : media.PublicUrl;
         var src = imageUrl;
 
         if (!string.IsNullOrEmpty(SrcSet))
         {
             src = imageUrl.GetSrc(SrcSet.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries).First());
-
-            if (!string.IsNullOrEmpty(Sizes))
-            {
-                attributes.Add("srcset", imageUrl.GetSrcSet(SrcSet));
-            }
+            attributes.Add("srcset", imageUrl.GetSrcSet(out resizeParams, SrcSet));
+        }
+        else
+        {
+            resizeParams = [];
         }
 
         attributes.Add("src", src);
