@@ -67,6 +67,7 @@ else
         new LoggerConfiguration()
         .WriteTo.Console(new CompactJsonFormatter())
         .WriteTo.File(
+            new CompactJsonFormatter(),
             "./logs/application.log",
             rollingInterval: RollingInterval.Hour,
             restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug)

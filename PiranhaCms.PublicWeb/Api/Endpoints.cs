@@ -15,7 +15,10 @@ public static class Endpoints
         return builder;
     }
 
-    private static async Task<IResult> Get([FromQuery] string art, [FromQuery] string? rel, IApiService apiService)
+    private static async Task<IResult> Get(
+        [FromQuery] string art,
+        [FromQuery] string? rel,
+        IApiService apiService)
     {
         if (string.IsNullOrEmpty(art))
             return Results.Empty;
