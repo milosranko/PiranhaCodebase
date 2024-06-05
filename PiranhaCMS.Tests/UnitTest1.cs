@@ -1,10 +1,11 @@
-using CmsContentBuilder.Piranha.Extensions;
-using CmsContentBuilder.Piranha.Models;
-using CmsContentBuilder.Piranha.Startup;
+using CmsContentScaffolding.Piranha.Extensions;
+using CmsContentScaffolding.Piranha.Models;
+using CmsContentScaffolding.Piranha.Startup;
+using CmsContentScaffolding.Shared.Resources;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Piranha;
 using Piranha.Data.EF.SQLite;
@@ -24,20 +25,20 @@ public class PiranhaTests
     [ClassInitialize]
     public static void Initialize(TestContext context)
     {
-        var builder = Host
+        var builder = WebHost
             .CreateDefaultBuilder()
             .ConfigureAppConfiguration((context, config) =>
             {
                 config
                 .AddConfiguration(context.Configuration)
                 .AddEnvironmentVariables()
-                .AddJsonFile("appsettings.unittest.json", true, true)
+                .AddJsonFile("appsettings.unittest.json", false, true)
                 .Build();
             })
             .ConfigureServices((context, services) =>
             {
                 services
-                .AddCmsContentBuilder(context.Configuration)
+                .AddCmsContentScaffolding(context.Configuration)
                 .AddPiranhaValidators(options =>
                 {
                     options.UsePageValidation = true;
@@ -45,66 +46,62 @@ public class PiranhaTests
                 });
                 Globals.Services = services.BuildServiceProvider();
             })
-            .ConfigureWebHostDefaults(config =>
+            .Configure(builder =>
             {
-                config.UseUrls(HostUrl);
-                config.Configure(app =>
+                builder.UsePiranhaValidators(typeof(StartPage).Assembly);
+                builder.UseCmsContentScaffolding(typeof(StartPage).Assembly,
+                builderOptions: o =>
                 {
-                    app.UsePiranhaValidators(typeof(StartPage).Assembly);
-                    app.UseCmsContentBuilder(typeof(StartPage).Assembly,
-                    builderOptions: o =>
+                    o.DefaultLanguage = "sr-RS";
+                    o.BuildMode = BuildModeEnum.Overwrite;
+                    o.PublishContent = true;
+                },
+                builder: b =>
+                {
+                    b.UsePages()
+                    .WithSite<PublicSite>(s =>
                     {
-                        o.DefaultLanguage = "sr-RS";
-                        o.BuildMode = BuildModeEnum.Overwrite;
-                        o.PublishContent = true;
-                    },
-                    builder: b =>
+                        s.SiteFooter.Column1Header = ResourceHelpers.Faker.Lorem.Paragraphs();
+                        s.SiteFooter.Column2Header = ResourceHelpers.Faker.Lorem.Paragraphs();
+                        s.SiteFooter.Column3Header = ResourceHelpers.Faker.Lorem.Paragraphs();
+                    })
+                    .WithPage<StartPage>(p =>
                     {
-                        b
-                        .WithSite<PublicSite>(s =>
+                        p.Title = "Start Page";
+                        p.PrimaryImage = PropertyHelpers.AddRandomImage(Globals.Services.GetRequiredService<IApi>(), "PrimaryImage.png", ResourceHelpers.GetImageStream());
+                        p.Blocks
+                        .Add<TeaserBlock>(block =>
                         {
-                            s.SiteFooter.Column1Header = PropertyHelpers.AddRandomText();
-                            s.SiteFooter.Column2Header = PropertyHelpers.AddRandomText();
-                            s.SiteFooter.Column3Header = PropertyHelpers.AddRandomText();
+                            block.Heading = ResourceHelpers.Faker.Lorem.Slug();
                         })
-                        .WithPage<StartPage>(p =>
+                        .Add<HtmlBlock>(block =>
                         {
-                            p.Title = "StartPage";
-                            p.PrimaryImage = PropertyHelpers.AddRandomImage(Globals.Services.GetRequiredService<IApi>());
-                            p.Blocks
-                            .Add<TeaserBlock>(block =>
-                            {
-                                block.Heading = PropertyHelpers.AddRandomText();
-                            })
-                            .Add<HtmlBlock>(block =>
-                            {
-                                block.Body = PropertyHelpers.AddRandomHtml();
-                            });
+                            block.Body = ResourceHelpers.Faker.Lorem.Paragraphs();
+                        });
+                    })
+                    .WithPage<ArticlePage>(p =>
+                    {
+                        p.Title = "Article1_1";
+                        p.PageRegion.Heading = ResourceHelpers.Faker.Lorem.Slug();
+                    }, l2 =>
+                    {
+                        l2
+                        .WithPage<ArticlePage>(p =>
+                        {
+                            p.Title = "Article2_1";
+                            p.PageRegion.Heading = ResourceHelpers.Faker.Lorem.Slug();
                         })
                         .WithPage<ArticlePage>(p =>
                         {
-                            p.Title = "Article1_1";
-                            p.PageRegion.Heading = PropertyHelpers.AddRandomText();
-                        }, l2 =>
-                        {
-                            l2
-                            .WithSubPage<ArticlePage>(p =>
-                            {
-                                p.Title = "Article2_1";
-                                p.PageRegion.Heading = PropertyHelpers.AddRandomText();
-                            })
-                            .WithSubPage<ArticlePage>(p =>
-                            {
-                                p.Title = "Article2_2";
-                                p.PageRegion.Heading = PropertyHelpers.AddRandomText();
-                            });
-                        })
-                        .WithPages<ArticlePage>(p =>
-                        {
-                            p.Title = "Article1_2";
-                            p.PageRegion.Heading = PropertyHelpers.AddRandomText();
-                        }, 100);
-                    });
+                            p.Title = "Article2_2";
+                            p.PageRegion.Heading = ResourceHelpers.Faker.Lorem.Slug();
+                        });
+                    })
+                    .WithPages<ArticlePage>(p =>
+                    {
+                        p.Title = "Article1_2";
+                        p.PageRegion.Heading = ResourceHelpers.Faker.Lorem.Slug();
+                    }, 100);
                 });
             });
 
