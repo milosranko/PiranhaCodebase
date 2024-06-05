@@ -1,8 +1,15 @@
 @model Piranha.Models.IMeta
 
-<meta name="keywords" content="@Model.MetaKeywords">
-<meta name="description" content="@Model.MetaDescription">
-
-<meta name="og:type" content="article">
-<meta name="og:title" content="@Model.Title">
-<meta name="og:description" content="@Model.MetaDescription">
+@if (!Model.MetaIndex || !Model.MetaFollow)
+{
+    <meta name="robots" content="@(Model.MetaIndex ? "" : "noindex") @(Model.MetaFollow ? "" : "nofollow")" />
+}
+<meta name="keywords" content="@Model.MetaKeywords" />
+<meta name="description" content="@Model.MetaDescription" />
+<meta name="og:type" content="article" />
+<meta name="og:title" content="@Model.MetaTitle" />
+<meta name="og:description" content="@Model.MetaDescription" />
+@if (Model.OgImage != null && Model.OgImage.Media != null)
+{
+    <meta name="og:image" content="@Model.OgImage.Media.PublicUrl" />
+}
