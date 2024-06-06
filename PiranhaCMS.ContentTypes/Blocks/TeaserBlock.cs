@@ -19,7 +19,7 @@ public partial class TeaserBlock : BlockBase, ISearchable
         Placeholder = "Enter heading text",
         Description = "This is heading field")]
     [Required(ErrorMessage = "Heading: required!")]
-    [StringLength(50, ErrorMessage = $"{nameof(Heading)}: maximum length is 50 characters!")]
+    [StringLength(70, ErrorMessage = $"{nameof(Heading)}: maximum length is 70 characters!")]
     public StringField Heading { get; set; }
 
     [Field(
