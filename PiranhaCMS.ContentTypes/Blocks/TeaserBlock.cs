@@ -33,7 +33,7 @@ public partial class TeaserBlock : BlockBase, ISearchable
         Title = "Main Text",
         Placeholder = "Enter main text",
         Description = "This is main text field")]
-    [StringLength(500, ErrorMessage = $"{nameof(MainText)}: maximum length is 500 characters!")]
+    [StringLength(1000, ErrorMessage = $"{nameof(MainText)}: maximum length is 1000 characters!")]
     public HtmlField MainText { get; set; }
 
     [Field(

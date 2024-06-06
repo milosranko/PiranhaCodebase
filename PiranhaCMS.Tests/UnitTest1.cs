@@ -73,6 +73,7 @@ public class PiranhaTests
                         .Add<TeaserBlock>(block =>
                         {
                             block.Heading = ResourceHelpers.Faker.Lorem.Slug();
+                            block.MainText = ResourceHelpers.Faker.Lorem.Paragraphs();
                         })
                         .Add<HtmlBlock>(block =>
                         {
