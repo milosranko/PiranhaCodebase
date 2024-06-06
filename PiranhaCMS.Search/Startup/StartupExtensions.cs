@@ -54,7 +54,6 @@ public static class StartupExtensions
 
         logger.LogDebug("Attaching events on media file saved...");
 
-
         var musicSearchIndexHelpers = app.ApplicationServices.GetRequiredService<IMusicSearchIndexHelpers>();
         App.Hooks.Media.RegisterOnAfterSave(musicSearchIndexHelpers.ExtractMLA);
 
@@ -67,7 +66,7 @@ public static class StartupExtensions
         ILogger logger,
         Action<PiranhaSearchApplicationBuilder> options)
     {
-        var applicationBuilder = new PiranhaSearchApplicationBuilder(app);
+        var applicationBuilder = new PiranhaSearchApplicationBuilder();
         options?.Invoke(applicationBuilder);
 
         var searchIndexEngine = app.ApplicationServices.GetService<ISearchIndexEngine>();

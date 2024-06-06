@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Piranha.AspNetCore" Version="11.1.0" />
+    <PackageReference Include="Piranha.ImageSharp" Version="11.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PiranhaCMS.Extensions\PiranhaCMS.Common.csproj" />
   </ItemGroup>
 
 </Project>

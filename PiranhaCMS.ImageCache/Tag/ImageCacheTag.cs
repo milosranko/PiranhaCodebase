@@ -44,11 +44,16 @@ public class ImageCacheTag : TagHelper
             return;
         }
 
-        if (Model.GetType() == typeof(ImageField) && ((ImageField)Model).HasValue)
+        //TODO Add converting of JPG and PNG images to WebP
+
+        if (Model.GetType() == typeof(ImageField))
         {
+            var imageField = (ImageField)Model;
+
+            if (!imageField.HasValue) return;
+
             output.TagName = "img";
             output.TagMode = TagMode.SelfClosing;
-            var imageField = (ImageField)Model;
 
             SetImageAttributes(imageField, output.Attributes);
         }

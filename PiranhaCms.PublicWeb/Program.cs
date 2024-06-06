@@ -14,6 +14,7 @@ using PiranhaCMS.Business.OpenAi.Abstractions;
 using PiranhaCMS.Common;
 using PiranhaCMS.Common.Extensions;
 using PiranhaCMS.ContentTypes.Pages;
+using PiranhaCMS.ImageCache.Startup;
 using PiranhaCMS.PublicWeb.Api;
 using PiranhaCMS.PublicWeb.Api.Services;
 using PiranhaCMS.PublicWeb.Filters;
@@ -45,7 +46,7 @@ configBuilder.Build();
 
 #endregion
 
-#region Configure logger
+#region Logger
 
 //builder.Host.UseSerilog((ctx, provider, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
 
@@ -179,7 +180,8 @@ builder.Services
             options.StorageType = IndexDirectory.FileSystem;
             options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "index", "music-library");
         }
-    });
+    })
+    .AddImageCache();
 
 #endregion
 
@@ -271,8 +273,8 @@ app.UsePiranhaSearch(api, app.Logger, options =>
         typeof(ArticlePage)
     ];
 });
-
-app.UseMusicSearch(app.Logger);
+app.UseMusicSearch(app.Logger)
+   .UseImageCache(x => x.ConvertToWebP = true);
 
 //Middleware setup
 app.UsePiranha(options =>
