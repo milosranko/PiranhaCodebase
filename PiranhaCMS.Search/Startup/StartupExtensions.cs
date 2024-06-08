@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Piranha;
 using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Helpers;
@@ -45,14 +44,10 @@ public static class StartupExtensions
         return services;
     }
 
-    public static IApplicationBuilder UseMusicSearch(
-        this IApplicationBuilder app,
-        ILogger logger)
+    public static IApplicationBuilder UseMusicSearch(this IApplicationBuilder app)
     {
         if (!App.MediaTypes.Documents.ContainsExtension(".mla"))
             App.MediaTypes.Documents.Add(".mla", "application/mla", false);
-
-        logger.LogDebug("Attaching events on media file saved...");
 
         var musicSearchIndexHelpers = app.ApplicationServices.GetRequiredService<IMusicSearchIndexHelpers>();
         App.Hooks.Media.RegisterOnAfterSave(musicSearchIndexHelpers.ExtractMLA);
@@ -63,26 +58,17 @@ public static class StartupExtensions
     public static IApplicationBuilder UsePiranhaSearch(
         this IApplicationBuilder app,
         IApi api,
-        ILogger logger,
         Action<PiranhaSearchApplicationBuilder> options)
     {
         var applicationBuilder = new PiranhaSearchApplicationBuilder();
         options?.Invoke(applicationBuilder);
 
-        var searchIndexEngine = app.ApplicationServices.GetService<ISearchIndexEngine>();
-
-        if (searchIndexEngine == null)
-            throw new Exception("Search engine not initialized!");
-
-        logger.LogDebug("Site indexing started...");
-
+        var searchIndexEngine = app.ApplicationServices.GetService<ISearchIndexEngine>() ?? throw new Exception("Search engine not initialized!");
         _ = new SearchOptions(applicationBuilder.Include);
 
         var pagesIndexed = IndexSite(searchIndexEngine, api, applicationBuilder.ForceReindexing)
             .GetAwaiter()
             .GetResult();
-
-        logger.LogDebug($"Site indexing ended, total pages indexed: {pagesIndexed}.");
 
         return app;
     }
