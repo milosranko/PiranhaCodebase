@@ -8,7 +8,7 @@ namespace PiranhaCMS.Search.Providers;
 
 internal static class DirectoryProvider
 {
-    private const string FacetsIndexFolderName = "taxo";
+    private const string FACETS_INDEX_FOLDER_NAME = "taxo";
 
     public static Directory CreateDocumentIndex(PiranhaSearchServiceBuilder serviceBuilder)
     {
@@ -33,7 +33,7 @@ internal static class DirectoryProvider
         switch (serviceBuilder.StorageType)
         {
             case IndexDirectory.FileSystem:
-                var path = Path.Combine(serviceBuilder.IndexDirectory, FacetsIndexFolderName);
+                var path = Path.Combine(serviceBuilder.IndexDirectory, FACETS_INDEX_FOLDER_NAME);
 
                 if (!System.IO.Directory.Exists(path))
                     System.IO.Directory.CreateDirectory(path);
@@ -42,7 +42,7 @@ internal static class DirectoryProvider
             case IndexDirectory.Memory:
                 return new RAMDirectory();
             case IndexDirectory.Azure:
-                return new AzureDirectory(serviceBuilder.AzureStorageCredentials, $"{serviceBuilder.IndexDirectory}-{FacetsIndexFolderName}");
+                return new AzureDirectory(serviceBuilder.AzureStorageCredentials, $"{serviceBuilder.IndexDirectory}-{FACETS_INDEX_FOLDER_NAME}");
             default:
                 return new RAMDirectory();
         }

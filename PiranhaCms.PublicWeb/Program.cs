@@ -160,7 +160,7 @@ builder.Services
             //options.AzureStorageCredentials = builder.Configuration["Piranha:StorageConnectionString"];
             //options.IndexDirectory = "piranha-lucene";
             options.StorageType = IndexDirectory.FileSystem;
-            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "index");
+            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "indexes", "piranha");
         }
         //else if (builder.Environment.IsDevelopment())
         //{
@@ -171,7 +171,7 @@ builder.Services
         else
         {
             options.StorageType = IndexDirectory.FileSystem;
-            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "index");
+            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "indexes", "piranha");
         }
         options.DefaultAnalyzer = DefaultAnalyzer.English;
     })
@@ -183,7 +183,7 @@ builder.Services
             //options.AzureStorageCredentials = builder.Configuration["Piranha:StorageConnectionString"];
             //options.IndexDirectory = "music-lucene";
             options.StorageType = IndexDirectory.FileSystem;
-            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "index", "music-library");
+            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "indexes", "music-library");
         }
         //else if (builder.Environment.IsDevelopment())
         //{
@@ -194,7 +194,7 @@ builder.Services
         else
         {
             options.StorageType = IndexDirectory.FileSystem;
-            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "index", "music-library");
+            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "indexes", "music-library");
         }
     })
     .AddImageCache();

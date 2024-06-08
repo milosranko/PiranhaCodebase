@@ -158,8 +158,7 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 
-PiranhaCMS.PublicWeb/Index
-PiranhaCMS.PublicWeb/MusicIndex
+PiranhaCMS.PublicWeb/indexes
 PiranhaCMS.PublicWeb/node_modules
 PiranhaCMS.PublicWeb/wwwroot/uploads
 PiranhaCms.PublicWeb/piranha.codebase.db
