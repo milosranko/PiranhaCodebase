@@ -4,7 +4,7 @@ namespace PiranhaCMS.Business.OpenAi.Models;
 
 internal record ChatRequest
 {
-    public string Model => "gpt-3.5-turbo-16k";
+    public string Model => "gpt-3.5-turbo";
     public Message[] Messages { get; private set; }
 
     public static ChatRequest FromDto(RequestDto request)

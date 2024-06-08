@@ -1,13 +1,10 @@
 using Azure.Identity;
-using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using Piranha;
 using Piranha.AspNetCore.Identity.SQLite;
-using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AttributeBuilder;
 using Piranha.Cache;
 using Piranha.Data.EF.SQLite;
-using Piranha.Data.EF.SQLServer;
 using Piranha.Manager.Editor;
 using PiranhaCMS.Business.OpenAi;
 using PiranhaCMS.Business.OpenAi.Abstractions;
@@ -25,6 +22,7 @@ using PiranhaCMS.Search.Models.Enums;
 using PiranhaCMS.Search.Startup;
 using PiranhaCMS.Validators.Startup;
 using Serilog;
+using Serilog.Events;
 using Serilog.Formatting.Compact;
 using System.Net;
 
@@ -52,14 +50,23 @@ configBuilder.Build();
 
 if (builder.Environment.IsProduction())
 {
+    //builder.Logging.AddSerilog(
+    //    new LoggerConfiguration()
+    //    .WriteTo.AzureBlobStorage(
+    //        new CompactJsonFormatter(),
+    //        new BlobServiceClient(builder.Configuration["Piranha:StorageConnectionString"]),
+    //        storageContainerName: "logs",
+    //        storageFileName: "application.log",
+    //        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error)
+    //    .CreateLogger(), true);
     builder.Logging.AddSerilog(
         new LoggerConfiguration()
-        .WriteTo.AzureBlobStorage(
+        .WriteTo.Console(new CompactJsonFormatter())
+        .WriteTo.File(
             new CompactJsonFormatter(),
-            new BlobServiceClient(builder.Configuration["Piranha:StorageConnectionString"]),
-            storageContainerName: "logs",
-            storageFileName: "application.log",
-            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error)
+            "./logs/application.log",
+            rollingInterval: RollingInterval.Hour,
+            restrictedToMinimumLevel: LogEventLevel.Error)
         .CreateLogger(), true);
 }
 else
@@ -71,7 +78,7 @@ else
             new CompactJsonFormatter(),
             "./logs/application.log",
             rollingInterval: RollingInterval.Hour,
-            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug)
+            restrictedToMinimumLevel: LogEventLevel.Debug)
         .CreateLogger(), true);
 }
 
@@ -107,7 +114,8 @@ builder.Services
         options.UseManager();
         if (builder.Environment.IsProduction())
         {
-            options.UseBlobStorage(new Uri($"https://{builder.Configuration["BlobStorageName"]}.blob.core.windows.net/{builder.Configuration["Piranha:UploadsContainerName"]}"), new DefaultAzureCredential());
+            //options.UseBlobStorage(new Uri($"https://{builder.Configuration["BlobStorageName"]}.blob.core.windows.net/{builder.Configuration["Piranha:UploadsContainerName"]}"), new DefaultAzureCredential());
+            options.UseFileStorage();
         }
         //else if (builder.Environment.IsDevelopment())
         //{
@@ -122,10 +130,14 @@ builder.Services
         options.UseMemoryCache();
         if (builder.Environment.IsProduction())
         {
-            options.UseEF<SQLServerDb>(db =>
-            db.UseSqlServer(builder.Configuration.GetConnectionString("piranha-sql")));
-            options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
-                db.UseSqlServer(builder.Configuration.GetConnectionString("piranha-sql")));
+            //options.UseEF<SQLServerDb>(db =>
+            //db.UseSqlServer(builder.Configuration.GetConnectionString("piranha-sql")));
+            //options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
+            //    db.UseSqlServer(builder.Configuration.GetConnectionString("piranha-sql")));
+            options.UseEF<SQLiteDb>(db =>
+                db.UseSqlite(builder.Configuration.GetConnectionString("piranha")));
+            options.UseIdentityWithSeed<IdentitySQLiteDb>(db =>
+                db.UseSqlite(builder.Configuration.GetConnectionString("piranha")));
         }
         else
         {
@@ -144,9 +156,11 @@ builder.Services
     {
         if (builder.Environment.IsProduction())
         {
-            options.StorageType = IndexDirectory.Azure;
-            options.AzureStorageCredentials = builder.Configuration["Piranha:StorageConnectionString"];
-            options.IndexDirectory = "piranha-lucene";
+            //options.StorageType = IndexDirectory.Azure;
+            //options.AzureStorageCredentials = builder.Configuration["Piranha:StorageConnectionString"];
+            //options.IndexDirectory = "piranha-lucene";
+            options.StorageType = IndexDirectory.FileSystem;
+            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "index");
         }
         //else if (builder.Environment.IsDevelopment())
         //{
@@ -165,9 +179,11 @@ builder.Services
     {
         if (builder.Environment.IsProduction())
         {
-            options.StorageType = IndexDirectory.Azure;
-            options.AzureStorageCredentials = builder.Configuration["Piranha:StorageConnectionString"];
-            options.IndexDirectory = "music-lucene";
+            //options.StorageType = IndexDirectory.Azure;
+            //options.AzureStorageCredentials = builder.Configuration["Piranha:StorageConnectionString"];
+            //options.IndexDirectory = "music-lucene";
+            options.StorageType = IndexDirectory.FileSystem;
+            options.IndexDirectory = Path.Combine(Environment.CurrentDirectory, "index", "music-library");
         }
         //else if (builder.Environment.IsDevelopment())
         //{
@@ -273,8 +289,8 @@ app.UsePiranhaSearch(api, app.Logger, options =>
         typeof(ArticlePage)
     ];
 });
-app.UseMusicSearch(app.Logger)
-   .UseImageCache(x => x.ConvertToWebP = true);
+app.UseMusicSearch(app.Logger);
+app.UseImageCache(x => x.ConvertToWebP = true);
 
 //Middleware setup
 app.UsePiranha(options =>
