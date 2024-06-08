@@ -112,8 +112,7 @@ builder.Services
         options.UseManager();
         if (builder.Environment.IsProduction())
         {
-            //options.UseBlobStorage(new Uri($"https://{builder.Configuration["BlobStorageName"]}.blob.core.windows.net/{builder.Configuration["Piranha:UploadsContainerName"]}"), new DefaultAzureCredential());
-            options.UseFileStorage();
+            options.UseBlobStorage(new Uri($"https://{builder.Configuration["BlobStorageName"]}.blob.core.windows.net/{builder.Configuration["Piranha:UploadsContainerName"]}"), new DefaultAzureCredential());
         }
         //else if (builder.Environment.IsDevelopment())
         //{
@@ -280,7 +279,7 @@ app.UsePiranhaSearch(api, options =>
     ];
 });
 app.UseMusicSearch();
-app.UseImageCache(x => x.ConvertToWebP = true);
+app.UseImageCache(options => options.ConvertToWebP = true);
 
 //Middleware setup
 app.UsePiranha(options =>
