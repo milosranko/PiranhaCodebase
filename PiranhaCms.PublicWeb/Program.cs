@@ -3,11 +3,9 @@ using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using Piranha;
 using Piranha.AspNetCore.Identity.SQLite;
-using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AttributeBuilder;
 using Piranha.Cache;
 using Piranha.Data.EF.SQLite;
-using Piranha.Data.EF.SQLServer;
 using Piranha.Manager.Editor;
 using PiranhaCMS.Business.OpenAi;
 using PiranhaCMS.Business.OpenAi.Abstractions;
@@ -127,10 +125,15 @@ builder.Services
         options.UseMemoryCache();
         if (builder.Environment.IsProduction())
         {
-            options.UseEF<SQLServerDb>(db =>
-            db.UseSqlServer(builder.Configuration.GetConnectionString("piranha-sql")));
-            options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
-                db.UseSqlServer(builder.Configuration.GetConnectionString("piranha-sql")));
+            //options.UseEF<SQLServerDb>(db =>
+            //    db.UseSqlServer(builder.Configuration.GetConnectionString("piranha-sql")));
+            //options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
+            //    db.UseSqlServer(builder.Configuration.GetConnectionString("piranha-sql")));
+
+            options.UseEF<SQLiteDb>(db =>
+                db.UseSqlite(builder.Configuration.GetConnectionString("piranha")));
+            options.UseIdentityWithSeed<IdentitySQLiteDb>(db =>
+                db.UseSqlite(builder.Configuration.GetConnectionString("piranha")));
         }
         else
         {
