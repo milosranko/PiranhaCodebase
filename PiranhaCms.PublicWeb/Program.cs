@@ -78,14 +78,14 @@ else
 
 #region Services registration
 
-if (builder.Environment.IsProduction())
-{
-    builder.Services.AddApplicationInsightsTelemetry(options =>
-    {
-        //Uses too much data
-        options.EnableDependencyTrackingTelemetryModule = false;
-    });
-}
+//if (builder.Environment.IsProduction())
+//{
+//    builder.Services.AddApplicationInsightsTelemetry(options =>
+//    {
+//        //Uses too much data
+//        options.EnableDependencyTrackingTelemetryModule = false;
+//    });
+//}
 
 builder.Services
     //.AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>()

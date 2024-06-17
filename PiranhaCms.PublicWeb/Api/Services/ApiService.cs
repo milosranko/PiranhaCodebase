@@ -61,8 +61,10 @@ internal class ApiService : IApiService
 
     private async Task<string> CreatePrompt(string cacheKey, string query, bool release)
     {
+#if !DEBUG
         if (!HasApiAccess())
             return "You have used up your ChatGPT daily limit!";
+#endif
 
         var res = release
             ? await _openAiService.CreateReleasePrompt(new RequestDto(query))

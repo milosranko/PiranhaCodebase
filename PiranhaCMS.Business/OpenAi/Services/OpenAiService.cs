@@ -15,9 +15,9 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
     private readonly OpenAiOptions _options = options.Value;
     private readonly ILogger<OpenAiService> _log = log;
     private readonly IChatCompletionService _chatService = chatService;
-    private static readonly string artistPromptTemplate1 = "Tell me about: {0}.";
+    private static readonly string artistPromptTemplate1 = "Tell me about: {0}. Response should be in one sentence.";
     private static readonly string artistPromptTemplate2 =
-        @"Suggest three similar artists.
+        @"Suggest three artists similar to {0}.
         Response should show just bulleted list with each artist in a new line, without leading text. If you can't find any related artist, respond with an empty string.";
     private static readonly string releasePromptTemplate1 = "Tell me about release: {0}.";
     private static readonly string releasePromptTemplate2 =
@@ -37,16 +37,16 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
         try
         {
             await InvokeAgentAsync(string.Format(artistPromptTemplate1, request.Text));
-            await InvokeAgentAsync(artistPromptTemplate2, true);
+            await InvokeAgentAsync(string.Format(artistPromptTemplate2, request.Text), true);
 
             async Task InvokeAgentAsync(string input, bool parse = false)
             {
                 if (parse)
                 {
-                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Tool, $"artists.json file_id: {_options.FileId}"));
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Tool, $"When creating an answer, always use artists from artists.json, file id: {_options.FileId}"));
                     //Adding an response example improves chances that real response will be constructed in a same way
-                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, "Suggest three similar artists."));
-                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Assistant, "- Artist 1\n- Artist 2\n- Artist 3"));
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, "Suggest three artists similar to The Beatles."));
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Assistant, "- The Rolling Stones\n- The Animals\n- The Kinks"));
                 }
                 chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, input));
                 await foreach (var content in chat.InvokeAsync(agent))
@@ -116,8 +116,8 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
             {
                 if (parse)
                 {
-                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, "Suggest three similar releses."));
-                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Assistant, "- Release 1\n- Release 2\n- Release 3"));
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, "Suggest three similar releses to The Beatles White Album."));
+                    chat.AddChatMessage(new ChatMessageContent(AuthorRole.Assistant, "- Are You Experienced?\n- Beggars Banquet\n- Village Green Preservation Society"));
                 }
                 chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, input));
                 await foreach (var content in chat.InvokeAsync(agent))
