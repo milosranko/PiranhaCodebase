@@ -89,14 +89,9 @@ internal class ApiService : IApiService
         var cacheKey = CreateCacheKey($"ip:{_contextAccessor.HttpContext.Connection.RemoteIpAddress}");
         var cachedValue = _cache.Get<int>(cacheKey);
 
-        if (cachedValue.Equals(0))
+        if (cachedValue < 4)
         {
-            _ = _cache.Set<int>(cacheKey, 1, TimeSpan.FromDays(1));
-            return true;
-        }
-        else if (cachedValue.Equals(1))
-        {
-            _ = _cache.Set<int>(cacheKey, 2, TimeSpan.FromDays(1));
+            _ = _cache.Set(cacheKey, cachedValue + 1, TimeSpan.FromDays(1));
             return true;
         }
 
