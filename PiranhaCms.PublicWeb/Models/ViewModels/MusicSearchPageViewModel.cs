@@ -1,4 +1,5 @@
 using PiranhaCMS.ContentTypes.Pages;
+using PiranhaCMS.PublicWeb.Models.ViewModels.Base;
 using PiranhaCMS.Search.Models;
 using PiranhaCMS.Search.Models.Dto;
 

@@ -36,48 +36,27 @@ public static class StringExtensions
         return string.Empty;
     }
 
-    public static string Replace(this string originalString, string oldValue, string newValue, StringComparison comparisonType)
-    {
-        int startIndex = 0;
-        while (true)
-        {
-            startIndex = originalString.IndexOf(oldValue, startIndex, comparisonType);
-            if (startIndex == -1)
-                break;
-
-            originalString = originalString.Substring(0, startIndex) + newValue + originalString.Substring(startIndex + oldValue.Length);
-
-            startIndex += newValue.Length;
-        }
-
-        return originalString;
-    }
-
     public static string RemoveAccents(this string input)
     {
-        if (!String.IsNullOrEmpty(input))
-        {
-            return new string(
-                input
-                .Normalize(System.Text.NormalizationForm.FormD)
-                .ToCharArray()
-                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
-                .ToArray());
-        }
+        if (string.IsNullOrEmpty(input))
+            return string.Empty;
+
+        return new string(
+            input
+            .Normalize(System.Text.NormalizationForm.FormD)
+            .ToCharArray()
+            .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+            .ToArray());
         // the normalization to FormD splits accented letters in accents+letters
         // the rest removes those accents (and other non-spacing characters)
-
-        return string.Empty;
     }
 
     public static string ConvertNewLineToBR(this string text)
     {
-        if (!string.IsNullOrEmpty(text))
-        {
-            return text.Replace("\n", "<br>");
-        }
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
 
-        return string.Empty;
+        return text.Replace("\n", "<br>");
     }
 
     public static string SanitizeSearchString(this string input)

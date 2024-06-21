@@ -1,6 +1,7 @@
 using PiranhaCMS.Common.Extensions;
 using PiranhaCMS.ContentTypes.Helpers;
 using PiranhaCMS.ContentTypes.Pages;
+using PiranhaCMS.PublicWeb.Models.ViewModels.Base;
 using PiranhaCMS.Search.Engine;
 using PiranhaCMS.Search.Models;
 using static PiranhaCMS.Common.Extensions.StringExtensions;
@@ -35,6 +36,7 @@ public record SearchPageViewModel : PageViewModel<SearchPage>
         }
 
         var musicSearchPage = currentPage.GetChildrenPages().AsPage<MusicSearchPage>().FirstOrDefault();
+
         if (musicSearchPage == null) return;
 
         MusicSearchPageName = musicSearchPage.Title;

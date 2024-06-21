@@ -4,6 +4,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using PiranhaCMS.Business.OpenAi.Abstractions;
 using PiranhaCMS.Business.OpenAi.Dto;
+using PiranhaCMS.Common.Extensions;
 using System.Text;
 
 namespace PiranhaCMS.Business.OpenAi.Services;
@@ -107,14 +108,14 @@ internal class AzureOpenAiService(ILogger<AzureOpenAiService> log, IChatCompleti
         return new ResponseDto(responseSb.ToString());
     }
 
-    private string ParseSuggestedArtists(string? input)
+    private static string ParseSuggestedArtists(string? input)
     {
         if (string.IsNullOrEmpty(input))
             return string.Empty;
 
         var artists = input
             .Split("\n")
-            .Select(x => "<a href='?q=" + x.Remove(0, 2) + "'>" + x + "</a></br>")
+            .Select(x => "<a href='?q=" + x.Remove(0, 2).Replace("by", "", StringComparison.InvariantCultureIgnoreCase).Replace("the", "", StringComparison.InvariantCultureIgnoreCase).SanitizeSearchString() + "'>" + x + "</a></br>")
             .ToArray();
 
         return string.Join("\n", artists);

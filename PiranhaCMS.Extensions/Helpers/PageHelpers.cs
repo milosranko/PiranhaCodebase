@@ -17,12 +17,10 @@ public static class PageHelpers
 
             webApp.InitAsync(httpContext.HttpContext).GetAwaiter().GetResult();
 
-            if (!string.IsNullOrEmpty(httpContext.HttpContext?.Request.Query["id"]))
-            {
-                return webApp.Api.Pages.GetByIdAsync<PageBase>(Guid.Parse(httpContext.HttpContext.Request.Query["id"])).GetAwaiter().GetResult();
-            }
+            if (string.IsNullOrEmpty(httpContext.HttpContext?.Request.Query["id"]))
+                return null;
 
-            return null;
+            return webApp.Api.Pages.GetByIdAsync<PageBase>(Guid.Parse(httpContext.HttpContext.Request.Query["id"])).GetAwaiter().GetResult();
         }
         catch
         {
@@ -35,12 +33,10 @@ public static class PageHelpers
         using var serviceScope = ServiceActivator.GetScope();
         var httpContext = serviceScope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
 
-        if (!string.IsNullOrEmpty(httpContext?.HttpContext?.Request?.Query["q"]))
-        {
-            return httpContext.HttpContext.Request.Query["q"].ToString().Trim();
-        }
+        if (string.IsNullOrEmpty(httpContext?.HttpContext?.Request?.Query["q"]))
+            return string.Empty;
 
-        return string.Empty;
+        return httpContext.HttpContext.Request.Query["q"].ToString().Trim();
     }
 
     public static T? GetPageById<T>(Guid id) where T : PageBase

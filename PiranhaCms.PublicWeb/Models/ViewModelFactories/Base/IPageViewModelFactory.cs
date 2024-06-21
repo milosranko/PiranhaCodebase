@@ -1,5 +1,5 @@
 ﻿using PiranhaCMS.ContentTypes.Pages.Base;
-using PiranhaCMS.PublicWeb.Models.ViewModels;
+using PiranhaCMS.PublicWeb.Models.ViewModels.Base;
 
 namespace PiranhaCMS.PublicWeb.Models.ViewModelFactories.Base;
 

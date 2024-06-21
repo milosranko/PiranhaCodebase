@@ -1,6 +1,7 @@
 @using Piranha.Models
 @using PiranhaCMS.PublicWeb.Components
-@model PiranhaCMS.PublicWeb.Models.ViewModels.IPageViewModel<PiranhaCMS.ContentTypes.Pages.Base.IPage>
+@using PiranhaCMS.PublicWeb.Models.ViewModels.Base
+@model IPageViewModel<PiranhaCMS.ContentTypes.Pages.Base.IPage>
 
 <!doctype html>
 <html lang="@Model.GlobalSettings.LanguageCode" class="no-js">

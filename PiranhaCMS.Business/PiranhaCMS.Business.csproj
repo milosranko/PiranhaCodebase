@@ -17,4 +17,8 @@
     <PackageReference Include="RestSharp" Version="111.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PiranhaCMS.Extensions\PiranhaCMS.Common.csproj" />
+  </ItemGroup>
+
 </Project>

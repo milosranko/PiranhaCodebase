@@ -1,7 +1,7 @@
 using PiranhaCMS.ContentTypes.Pages.Base;
 using System.Text.Json.Serialization;
 
-namespace PiranhaCMS.PublicWeb.Models.ViewModels;
+namespace PiranhaCMS.PublicWeb.Models.ViewModels.Base;
 
 public interface IPageViewModel<out T> where T : IPage
 {

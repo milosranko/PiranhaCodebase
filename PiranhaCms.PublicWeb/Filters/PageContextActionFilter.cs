@@ -6,6 +6,7 @@ using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.ContentTypes.Pages.Base;
 using PiranhaCMS.ContentTypes.Sites;
 using PiranhaCMS.PublicWeb.Models.ViewModels;
+using PiranhaCMS.PublicWeb.Models.ViewModels.Base;
 
 namespace PiranhaCMS.PublicWeb.Filters;
 
