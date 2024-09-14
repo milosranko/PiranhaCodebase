@@ -7,6 +7,7 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using PiranhaCMS.Business.OpenAi.Abstractions;
 using PiranhaCMS.Business.OpenAi.Dto;
 using PiranhaCMS.Common.Extensions;
+using System.ClientModel;
 using System.Text;
 
 namespace PiranhaCMS.Business.OpenAi.Services;
@@ -31,7 +32,7 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
             return null;
 
 #pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        var agent = await OpenAIAssistantAgent.RetrieveAsync(new(), new(_options.ApiKey), _options.AssistantId);
+        var agent = await OpenAIAssistantAgent.RetrieveAsync(new(), OpenAIClientProvider.ForOpenAI(new ApiKeyCredential(_options.ApiKey)), _options.AssistantId);
         var chat = new AgentGroupChat(agent);
         var responseSb = new StringBuilder();
 
@@ -104,7 +105,7 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
             return null;
 
 #pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        var agent = await OpenAIAssistantAgent.RetrieveAsync(new(), new(_options.ApiKey), _options.AssistantId);
+        var agent = await OpenAIAssistantAgent.RetrieveAsync(new(), OpenAIClientProvider.ForOpenAI(new ApiKeyCredential(_options.ApiKey)), _options.AssistantId);
         var chat = new AgentGroupChat(agent);
         var responseSb = new StringBuilder();
 

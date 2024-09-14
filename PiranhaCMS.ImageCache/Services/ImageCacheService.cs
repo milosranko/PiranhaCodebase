@@ -19,6 +19,7 @@ internal class ImageCacheService : IImageCacheService
 
     public void ConvertToWebP(Media media)
     {
+        //TODO Check ImageCacheOptionsBuilder for file allowed file extensions, implement IOptions pattern
         if (media == null || media.Type != MediaType.Image || !(media.Filename.EndsWith(".jpg") || media.Filename.EndsWith(".jpeg") || media.Filename.EndsWith(".png")))
             return;
 
@@ -39,6 +40,9 @@ internal class ImageCacheService : IImageCacheService
             using var output = new MemoryStream();
             using (var image = Image.Load(stream))
                 image.SaveAsWebp(output);
+
+            if (output.Length >= stream.Length)
+                return;
 
             output.Position = 0;
 
