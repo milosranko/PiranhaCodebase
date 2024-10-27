@@ -32,7 +32,7 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
             return null;
 
 #pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        var agent = await OpenAIAssistantAgent.RetrieveAsync(new(), OpenAIClientProvider.ForOpenAI(new ApiKeyCredential(_options.ApiKey)), _options.AssistantId);
+        var agent = await OpenAIAssistantAgent.RetrieveAsync(OpenAIClientProvider.ForOpenAI(new ApiKeyCredential(_options.ApiKey)), _options.AssistantId, new());
         var chat = new AgentGroupChat(agent);
         var responseSb = new StringBuilder();
 
@@ -105,7 +105,7 @@ internal class OpenAiService(ILogger<OpenAiService> log, IChatCompletionService 
             return null;
 
 #pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        var agent = await OpenAIAssistantAgent.RetrieveAsync(new(), OpenAIClientProvider.ForOpenAI(new ApiKeyCredential(_options.ApiKey)), _options.AssistantId);
+        var agent = await OpenAIAssistantAgent.RetrieveAsync(OpenAIClientProvider.ForOpenAI(new ApiKeyCredential(_options.ApiKey)), _options.AssistantId, new());
         var chat = new AgentGroupChat(agent);
         var responseSb = new StringBuilder();
 
