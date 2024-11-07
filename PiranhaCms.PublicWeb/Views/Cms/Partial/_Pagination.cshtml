@@ -1,8 +1,4 @@
 ﻿@model PiranhaCMS.Search.Models.Dto.PaginationDto
-@{
-    var maxVisiblePages = 3;
-    var pageCounter = 0;
-}
 
 <nav aria-label="Page navigation" class="nav d-flex justify-content-center">
     <ul class="pagination flex-sm-wrap">
@@ -16,29 +12,25 @@
                 <span aria-hidden="true"><i class="bi bi-arrow-left"></i></span>
             </a>
         </li>
-        @for (int i = 0; i < Model.TotalPages; i++)
+        @if (Model.TotalPages > 5)
         {
-            if (i < Model.PageIndex || pageCounter > maxVisiblePages)
+            @for (int i = Math.Max(0, Model.PageIndex - 1); i <= Math.Min(Model.PageIndex + 1, Model.TotalPages-1); i++)
             {
-                continue;
+                <li class="page-item @(Model.PageIndex == i ? "active" : "")"><a class="page-link" href="@(Model.QueryString)&page=@i" aria-label="Page @i" role="button">@(i+1)</a></li>
             }
 
-            if (i >= Model.PageIndex)
+            if (Model.PageIndex + 1 <= Model.TotalPages - 2)
             {
-                <li class="page-item @(Model.PageIndex.Equals(i) ? "active" : string.Empty)">
-                    <a class="page-link" href="@Model.QueryString@(i == 0 ? "" : $"&page={i}")">@(i + 1)</a>
-                </li>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                <li class="page-item"><a class="page-link" role="button" aria-label="Page @Model.TotalPages" href="@(Model.QueryString)&page=@(Model.TotalPages-1)">@Model.TotalPages</a></li>
             }
-
-            pageCounter++;
         }
-        @if (Model.TotalPages - 1 > maxVisiblePages && Model.PageIndex < Model.TotalPages - maxVisiblePages - 1)
+        else
         {
-            <li class="page-item">
-                <a class="page-link" href="@(Model.QueryString)&page=@(Model.TotalPages - 1)" aria-label="Last" title="Last">
-                    @Model.TotalPages
-                </a>
-            </li>
+            @for (int i = 0; i <= Model.TotalPages - 1; i++)
+            {
+                <li class="page-item @(Model.PageIndex == i ? "active" : "")"><a class="page-link" href="@(Model.QueryString)&page=@i" role="button" aria-label="Page @i">@(i+1)</a></li>
+            }
         }
         <li class="page-item @(Model.PageIndex + 1 < Model.TotalPages ? string.Empty : "disabled")">
             <a class="page-link rounded-0" href="@(Model.QueryString)&page=@(Model.PageIndex + 1)" aria-label="Next" title="Next">

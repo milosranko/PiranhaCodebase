@@ -47,7 +47,7 @@
     <PackageReference Include="Piranha.Manager" Version="11.1.0" />
     <PackageReference Include="Piranha.Manager.TinyMCE" Version="11.1.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
-    <PackageReference Include="Serilog.Sinks.AzureBlobStorage" Version="4.0.3" />
+    <PackageReference Include="Serilog.Sinks.AzureBlobStorage" Version="4.0.5" />
   </ItemGroup>
 
   <ItemGroup>
