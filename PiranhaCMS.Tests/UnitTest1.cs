@@ -13,6 +13,8 @@ using Piranha.Extend.Blocks;
 using PiranhaCMS.ContentTypes.Blocks;
 using PiranhaCMS.ContentTypes.Pages;
 using PiranhaCMS.ContentTypes.Sites;
+using PiranhaCMS.ImageCache.Models;
+using PiranhaCMS.ImageCache.Startup;
 using PiranhaCMS.Validators.Startup;
 
 namespace PiranhaCMS.Tests;
@@ -39,6 +41,7 @@ public class PiranhaTests
             {
                 services
                 .AddCmsContentScaffolding(context.Configuration)
+                .AddImageCache()
                 .AddPiranhaValidators(options =>
                 {
                     options.UsePageValidation = true;
@@ -49,6 +52,11 @@ public class PiranhaTests
             .Configure(builder =>
             {
                 builder.UsePiranhaValidators(typeof(StartPage).Assembly);
+                builder.UseImageCache(o =>
+                {
+                    o.ConvertToWebP = true;
+                    o.Quality = ImageQuality.Medium;
+                });
                 builder.UseCmsContentScaffolding(typeof(StartPage).Assembly,
                 builderOptions: o =>
                 {

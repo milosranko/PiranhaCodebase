@@ -268,3 +268,10 @@ h6,
 .carousel-item video {
     vertical-align: middle;
 }
+
+.qxCTlb {
+    font-family: 'Barlow', sans-serif !important;
+    font-weight: 600 !important;
+    transition: .5s;
+    color: #FFFFFF !important;
+}
