@@ -274,7 +274,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
         }
         else
         {
-            var cachedObject = _cache.Get<MusicIndexCounts>(CacheKeys.MusicIndexCount);
+            var cachedObject = _cache.GetAsync<MusicIndexCounts>(CacheKeys.MusicIndexCount).GetAwaiter().GetResult();
             if (cachedObject != null)
             {
                 model.IndexCounts = cachedObject;
@@ -282,7 +282,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
             else
             {
                 var indexCounts = GetIndexCounts(_engine);
-                _cache.Set(CacheKeys.MusicIndexCount, indexCounts);
+                _cache.SetAsync(CacheKeys.MusicIndexCount, indexCounts);
                 model.IndexCounts = indexCounts;
             }
         }

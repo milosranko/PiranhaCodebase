@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-    <PackageReference Include="Piranha" Version="11.1.0" />
-    <PackageReference Include="Piranha.AttributeBuilder" Version="11.1.0" />
+    <PackageReference Include="Piranha" Version="12.0.0" />
+    <PackageReference Include="Piranha.AttributeBuilder" Version="12.0.0" />
   </ItemGroup>
 
   <ItemGroup>

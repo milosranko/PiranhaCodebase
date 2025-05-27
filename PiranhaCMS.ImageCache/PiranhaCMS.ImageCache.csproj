@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Piranha.ImageSharp" Version="11.1.0" />
+    <PackageReference Include="Piranha.ImageSharp" Version="12.0.0" />
   </ItemGroup>
 
   <ItemGroup>

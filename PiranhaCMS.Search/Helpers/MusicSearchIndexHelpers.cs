@@ -51,7 +51,7 @@ internal class MusicSearchIndexHelpers : IMusicSearchIndexHelpers
 
         //Invalidate cache
         _logger.LogDebug("Invalidating cache...");
-        _cache.Remove(CacheKeys.MusicIndexCount);
+        _cache.RemoveAsync(CacheKeys.MusicIndexCount).GetAwaiter().GetResult();
         //_cache.Set(CacheKeys.MusicIndexCount, _engine.CountDocuments());
     }
 }
