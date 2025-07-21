@@ -53,24 +53,26 @@ if (builder.Environment.IsProduction())
 {
     builder.Logging.AddSerilog(
         new LoggerConfiguration()
+        .MinimumLevel.Error()
         .WriteTo.AzureBlobStorage(
             new CompactJsonFormatter(),
             new BlobServiceClient(builder.Configuration["Piranha:StorageConnectionString"]),
             storageContainerName: "logs",
             storageFileName: "application.log",
-            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error)
+            restrictedToMinimumLevel: LogEventLevel.Error)
         .CreateLogger(), true);
 }
 else
 {
     builder.Logging.AddSerilog(
         new LoggerConfiguration()
+        .MinimumLevel.Error()
         .WriteTo.Console(new CompactJsonFormatter())
         .WriteTo.File(
             new CompactJsonFormatter(),
             "./logs/application.log",
             rollingInterval: RollingInterval.Hour,
-            restrictedToMinimumLevel: LogEventLevel.Debug)
+            restrictedToMinimumLevel: LogEventLevel.Error)
         .CreateLogger(), true);
 }
 
@@ -138,9 +140,15 @@ builder.Services
         else
         {
             options.UseEF<SQLiteDb>(db =>
-                db.UseSqlite(builder.Configuration.GetConnectionString("piranha")));
+            {
+                db.LogTo(Console.WriteLine, LogLevel.Error);
+                db.UseSqlite(builder.Configuration.GetConnectionString("piranha"));
+            });
             options.UseIdentityWithSeed<IdentitySQLiteDb>(db =>
-                db.UseSqlite(builder.Configuration.GetConnectionString("piranha")));
+            {
+                db.LogTo(Console.WriteLine, LogLevel.Error);
+                db.UseSqlite(builder.Configuration.GetConnectionString("piranha"));
+            });
         }
     })
     .AddPiranhaValidators(options =>

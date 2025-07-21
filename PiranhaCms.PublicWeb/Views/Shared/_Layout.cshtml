@@ -24,10 +24,25 @@
     <link rel="icon" href="~/assets/img/touch-icon.png">
     <title>@Model.GlobalSettings.PageTitle</title>
     
-    @* Content Recommendations Scripts *@
+    <!-- Content Recommendations Scripts -->
     <script type="text/javascript">
         !function(d,s){var ip=d.createElement(s);ip.async=1,s=d.getElementsByTagName(s)[0],ip.src='//s.usea01.idio.episerver.net/ip.js',s.parentNode.insertBefore(ip,s)}(document,'script');
     </script>
+
+    <!-- idio Analytics Tracking Code -->
+    <script type="text/javascript">
+        // Set client and delivery
+
+        _iaq = [
+            ['client', 'e3413e2d12ad4bef8d582f9f467d3cbd'],
+            ['delivery', 1971],
+            ['track', 'consume']
+        ];
+
+        // Include the Idio Analytics JavaScript
+        !function(d,s){var ia=d.createElement(s);ia.async=1,s=d.getElementsByTagName(s)[0],ia.src='//s.usea01.idio.episerver.net/ia.js',s.parentNode.insertBefore(ia,s)}(document,'script');
+    </script>
+    <!-- / idio Analytics Tracking Code -->
 
     @RenderSection("head", required: false)
 </head>
