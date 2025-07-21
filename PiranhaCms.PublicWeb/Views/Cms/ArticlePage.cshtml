@@ -13,14 +13,14 @@
 
                 @if (Model.CurrentPage.PageRegion?.Heading != null)
                 {
-                    <h1 class="mb-4">
+                    <h1 data-epi-type="title" class="mb-4">
                         @Model.CurrentPage.PageRegion.Heading
                     </h1>
                 }
 
                 @if (Model.CurrentPage.PageRegion?.LeadText != null)
                 {
-                    <h2 class="text-primary mb-4">
+                    <h2 data-epi-type="content" class="text-primary mb-4">
                         @Model.CurrentPage.PageRegion.LeadText
                     </h2>
                 }
