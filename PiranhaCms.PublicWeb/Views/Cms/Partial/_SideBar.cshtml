@@ -46,7 +46,7 @@
 <div class="mb-5">
     @* <div class="btn btn-primary goalClick">Sign Up</div> *@
     <h2 class="mb-4">Recommendations</h2>
-    <script class="idio-recommendations" type="text/x-mustache" data-api-key="IEXKHQVQLW3Q7Y00LF6X" data-rpp="5">
+    <script class="idio-recommendations" type="text/x-mustache" data-api-key="IEXKHQVQLW3Q7Y00LF6X" data-rpp="3">
         {{#content}}
         <div class="idio-recommendation">
             {{#main_image_url}}
@@ -66,13 +66,13 @@
                     {{/topics}}
                 </ul>
 
-                {{#source}}
+                @* {{#source}}
                     <span class="source">{{title}}</span>
                 {{/source}}
 
                {{#author}}
                    <span class="author">{{title}}</span>
-               {{/author}}
+               {{/author}} *@
            </div>
         </div>
         {{/content}}
