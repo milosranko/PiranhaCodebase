@@ -281,7 +281,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
             }
             else
             {
-                var indexCounts = GetIndexCounts(_engine);
+                var indexCounts = GetIndexCounts();
                 _cache.SetAsync(CacheKeys.MusicIndexCount, indexCounts);
                 model.IndexCounts = indexCounts;
             }
@@ -290,30 +290,30 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
         return model;
     }
 
-    private MusicIndexCounts GetIndexCounts(ISearchIndexEngine<MusicLibraryDocument> searchIndexEngine)
+    private MusicIndexCounts GetIndexCounts()
     {
-        if (searchIndexEngine.IndexNotExistsOrEmpty())
+        if (_engine.IndexNotExistsOrEmpty())
             return MusicIndexCounts.Empty;
 
-        var totalFilesTask = Task.Run(() => searchIndexEngine.CountDocuments(null));
-        var totalFilesByExtensionTask = Task.Run(() => searchIndexEngine.CountDocuments(new CounterRequest
+        var totalFilesTask = Task.Run(() => _engine.CountDocuments(null));
+        var totalFilesByExtensionTask = Task.Run(() => _engine.CountDocuments(new CounterRequest
         {
-            Field = searchIndexEngine.GetFieldName(x => x.Extension)
+            Field = _engine.GetFieldName(x => x.Extension)
         }));
-        var releaseYearsTask = Task.Run(() => searchIndexEngine.CountDocuments(new CounterRequest
+        var releaseYearsTask = Task.Run(() => _engine.CountDocuments(new CounterRequest
         {
-            Field = searchIndexEngine.GetFieldName(x => x.Year),
+            Field = _engine.GetFieldName(x => x.Year),
             IsNumeric = true
         }));
-        var genreCountTask = Task.Run(() => searchIndexEngine.CountDocuments(new CounterRequest
+        var genreCountTask = Task.Run(() => _engine.CountDocuments(new CounterRequest
         {
-            Field = searchIndexEngine.GetFieldName(x => x.Genre)
+            Field = _engine.GetFieldName(x => x.Genre)
         }));
-        var latestAdditionsTask = Task.Run(() => searchIndexEngine.GetLatestAddedItems(new CounterRequest
+        var latestAdditionsTask = Task.Run(() => _engine.GetLatestAddedItems(new CounterRequest
         {
-            Field = searchIndexEngine.GetFieldName(x => x.Release),
-            AdditionalField = searchIndexEngine.GetFieldName(x => x.Artist),
-            SortByField = searchIndexEngine.GetFieldName(x => x.ModifiedDate),
+            Field = _engine.GetFieldName(x => x.Release),
+            AdditionalField = _engine.GetFieldName(x => x.Artist),
+            SortByField = _engine.GetFieldName(x => x.ModifiedDate),
             IsNumeric = false,
             Top = 10
         }));

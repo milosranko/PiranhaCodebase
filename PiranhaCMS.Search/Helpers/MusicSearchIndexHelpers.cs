@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Piranha.Cache;
 using Piranha.Models;
-using PiranhaCMS.Search.Engine;
-using PiranhaCMS.Search.Models;
 using PiranhaCMS.Search.Models.Constants;
 using System.IO.Compression;
 
@@ -11,16 +9,16 @@ namespace PiranhaCMS.Search.Helpers;
 internal class MusicSearchIndexHelpers : IMusicSearchIndexHelpers
 {
     private readonly ICache _cache;
-    private readonly ISearchIndexEngine<MusicLibraryDocument> _engine;
+    //private readonly ISearchIndexEngine<MusicLibraryDocument> _engine;
     private readonly ILogger<MusicSearchIndexHelpers> _logger;
 
     public MusicSearchIndexHelpers(
         ICache cache,
-        ISearchIndexEngine<MusicLibraryDocument> engine,
+        //ISearchIndexEngine<MusicLibraryDocument> engine,
         ILogger<MusicSearchIndexHelpers> logger)
     {
         _cache = cache;
-        _engine = engine;
+        //_engine = engine;
         _logger = logger;
     }
 
