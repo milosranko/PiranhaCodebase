@@ -35,13 +35,13 @@ public class MusicSearchIndexEngine<T> : ISearchIndexEngine<T> where T : Mapping
 
     public bool IndexNotExistsOrEmpty()
     {
-        using var dr = new DocumentReader(_directory, _taxoDirectory, DocumentFields<T>.IndexName, DocumentFields<T>.FacetsConfig, DocumentFields<T>.HasFacets);
+        using var dr = new DocumentReader(_directory, _taxoDirectory, DocumentFields<T>.FacetsConfig);
         return dr.IndexNotExistsOrEmpty();
     }
 
     public SearchResultDto<T> Search(SearchRequestInternal request)
     {
-        using var dr = new DocumentReader(_directory, _taxoDirectory, DocumentFields<T>.IndexName, DocumentFields<T>.FacetsConfig, DocumentFields<T>.HasFacets);
+        using var dr = new DocumentReader(_directory, _taxoDirectory, DocumentFields<T>.FacetsConfig);
 
         //TODO Extend SearchRequest, discover field type for each term, each search term should have: field name, field value, field type, search type
         //Extend facets search to accept different query than search query
@@ -51,7 +51,7 @@ public class MusicSearchIndexEngine<T> : ISearchIndexEngine<T> where T : Mapping
 
     public IDictionary<string, int> CountDocuments(CounterRequest? request)
     {
-        using var dr = new DocumentReader(_directory, _taxoDirectory, DocumentFields<T>.IndexName, DocumentFields<T>.FacetsConfig, DocumentFields<T>.HasFacets);
+        using var dr = new DocumentReader(_directory, _taxoDirectory, DocumentFields<T>.FacetsConfig);
         if (request is null && dr.Reader is not null)
             return new Dictionary<string, int> { { "Total", dr.Reader.NumDocs } };
 
@@ -62,7 +62,7 @@ public class MusicSearchIndexEngine<T> : ISearchIndexEngine<T> where T : Mapping
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        using var dr = new DocumentReader(_directory, _taxoDirectory, DocumentFields<T>.IndexName, DocumentFields<T>.FacetsConfig, DocumentFields<T>.HasFacets);
+        using var dr = new DocumentReader(_directory, _taxoDirectory, DocumentFields<T>.FacetsConfig);
 
         return dr.LatestAdded(request.Field, request.AdditionalField, request.SortByField, ListSortDirection.Descending, request.Top.Value);
     }

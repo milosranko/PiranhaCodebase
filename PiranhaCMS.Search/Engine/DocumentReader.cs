@@ -26,9 +26,7 @@ internal class DocumentReader : IDocumentReader
     private DirectoryReader? _reader;
     private DirectoryTaxonomyReader? _taxoReader;
     private Analyzer? _analyzer;
-    private readonly string _indexName;
     private bool _isInitialized = false;
-    private bool _hasFacets = false;
     private readonly FacetsConfig _facetsConfig;
     private readonly string _id;
     private bool _disposed = false;
@@ -36,13 +34,9 @@ internal class DocumentReader : IDocumentReader
     public DocumentReader(
         Lucene.Net.Store.Directory directory,
         Lucene.Net.Store.Directory taxoDirectory,
-        string indexName,
         FacetsConfig facetsConfig,
-        bool hasFacets = false,
         string idField = "id")
     {
-        _indexName = indexName ?? "index";
-        _hasFacets = hasFacets;
         _facetsConfig = facetsConfig;
         _id = idField;
 
@@ -243,17 +237,8 @@ internal class DocumentReader : IDocumentReader
         if (_isInitialized)
             return;
 
-        //var path = Path.Combine(Environment.CurrentDirectory, "Index", _indexName);
-
-        //if (!Directory.Exists(path.ToString()))
-        //    return;
-
         _analyzer = new WhitespaceAnalyzer(AppLuceneVersion);
         _reader = DirectoryReader.Open(directory);
-
-        //var pathTaxo = path + "-taxo";
-
-        //if (_hasFacets && Directory.Exists(pathTaxo) && Directory.GetFiles(pathTaxo).Length > 0)
         _taxoReader = new DirectoryTaxonomyReader(taxoDirectory);
 
         _isInitialized = true;

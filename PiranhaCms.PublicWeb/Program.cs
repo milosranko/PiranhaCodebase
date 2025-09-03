@@ -80,15 +80,12 @@ else
 
 #region Services registration
 
-if (builder.Environment.IsProduction())
+builder.Services.AddApplicationInsightsTelemetry(options =>
 {
-    builder.Services.AddApplicationInsightsTelemetry(options =>
-    {
-        options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
-        //When turned on, uses too much data
-        options.EnableDependencyTrackingTelemetryModule = false;
-    });
-}
+    options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+    //When turned on it uses too much data
+    options.EnableDependencyTrackingTelemetryModule = false;
+});
 
 builder.Services
     //.AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>()

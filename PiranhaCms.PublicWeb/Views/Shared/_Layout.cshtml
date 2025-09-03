@@ -1,7 +1,7 @@
+@using Microsoft.ApplicationInsights.AspNetCore
 @using Piranha.Models
 @using PiranhaCMS.PublicWeb.Components
 @using PiranhaCMS.PublicWeb.Models.ViewModels.Base
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnvironment
 @model IPageViewModel<PiranhaCMS.ContentTypes.Pages.Base.IPage>
 
 <!doctype html>
@@ -45,10 +45,10 @@
     </script>
     <!-- / idio Analytics Tracking Code -->
 
-    @if (hostingEnvironment.IsProduction())
+    @if (!string.IsNullOrEmpty(javaScriptSnippet?.FullScript))
     {
         <!-- Application Insights Script -->
-        @Html.Raw(JavaScriptSnippet.FullScript)
+        @Html.Raw(javaScriptSnippet.FullScript)
     }
 
     @RenderSection("head", required: false)
