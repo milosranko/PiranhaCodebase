@@ -30,7 +30,7 @@ internal class AzureMusicSearchIndexHelpers : IMusicSearchIndexHelpers
             return;
 
         var blobServiceClient = new BlobServiceClient(_configuration["Piranha:StorageConnectionString"]);
-        var uploadsContainer = blobServiceClient.GetBlobContainerClient("uploads");
+        var uploadsContainer = blobServiceClient.GetBlobContainerClient(_configuration["Piranha:UploadsContainerName"]);
         var luceneContainer = blobServiceClient.GetBlobContainerClient("music-lucene");
         var taxoContainer = blobServiceClient.GetBlobContainerClient("music-lucene-taxo");
         var zipSource = uploadsContainer.GetBlobClient(media.Id.ToString() + "-" + media.Filename);

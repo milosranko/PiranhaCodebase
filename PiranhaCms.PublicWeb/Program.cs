@@ -66,13 +66,13 @@ else
 {
     builder.Logging.AddSerilog(
         new LoggerConfiguration()
-        .MinimumLevel.Error()
+        .MinimumLevel.Warning()
         .WriteTo.Console(new CompactJsonFormatter())
         .WriteTo.File(
             new CompactJsonFormatter(),
             "./logs/application.log",
             rollingInterval: RollingInterval.Hour,
-            restrictedToMinimumLevel: LogEventLevel.Error)
+            restrictedToMinimumLevel: LogEventLevel.Warning)
         .CreateLogger(), true);
 }
 
@@ -80,14 +80,15 @@ else
 
 #region Services registration
 
-//if (builder.Environment.IsProduction())
-//{
-//    builder.Services.AddApplicationInsightsTelemetry(options =>
-//    {
-//        //Uses too much data
-//        options.EnableDependencyTrackingTelemetryModule = false;
-//    });
-//}
+if (builder.Environment.IsProduction())
+{
+    builder.Services.AddApplicationInsightsTelemetry(options =>
+    {
+        options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+        //When turned on, uses too much data
+        options.EnableDependencyTrackingTelemetryModule = false;
+    });
+}
 
 builder.Services
     //.AddTransient<IStartupFilter, PiranhaImageCacheStartupFilter>()

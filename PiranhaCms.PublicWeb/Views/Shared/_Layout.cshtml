@@ -1,6 +1,7 @@
 @using Piranha.Models
 @using PiranhaCMS.PublicWeb.Components
 @using PiranhaCMS.PublicWeb.Models.ViewModels.Base
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnvironment
 @model IPageViewModel<PiranhaCMS.ContentTypes.Pages.Base.IPage>
 
 <!doctype html>
@@ -43,6 +44,12 @@
         !function(d,s){var ia=d.createElement(s);ia.async=1,s=d.getElementsByTagName(s)[0],ia.src='//s.usea01.idio.episerver.net/ia.js',s.parentNode.insertBefore(ia,s)}(document,'script');
     </script>
     <!-- / idio Analytics Tracking Code -->
+
+    @if (hostingEnvironment.IsProduction())
+    {
+        <!-- Application Insights Script -->
+        @Html.Raw(JavaScriptSnippet.FullScript)
+    }
 
     @RenderSection("head", required: false)
 </head>

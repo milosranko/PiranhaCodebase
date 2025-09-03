@@ -9,16 +9,13 @@ namespace PiranhaCMS.Search.Helpers;
 internal class MusicSearchIndexHelpers : IMusicSearchIndexHelpers
 {
     private readonly ICache _cache;
-    //private readonly ISearchIndexEngine<MusicLibraryDocument> _engine;
     private readonly ILogger<MusicSearchIndexHelpers> _logger;
 
     public MusicSearchIndexHelpers(
         ICache cache,
-        //ISearchIndexEngine<MusicLibraryDocument> engine,
         ILogger<MusicSearchIndexHelpers> logger)
     {
         _cache = cache;
-        //_engine = engine;
         _logger = logger;
     }
 
@@ -50,6 +47,5 @@ internal class MusicSearchIndexHelpers : IMusicSearchIndexHelpers
         //Invalidate cache
         _logger.LogDebug("Invalidating cache...");
         _cache.RemoveAsync(CacheKeys.MusicIndexCount).GetAwaiter().GetResult();
-        //_cache.Set(CacheKeys.MusicIndexCount, _engine.CountDocuments());
     }
 }
