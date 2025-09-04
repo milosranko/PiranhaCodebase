@@ -14,7 +14,7 @@
         </li>
         @if (Model.TotalPages > 5)
         {
-            @for (int i = Math.Max(0, Model.PageIndex - 1); i <= Math.Min(Model.PageIndex + 1, Model.TotalPages-1); i++)
+            @for (var i = Math.Max(0, Model.PageIndex - 1); i <= Math.Min(Model.PageIndex + 1, Model.TotalPages-1); i++)
             {
                 <li class="page-item @(Model.PageIndex == i ? "active" : "")"><a class="page-link" href="@(Model.QueryString)&page=@i" aria-label="Page @i" role="button">@(i+1)</a></li>
             }
@@ -27,7 +27,7 @@
         }
         else
         {
-            @for (int i = 0; i <= Model.TotalPages - 1; i++)
+            @for (var i = 0; i <= Model.TotalPages - 1; i++)
             {
                 <li class="page-item @(Model.PageIndex == i ? "active" : "")"><a class="page-link" href="@(Model.QueryString)&page=@i" role="button" aria-label="Page @i">@(i+1)</a></li>
             }

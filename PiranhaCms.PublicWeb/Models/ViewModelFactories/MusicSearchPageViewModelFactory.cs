@@ -45,7 +45,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
         var genre = request.Query[_engine.GetFieldName(x => x.Genre)].ToString();
         var year = request.Query[_engine.GetFieldName(x => x.Year)].ToString();
         var paginationQueryString = new StringBuilder();
-        _ = int.TryParse(request.Query["page"], out int pageIndex);
+        _ = uint.TryParse(request.Query["page"], out uint pageIndex);
 
         if (!string.IsNullOrEmpty(searchText) && string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(release) && string.IsNullOrEmpty(genre) && string.IsNullOrEmpty(year))
         {

@@ -2,7 +2,7 @@
 
 public struct PaginationDto
 {
-    public PaginationDto(int pageSize, int pageIndex, int totalPages, string queryString = "")
+    public PaginationDto(uint pageSize, uint pageIndex, int totalPages, string queryString = "")
     {
         PageSize = pageSize;
         PageIndex = pageIndex;
@@ -10,8 +10,8 @@ public struct PaginationDto
         QueryString = queryString;
     }
 
-    public int PageSize { get; private set; }
-    public int PageIndex { get; private set; }
+    public uint PageSize { get; private set; }
+    public uint PageIndex { get; private set; }
     public int TotalPages { get; private set; }
     public string QueryString { get; private set; } = string.Empty;
 }
