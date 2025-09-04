@@ -166,3 +166,4 @@ PiranhaCms.PublicWeb/piranha.codebase.db-shm
 PiranhaCms.PublicWeb/piranha.codebase.db-wal
 PiranhaCms.PublicWeb/Logs/
 PiranhaCms.PublicWeb/.config/
+.claude/settings.local.json
