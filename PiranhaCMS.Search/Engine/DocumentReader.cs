@@ -210,13 +210,13 @@ internal class DocumentReader : IDocumentReader
             new SortField("art", SortFieldType.STRING, false),
             new SortField("yer", SortFieldType.INT32, false),
             new SortField("fnm", SortFieldType.STRING, false));
-        var topDocs = searcher.Search(q, Convert.ToInt32(startIndex + request.Pagination.PageSize), sort);
+        var topDocs = searcher.Search(q, startIndex + request.Pagination.PageSize, sort);
 
         if (topDocs.TotalHits == 0) return searchResult;
 
         var hits = new ConcurrentBag<Document>();
 
-        Parallel.ForEach(topDocs.ScoreDocs.Skip(Convert.ToInt32(startIndex)), hit =>
+        Parallel.ForEach(topDocs.ScoreDocs.Skip(startIndex), hit =>
         {
             hits.Add(searcher.Doc(hit.Doc));
         });
