@@ -40,17 +40,17 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
         var model = new MusicSearchPageViewModel(page);
         var request = _contextAccessor.HttpContext.Request;
         var searchText = request.Query["q"].ToString().SanitizeSearchString();
-        var artist = request.Query[_engine.GetFieldName(x => x.Artist)].ToString();
-        var release = request.Query[_engine.GetFieldName(x => x.Release)].ToString();
-        var genre = request.Query[_engine.GetFieldName(x => x.Genre)].ToString();
-        var year = request.Query[_engine.GetFieldName(x => x.Year)].ToString();
+        var artist = request.Query[_engine.GetFieldName(x => x.Artist)].ToString().Trim();
+        var release = request.Query[_engine.GetFieldName(x => x.Release)].ToString().Trim();
+        var genre = request.Query[_engine.GetFieldName(x => x.Genre)].ToString().Trim();
+        var year = request.Query[_engine.GetFieldName(x => x.Year)].ToString().Trim();
         var paginationQueryString = new StringBuilder();
         var pageIndexParsed = int.TryParse(request.Query["page"], out var pageIndex);
 
         if (!pageIndexParsed || pageIndex < 0 || pageIndex > 100000)
             pageIndex = 0;
 
-        if (!string.IsNullOrEmpty(searchText) && string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(release) && string.IsNullOrEmpty(genre) && string.IsNullOrEmpty(year))
+        if (!string.IsNullOrEmpty(searchText) && searchText.Length > 1 && string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(release) && string.IsNullOrEmpty(genre) && string.IsNullOrEmpty(year))
         {
             paginationQueryString.Append("?q=");
             paginationQueryString.Append(searchText);
@@ -61,7 +61,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
                 new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Text), [] } });
         }
-        else if (!string.IsNullOrEmpty(searchText) && !string.IsNullOrEmpty(artist) && !string.IsNullOrEmpty(release))
+        else if (!string.IsNullOrEmpty(searchText) && searchText.Length > 1 && !string.IsNullOrEmpty(artist) && artist.Length > 1 && !string.IsNullOrEmpty(release) && release.Length > 1)
         {
             paginationQueryString.Append("?q=");
             paginationQueryString.Append(searchText);
@@ -97,7 +97,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
                 new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Text), [] }, { _engine.GetFieldName(x => x.Artist), [] } });
         }
-        else if (!string.IsNullOrEmpty(genre) && !string.IsNullOrEmpty(artist) && !string.IsNullOrEmpty(release))
+        else if (!string.IsNullOrEmpty(genre) && genre.Length > 1 && !string.IsNullOrEmpty(artist) && artist.Length > 1 && !string.IsNullOrEmpty(release) && release.Length > 1)
         {
             paginationQueryString.Append($"?{_engine.GetFieldName(x => x.Genre)}=");
             paginationQueryString.Append(genre);
@@ -133,7 +133,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
                 new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Genre), [] }, { _engine.GetFieldName(x => x.Artist), [] } });
         }
-        else if (!string.IsNullOrEmpty(searchText) && !string.IsNullOrEmpty(artist))
+        else if (!string.IsNullOrEmpty(searchText) && searchText.Length > 1 && !string.IsNullOrEmpty(artist) && artist.Length > 1)
         {
             paginationQueryString.Append("?q=");
             paginationQueryString.Append(searchText);
@@ -160,7 +160,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
                 new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Text), [] }, { _engine.GetFieldName(x => x.Artist), [] } });
         }
-        else if (!string.IsNullOrEmpty(year) && !string.IsNullOrEmpty(artist))
+        else if (!string.IsNullOrEmpty(year) && year.Length > 1 && !string.IsNullOrEmpty(artist) && artist.Length > 1)
         {
             paginationQueryString.Append($"?{_engine.GetFieldName(x => x.Year)}=");
             paginationQueryString.Append(year);
@@ -187,7 +187,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
                 new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Year), [] }, { _engine.GetFieldName(x => x.Artist), [] } });
         }
-        else if (!string.IsNullOrEmpty(release) && !string.IsNullOrEmpty(artist))
+        else if (!string.IsNullOrEmpty(release) && release.Length > 1 && !string.IsNullOrEmpty(artist) && artist.Length > 1)
         {
             paginationQueryString.Append($"?{_engine.GetFieldName(x => x.Artist)}=");
             paginationQueryString.Append(artist);
@@ -214,7 +214,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
             new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
             new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Artist), [] } });
         }
-        else if (!string.IsNullOrEmpty(genre) && !string.IsNullOrEmpty(artist))
+        else if (!string.IsNullOrEmpty(genre) && genre.Length > 1 && !string.IsNullOrEmpty(artist) && artist.Length > 1)
         {
             paginationQueryString.Append($"?{_engine.GetFieldName(x => x.Genre)}=");
             paginationQueryString.Append(genre);
@@ -241,7 +241,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
             new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
             new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Artist), [] }, { _engine.GetFieldName(x => x.Genre), [] } });
         }
-        else if (!string.IsNullOrEmpty(genre))
+        else if (!string.IsNullOrEmpty(genre) && genre.Length > 1)
         {
             paginationQueryString.Append($"?{_engine.GetFieldName(x => x.Genre)}=");
             paginationQueryString.Append(genre);
@@ -252,7 +252,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 new PaginationRequest(PageSize, pageIndex, paginationQueryString.ToString()),
                 new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Genre), [] } });
         }
-        else if (!string.IsNullOrEmpty(year))
+        else if (!string.IsNullOrEmpty(year) && year.Length > 1)
         {
             paginationQueryString.Append($"?{_engine.GetFieldName(x => x.Year)}=");
             paginationQueryString.Append(year);
@@ -264,7 +264,7 @@ public class MusicSearchPageViewModelFactory : IPageViewModelFactory<MusicSearch
                 new Dictionary<string, IEnumerable<string?>?> { { _engine.GetFieldName(x => x.Year), [] } },
                 true);
         }
-        else if (!string.IsNullOrEmpty(artist))
+        else if (!string.IsNullOrEmpty(artist) && artist.Length > 1)
         {
             paginationQueryString.Append($"?{_engine.GetFieldName(x => x.Artist)}=");
             paginationQueryString.Append(artist);
