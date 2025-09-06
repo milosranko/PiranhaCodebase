@@ -20,6 +20,9 @@ public class CmsController : Controller
     [Route(nameof(StartPage))]
     public async Task<IActionResult> StartPage(Guid id, bool draft = false)
     {
+        if (id.Equals(Guid.Empty))
+            return Redirect("/");
+
         var currentPage = await _loader.GetPageAsync<StartPage>(id, HttpContext.User, draft);
         var viewModel = new StartPageViewModel(currentPage);
 
@@ -30,6 +33,9 @@ public class CmsController : Controller
     [Route(nameof(ArticlePage))]
     public async Task<IActionResult> ArticlePage(Guid id, bool draft = false)
     {
+        if (id.Equals(Guid.Empty))
+            return Redirect("/");
+
         var currentPage = await _loader.GetPageAsync<ArticlePage>(id, HttpContext.User, draft);
         var viewModel = new ArticlePageViewModel(currentPage);
 
@@ -40,6 +46,9 @@ public class CmsController : Controller
     [Route(nameof(ArticleListPage))]
     public async Task<IActionResult> ArticleListPage(Guid id, bool draft = false)
     {
+        if (id.Equals(Guid.Empty))
+            return Redirect("/");
+
         var currentPage = await _loader.GetPageAsync<ArticleListPage>(id, HttpContext.User, draft);
         var viewModel = new ArticleListPageViewModel(currentPage);
 
@@ -50,6 +59,9 @@ public class CmsController : Controller
     [Route(nameof(SearchPage))]
     public async Task<IActionResult> SearchPage([FromServices] ISearchIndexEngine engine, Guid id, bool draft = false)
     {
+        if (id.Equals(Guid.Empty))
+            return Redirect("/");
+
         var currentPage = await _loader.GetPageAsync<SearchPage>(id, HttpContext.User, draft);
         var viewModel = new SearchPageViewModel(currentPage, HttpContext.Request, engine);
 
@@ -63,6 +75,9 @@ public class CmsController : Controller
         Guid id,
         bool draft = false)
     {
+        if (id.Equals(Guid.Empty))
+            return Redirect("/");
+
         var currentPage = await _loader.GetPageAsync<MusicSearchPage>(id, HttpContext.User, draft);
         var viewModel = pageViewModelFactory.Create(currentPage);
 
@@ -73,6 +88,9 @@ public class CmsController : Controller
     [Route(nameof(NotFoundPage))]
     public async Task<IActionResult> NotFoundPage(Guid id, bool draft = false)
     {
+        if (id.Equals(Guid.Empty))
+            return Redirect("/");
+
         var currentPage = await _loader.GetPageAsync<NotFoundPage>(id, HttpContext.User, draft);
         var viewModel = new NotFoundPageViewModel(currentPage);
 
