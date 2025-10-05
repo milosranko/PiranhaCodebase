@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace PiranhaCMS.Common.Extensions;
 
-public static class StringExtensions
+public static partial class StringExtensions
 {
     public static string TruncateAtWord(this string input, int length)
     {
@@ -19,7 +19,7 @@ public static class StringExtensions
 
     public static string CropString(this string text, int length, bool smartcrop)
     {
-        if (!String.IsNullOrEmpty(text))
+        if (!string.IsNullOrEmpty(text))
         {
             // If string is shorter than desired length, return entire string
             if (length >= text.Length)
@@ -66,10 +66,10 @@ public static class StringExtensions
         if (!string.IsNullOrEmpty(result))
         {
             // remove newlines and tabs
-            result = Regex.Replace(result, @"\t|\n|\r", "");
+            result = NewLinesAndTabsRegEx().Replace(result, "");
 
             // remove not-supported characters (supported are: numbers, regular letters, hyphens, spaces)
-            result = Regex.Replace(result, "[^0-9a-zA-Z\\s\\/\\._-]+", "");
+            result = NotSupportedCharactersRegEx().Replace(result, "");
 
             // remove double spaces (also trims)
             result = string.Join(" ", result.Split(' ', StringSplitOptions.RemoveEmptyEntries));
@@ -113,4 +113,10 @@ public static class StringExtensions
 
         return QueryString.Create(queryString).ToString();
     }
+
+    [GeneratedRegex(@"\t|\n|\r")]
+    private static partial Regex NewLinesAndTabsRegEx();
+
+    [GeneratedRegex("[^0-9a-zA-Z\\s\\/\\._-]+")]
+    private static partial Regex NotSupportedCharactersRegEx();
 }
