@@ -35,7 +35,10 @@ public record SearchPageViewModel : PageViewModel<SearchPage>
             SearchResult = engine.Search(searchRequest);
         }
 
-        var musicSearchPage = currentPage.GetChildrenPages().AsPage<MusicSearchPage>().FirstOrDefault();
+        var musicSearchPage = currentPage
+            .GetChildrenPages()
+            .AsPage<MusicSearchPage>()
+            .FirstOrDefault();
 
         if (musicSearchPage == null) return;
 
