@@ -56,7 +56,7 @@ public static partial class StringExtensions
         if (string.IsNullOrEmpty(text))
             return string.Empty;
 
-        return text.Replace("\n", "<br>");
+        return text.Replace("\n", "<br />");
     }
 
     public static string SanitizeSearchString(this string input)
