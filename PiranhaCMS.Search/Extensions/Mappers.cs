@@ -21,7 +21,6 @@ internal static class Mappers
             Hits = searchResult.Hits
             .AsParallel()
             .Select(x => new T().MapFromLuceneDocument(x))
-            .ToArray()
         };
     }
 
@@ -40,7 +39,6 @@ internal static class Mappers
                 ? queryString.RemoveQueryStringParameter("rel").AddOrReplaceQueryStringParameter(facet.Dim, x.Label)
                 : queryString.AddOrReplaceQueryStringParameter(facet.Dim, x.Label)
             })
-            .ToArray()
         };
     }
 }
