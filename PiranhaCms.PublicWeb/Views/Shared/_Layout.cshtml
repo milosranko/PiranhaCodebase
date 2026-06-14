@@ -1,11 +1,9 @@
-@using Microsoft.ApplicationInsights.AspNetCore
 @using Piranha.Models
-@using PiranhaCMS.PublicWeb.Components
 @using PiranhaCMS.PublicWeb.Models.ViewModels.Base
 @model IPageViewModel<PiranhaCMS.ContentTypes.Pages.Base.IPage>
 
 <!doctype html>
-<html lang="@Model.GlobalSettings.LanguageCode" class="no-js">
+<html lang="@Model.GlobalSettings.LanguageCode">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -30,40 +28,23 @@
     <link rel="shortcut icon" href="~/favicon.ico">
     <link rel="apple-touch-icon" href="~/assets/img/apple-touch-icon.png">
     <link rel="icon" href="~/assets/img/touch-icon.png">
-    <title>@Model.GlobalSettings.PageTitle</title>
-    
-    <!-- Content Recommendations Scripts -->
-    <script type="text/javascript">
-        !function(d,s){var ip=d.createElement(s);ip.async=1,s=d.getElementsByTagName(s)[0],ip.src='//s.usea01.idio.episerver.net/ip.js',s.parentNode.insertBefore(ip,s)}(document,'script');
-    </script>
-
-    <!-- idio Analytics Tracking Code -->
-    <script type="text/javascript">
-        // Set client and delivery
-
-        _iaq = [
-            ['client', 'e3413e2d12ad4bef8d582f9f467d3cbd'],
-            ['delivery', 1971],
-            ['track', 'consume']
-        ];
-
-        // Include the Idio Analytics JavaScript
-        !function(d,s){var ia=d.createElement(s);ia.async=1,s=d.getElementsByTagName(s)[0],ia.src='//s.usea01.idio.episerver.net/ia.js',s.parentNode.insertBefore(ia,s)}(document,'script');
-    </script>
-    <!-- / idio Analytics Tracking Code -->
-
-    @if (!string.IsNullOrEmpty(javaScriptSnippet?.FullScript))
-    {
-        <!-- Application Insights Script -->
-        @Html.Raw(javaScriptSnippet.FullScript)
+    @{
+        var pageMetaTitle = (Model.CurrentPage as Piranha.Models.IMeta)?.MetaTitle;
+        var documentTitle = !string.IsNullOrWhiteSpace(pageMetaTitle)
+            ? $"{pageMetaTitle} | {Model.GlobalSettings.SiteTitle}"
+            : Model.GlobalSettings.PageTitle;
     }
-
-    @RenderSection("head", required: false)
+    <title>@documentTitle</title>
+    
+     @RenderSection("head", required: false)
 </head>
 <body>
+    <a href="#main" class="visually-hidden-focusable skip-link">Skip to main content</a>
     <partial name="Partial/_PageHeader.cshtml" model="@Model" />
 
-    @RenderBody()
+    <main id="main">
+        @RenderBody()
+    </main>
 
     @*@await Component.InvokeAsync(nameof(Test))*@
     <partial name="Partial/_PageFooter.cshtml" model="@Model" />
@@ -76,14 +57,6 @@
         <script type="text/javascript" src="~/assets/js/scripts.bundle.js" asp-append-version="true"></script>
     </environment>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    @* <script>
-        $(".goalClick").click(function () {
-            _iaq.push(['goal', 'Sign Up']);
-            $(this).html('You are now signed up!');
-            console.log('Tracking data pushed');
-        });
-    </script> *@
 
     @RenderSection("scripts", required: false)
 </body>

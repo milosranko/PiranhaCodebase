@@ -1,3 +1,6 @@
 @model PiranhaCMS.PublicWeb.Models.ViewModels.StartPageViewModel
 
+@* Single page-level H1 for SEO/accessibility. Block headings below are H2/H3. *@
+<h1 class="visually-hidden">@((Model.CurrentPage as Piranha.Models.PageBase)?.Title)</h1>
+
 @Html.DisplayFor(m => m.CurrentPage.Blocks)

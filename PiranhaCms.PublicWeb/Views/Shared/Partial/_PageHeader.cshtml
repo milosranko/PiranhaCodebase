@@ -1,5 +1,7 @@
 @using PiranhaCMS.PublicWeb.Models.ViewModels.Base
 @model IPageViewModel<PiranhaCMS.ContentTypes.Pages.Base.IPage>
 
-<partial name="_TopBar.cshtml" model="Model" />
-<partial name="_Menu.cshtml" model="Model" />
+<header role="banner">
+    @* <partial name="_TopBar.cshtml" model="Model" /> *@
+    <partial name="_Menu.cshtml" model="Model" />
+</header>

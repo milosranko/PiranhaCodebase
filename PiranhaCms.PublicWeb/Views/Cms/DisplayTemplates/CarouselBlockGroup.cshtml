@@ -4,7 +4,8 @@
 }
 
 <div class="container-fluid p-0">
-    <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel"
+         role="region" aria-roledescription="carousel" aria-label="Highlights">
         <div class="carousel-inner">
             @if (Model.Items != null && Model.Items.Count > 0)
             {
@@ -23,5 +24,12 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
+        @if (Model.Items != null && Model.Items.Count > 1)
+        {
+            <button class="carousel-pause-toggle" type="button" data-bs-target="#header-carousel"
+                    aria-label="Pause automatic slide rotation" aria-pressed="false">
+                <i class="bi bi-pause-fill" aria-hidden="true"></i>
+            </button>
+        }
     </div>
 </div>

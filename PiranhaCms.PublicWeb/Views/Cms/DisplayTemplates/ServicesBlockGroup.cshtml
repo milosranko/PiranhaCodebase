@@ -1,14 +1,22 @@
 ﻿@model PiranhaCMS.ContentTypes.Blocks.ServicesBlockGroup
 
-<div class="row">
-    <h2>@Model.Title.Value</h2>
-    <h2>@Model.Heading.Value</h2>
-    
-    @if (Model.Items != null && Model.Items.Count > 0)
-    {
-        foreach (var item in Model.Items)
+<section class="services-section reveal">
+    <div class="row">
+        @if (!string.IsNullOrEmpty(Model.Title?.Value))
         {
-            <partial name="TeaserBlock.cshtml" model="@item" />
+            <p class="section-eyebrow text-uppercase text-primary text-center mb-1">@Model.Title.Value</p>
         }
-    }
-</div>
+        @if (!string.IsNullOrEmpty(Model.Heading?.Value))
+        {
+            <h2 class="section-title text-center mb-0">@Model.Heading.Value</h2>
+        }
+
+        @if (Model.Items != null && Model.Items.Count > 0)
+        {
+            foreach (var item in Model.Items)
+            {
+                <partial name="TeaserBlock.cshtml" model="@item" />
+            }
+        }
+    </div>
+</section>

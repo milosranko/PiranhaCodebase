@@ -4,15 +4,18 @@
     var searchPage = PageHelpers.GetSiteSettings().SearchPageReference?.Page?.Permalink;
 }
 
-<div class="row">
-    <h3>@Model.Heading.Value</h3>
-    <p>@Model.LeadText.Value</p>
+<section class="search-section reveal">
+    <div class="row">
+        <h2 class="search-heading">@Model.Heading.Value</h2>
+        <p>@Model.LeadText.Value</p>
 
-    @using (Html.BeginForm(FormMethod.Get, new { action = searchPage }))
-    {
-        <fieldset>
-            <input type="text" id="q" name="q" />
-            <button type="submit">Search</button>
-        </fieldset>
-    }
-</div>
+        @using (Html.BeginForm(FormMethod.Get, new { action = searchPage }))
+        {
+            <fieldset>
+                <label for="q" class="visually-hidden">@Model.Heading.Value</label>
+                <input type="search" id="q" name="q" placeholder="Search..." aria-label="@Model.Heading.Value" />
+                <button type="submit">Search</button>
+            </fieldset>
+        }
+    </div>
+</section>

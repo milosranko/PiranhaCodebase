@@ -54,6 +54,48 @@
         ],
     });
 
+    // Reveal-on-scroll (Waypoints). Skipped when the user prefers reduced motion.
+    $(document).ready(function () {
+        var prefersReducedMotion = window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (prefersReducedMotion || typeof $.fn.waypoint !== 'function') {
+            $('.reveal').addClass('is-visible');
+            return;
+        }
+
+        $('.reveal').each(function () {
+            $(this).waypoint(function () {
+                $(this.element).addClass('is-visible');
+            }, { offset: '85%' });
+        });
+    });
+
+    // Carousel pause/play toggle (WCAG 2.2.2 - pausable auto-rotation)
+    $(document).ready(function () {
+        $('.carousel-pause-toggle').on('click', function () {
+            var $btn = $(this);
+            var targetSelector = $btn.attr('data-bs-target');
+            var carouselEl = targetSelector ? document.querySelector(targetSelector) : null;
+            if (!carouselEl || typeof bootstrap === 'undefined') { return; }
+
+            var instance = bootstrap.Carousel.getOrCreateInstance(carouselEl);
+            var isPaused = $btn.attr('aria-pressed') === 'true';
+
+            if (isPaused) {
+                instance.cycle();
+                $btn.attr('aria-pressed', 'false')
+                    .attr('aria-label', 'Pause automatic slide rotation')
+                    .find('i').attr('class', 'bi bi-pause-fill');
+            } else {
+                instance.pause();
+                $btn.attr('aria-pressed', 'true')
+                    .attr('aria-label', 'Resume automatic slide rotation')
+                    .find('i').attr('class', 'bi bi-play-fill');
+            }
+        });
+    });
+
 })(jQuery);
 
 // OpenAi API

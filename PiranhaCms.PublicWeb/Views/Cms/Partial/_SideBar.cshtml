@@ -42,39 +42,3 @@
         <!-- end Google Calendar Appointment Scheduling -->
     </div>
 </div>
-
-<div class="mb-5">
-    @* <div class="btn btn-primary goalClick">Sign Up</div> *@
-    <h2 class="mb-4">Recommendations</h2>
-    <script class="idio-recommendations" type="text/x-mustache" data-api-key="IEXKHQVQLW3Q7Y00LF6X" data-rpp="3">
-        {{#content}}
-        <div class="idio-recommendation">
-            {{#main_image_url}}
-                <a href="{{link_url}}"><img src="{{main_image_url}}?w=150&amp;h=150" class="image" /></a>
-            {{/main_image_url}}
-
-            <h3><a href="{{link_url}}">{{title}}</a></h3>
-            <p>
-                {{abstract}}
-                <a href="{{link_url}}">Read more...</a>
-            </p>
-
-            <div class="meta">
-                <ul class="topics">
-                    {{#topics}}
-                    <li>{{title}}</li>
-                    {{/topics}}
-                </ul>
-
-                @* {{#source}}
-                    <span class="source">{{title}}</span>
-                {{/source}}
-
-               {{#author}}
-                   <span class="author">{{title}}</span>
-               {{/author}} *@
-           </div>
-        </div>
-        {{/content}}
-    </script>
-</div>

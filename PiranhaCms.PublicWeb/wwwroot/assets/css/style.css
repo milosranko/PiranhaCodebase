@@ -1,8 +1,24 @@
 :root {
     --primary: #F3525A;
+    --primary-dark: #E03943;
     --secondary: #F6F6F6;
     --light: #FFFFFF;
     --dark: #152440;
+    --muted: #6c7689;
+    --shadow-sm: 0 .25rem .75rem rgba(21, 36, 64, .08);
+    --shadow-md: 0 1rem 2rem rgba(21, 36, 64, .12);
+}
+
+body {
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+}
+
+h1, h2 {
+    letter-spacing: -0.01em;
 }
 
 h1,
@@ -44,6 +60,25 @@ h6,
 
 .btn-primary {
     color: #FFFFFF;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: #FFFFFF;
+}
+
+/* CTA hover lift for the hero / pill buttons */
+.carousel-caption .btn,
+.teaser-text .btn {
+    min-width: 160px;
+}
+
+.carousel-caption .btn:hover,
+.teaser-text .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-square {
@@ -88,6 +123,13 @@ h6,
     transform: skew(40deg);
 }
 
+/* The <header> landmark must not constrain the sticky navbar's scroll range.
+   display:contents removes its layout box so the navbar sticks relative to
+   <body> again, exactly as it did before the header wrapper was introduced. */
+header[role="banner"] {
+    display: contents;
+}
+
 .navbar-light .navbar-nav .nav-link {
     font-family: 'Barlow', sans-serif;
     padding: 35px 15px;
@@ -96,6 +138,32 @@ h6,
     color: var(--dark);
     outline: none;
     transition: .5s;
+    position: relative;
+}
+
+/* Animated underline for nav links */
+.navbar-light .navbar-nav .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    bottom: 28px;
+    height: 2px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .3s ease;
+}
+
+.navbar-light .navbar-nav .nav-link:hover::after,
+.navbar-light .navbar-nav .nav-link.active::after {
+    transform: scaleX(1);
+}
+
+@media (max-width: 991.98px) {
+    .navbar-light .navbar-nav .nav-link::after {
+        display: none;
+    }
 }
 
 .navbar-light a.navbar-brand {
@@ -131,17 +199,59 @@ h6,
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(21, 36, 64, .7);
+    background: linear-gradient(180deg, rgba(21, 36, 64, .35) 0%, rgba(21, 36, 64, .8) 100%);
     z-index: 1;
 }
 
+/* Hero eyebrow (was an <h5>) */
+.carousel-eyebrow {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+    letter-spacing: .15em;
+    margin-bottom: .5rem;
+}
+
+/* Entrance animation for the active slide caption */
+.carousel-item .carousel-caption-inner {
+    opacity: 0;
+    transform: translateY(24px);
+}
+
+.carousel-item.active .carousel-caption-inner {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity .6s ease .2s, transform .6s ease .2s;
+}
+
+/* Pause/play toggle for the auto-rotating carousel (WCAG 2.2.2) */
+.carousel-pause-toggle {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    background: rgba(21, 36, 64, .55);
+    font-size: 18px;
+    line-height: 1;
+    transition: background .3s ease;
+}
+
+.carousel-pause-toggle:hover,
+.carousel-pause-toggle:focus {
+    background: var(--primary);
+}
+
 @media (max-width: 576px) {
-    .carousel-caption h5 {
+    .carousel-caption .carousel-eyebrow {
         font-size: 14px;
         font-weight: 500 !important;
     }
 
-    .carousel-caption h1 {
+    .carousel-caption h2 {
         font-size: 30px;
         font-weight: 600 !important;
     }
@@ -167,6 +277,14 @@ h6,
     align-items: center;
     justify-content: center;
     transition: .3s;
+    border-radius: .75rem;
+    box-shadow: var(--shadow-sm);
+    background: var(--light);
+}
+
+.service-item:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
 }
 
 .service-item::after {
@@ -274,4 +392,123 @@ h6,
     font-weight: 600 !important;
     transition: .5s;
     color: #FFFFFF !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Home page design refresh: sections, teaser bands, micro-interactions
+   --------------------------------------------------------------------------- */
+
+/* Section eyebrow + title used by Services/Search blocks */
+.section-eyebrow {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    letter-spacing: .15em;
+    font-size: .9rem;
+}
+
+.services-section {
+    padding-top: 90px;
+    padding-bottom: 90px;
+}
+
+.section-title {
+    margin-bottom: 0;
+}
+
+/* Alternating background bands for stacked teasers */
+.teaser-band {
+    background: var(--light);
+}
+
+.teaser-band:nth-of-type(even) {
+    background: var(--secondary);
+}
+
+.teaser-text .lead {
+    font-weight: 600;
+}
+
+.teaser-image {
+    overflow: hidden;
+}
+
+.teaser-image img {
+    transition: transform .6s ease;
+}
+
+.teaser-band:hover .teaser-image img {
+    transform: scale(1.04);
+}
+
+/* Search block */
+.search-section {
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+.search-section input[type="search"] {
+    padding: .6rem 1rem;
+    border: 1px solid #d9dde5;
+    border-radius: .5rem 0 0 .5rem;
+    min-width: 240px;
+}
+
+.search-section button[type="submit"] {
+    padding: .6rem 1.4rem;
+    border: none;
+    border-radius: 0 .5rem .5rem 0;
+    color: #fff;
+    background: var(--primary);
+    transition: background .3s ease;
+}
+
+.search-section button[type="submit"]:hover {
+    background: var(--primary-dark);
+}
+
+/* Reveal-on-scroll (toggled by main.js via Waypoints) */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .6s ease, transform .6s ease;
+    will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* Skip link */
+.skip-link {
+    position: absolute;
+    top: .5rem;
+    left: .5rem;
+    z-index: 1080;
+    padding: .5rem 1rem;
+    background: var(--dark);
+    color: #fff;
+    border-radius: .25rem;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+    }
+
+    .carousel-item .carousel-caption-inner {
+        opacity: 1;
+        transform: none;
+    }
 }
