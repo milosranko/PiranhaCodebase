@@ -30,22 +30,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.5.1" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.5.2" />
     <PackageReference Include="Azure.Identity" Version="1.21.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
-    <PackageReference Include="Piranha" Version="12.0.0" />
-    <PackageReference Include="Piranha.AspNetCore" Version="12.0.0" />
-    <PackageReference Include="Piranha.AspNetCore.Identity.SQLite" Version="12.0.0" />
-    <PackageReference Include="Piranha.AspNetCore.Identity.SQLServer" Version="12.0.0" />
-    <PackageReference Include="Piranha.AttributeBuilder" Version="12.0.0" />
-    <PackageReference Include="Piranha.Azure.BlobStorage" Version="12.0.0" />
-    <PackageReference Include="Piranha.Data.EF.SQLite" Version="12.0.0" />
-    <PackageReference Include="Piranha.Data.EF.SQLServer" Version="12.0.0" />
-    <PackageReference Include="Piranha.ImageSharp" Version="12.0.0" />
-    <PackageReference Include="Piranha.Local.FileStorage" Version="12.0.0" />
-    <PackageReference Include="Piranha.Manager" Version="12.0.0" />
-    <PackageReference Include="Piranha.Manager.TinyMCE" Version="12.0.1" />
+    <PackageReference Include="Piranha" Version="12.2.0" />
+    <PackageReference Include="Piranha.AspNetCore" Version="12.2.0" />
+    <PackageReference Include="Piranha.AspNetCore.Identity.SQLite" Version="12.2.0" />
+    <PackageReference Include="Piranha.AspNetCore.Identity.SQLServer" Version="12.2.0" />
+    <PackageReference Include="Piranha.AttributeBuilder" Version="12.2.0" />
+    <PackageReference Include="Piranha.Azure.BlobStorage" Version="12.2.0" />
+    <PackageReference Include="Piranha.Data.EF.SQLite" Version="12.2.0" />
+    <PackageReference Include="Piranha.Data.EF.SQLServer" Version="12.2.0" />
+    <PackageReference Include="Piranha.ImageSharp" Version="12.2.0" />
+    <PackageReference Include="Piranha.Local.FileStorage" Version="12.2.0" />
+    <PackageReference Include="Piranha.Manager" Version="12.2.0" />
+    <PackageReference Include="Piranha.Manager.TinyMCE" Version="12.2.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageReference Include="Serilog.Sinks.AzureBlobStorage" Version="4.0.5" />
   </ItemGroup>
