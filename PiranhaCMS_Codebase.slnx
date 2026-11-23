@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="PiranhaCMS.Business/PiranhaCMS.Business.csproj" />
+  <Project Path="PiranhaCMS.ContentTypes/PiranhaCMS.ContentTypes.csproj" />
+  <Project Path="PiranhaCMS.Extensions/PiranhaCMS.Common.csproj" />
+  <Project Path="PiranhaCMS.ImageCache/PiranhaCMS.ImageCache.csproj" />
+  <Project Path="PiranhaCms.PublicWeb/PiranhaCMS.PublicWeb.csproj" />
+  <Project Path="PiranhaCMS.Search/PiranhaCMS.Search.csproj" />
+  <Project Path="PiranhaCMS.Tests/PiranhaCMS.Tests.csproj" />
+  <Project Path="PiranhaCMS.Validators/PiranhaCMS.Validators.csproj" />
+</Solution>
