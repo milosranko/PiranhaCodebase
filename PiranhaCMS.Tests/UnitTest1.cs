@@ -2,10 +2,10 @@ using CmsContentScaffolding.Piranha.Extensions;
 using CmsContentScaffolding.Piranha.Models;
 using CmsContentScaffolding.Piranha.Startup;
 using CmsContentScaffolding.Shared.Resources;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Piranha;
 using Piranha.Data.EF.SQLite;
@@ -27,8 +27,9 @@ public class PiranhaTests
     [ClassInitialize]
     public static void Initialize(TestContext context)
     {
-        var builder = WebHost
+        var builder = Host
             .CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(webBuilder => webBuilder
             .ConfigureAppConfiguration((context, config) =>
             {
                 config
@@ -112,7 +113,7 @@ public class PiranhaTests
                         p.PageRegion.Heading = ResourceHelpers.Faker.Lorem.Slug();
                     }, 100);
                 });
-            });
+            }));
 
         builder.Build().Start();
     }

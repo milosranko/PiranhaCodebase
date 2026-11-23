@@ -105,7 +105,7 @@ builder.Services
 builder.Services
     .AddPiranha(options =>
     {
-        options.AddRazorRuntimeCompilation = true;
+        options.AddRazorRuntimeCompilation = builder.Environment.IsDevelopment();
         options.UseCms();
         options.UseManager();
         if (builder.Environment.IsProduction())
